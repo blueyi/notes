@@ -15,131 +15,8 @@
     <atom:link href="/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>心怀善意，虛怀若谷！</description>
-    <pubDate>Wed, 22 Jul 2020 16:52:46 GMT</pubDate>
+    <pubDate>Tue, 26 Dec 2017 14:46:40 GMT</pubDate>
     <generator>http://hexo.io/</generator>
-    
-    <item>
-      <title>CUDA学习笔记</title>
-      <link>http://notes.maxwi.com/3715/06/11/CUDA-study-notes/</link>
-      <guid>http://notes.maxwi.com/3715/06/11/CUDA-study-notes/</guid>
-      <pubDate>Tue, 11 Jun 3715 08:42:08 GMT</pubDate>
-      <description>
-      
-        &lt;h2 id=&quot;关于-准备&quot;&gt;&lt;a href=&quot;#关于-准备&quot; class=&quot;headerlink&quot; title=&quot;关于|准备&quot;&gt;&lt;/a&gt;关于|准备&lt;/h2&gt;&lt;p&gt;本为内容来源于《CUDA by Example.An Introduction to General-Purpose GPU Programming》学习整理，网上中英文版都有，其源码以及本文测试源码在&lt;a href=&quot;https://github.com/blueyi/cuda_example&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;github&lt;/a&gt;。部分内容来源于CUDA官方文档&lt;a href=&quot;http://docs.nvidia.com/cuda&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://docs.nvidia.com/cuda&lt;/a&gt;以及其他网上相关资料，官方文档右上角的搜索不是非常好用，如果没有搜索到你所需要的关键字可以定位到所需文档后试试&lt;code&gt;ctrl+f&lt;/code&gt;,例如&lt;code&gt;dim3&lt;/code&gt;的概念。这里是一个中文版本的&lt;a href=&quot;http://www.nvidia.cn/docs/IO/57399/NVIDIA_CUDA_Programming_Guide_2.0Final.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;NVIDIA_CUDA_Programming_Guide_2.0Final&lt;/a&gt;。&lt;br&gt;&lt;strong&gt;新人入坑看这里，系统学习强烈推荐直接看官方这份编程指南：&lt;a href=&quot;http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html&lt;/a&gt;，本文后期补充的大量内容都来自该指南。&lt;/strong&gt;&lt;br&gt;&lt;strong&gt;看完指南再看官方的进阶文档，最佳实践指南：&lt;a href=&quot;http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/&lt;/a&gt;，这些看完你也就完全入门了，并且跟上了CUDA的最新技术发展。&lt;/strong&gt;&lt;/p&gt;
-      
-      </description>
-      
-      
-      <comments>http://notes.maxwi.com/3715/06/11/CUDA-study-notes/#disqus_thread</comments>
-    </item>
-    
-    <item>
-      <title>CUDA编程中的错误处理</title>
-      <link>http://notes.maxwi.com/3617/03/29/cuda-error-handle/</link>
-      <guid>http://notes.maxwi.com/3617/03/29/cuda-error-handle/</guid>
-      <pubDate>Wed, 29 Mar 3617 12:49:18 GMT</pubDate>
-      <description>
-      
-        &lt;p&gt;CUDA程序往往很难高度，特别是核函数出错时，甚至有些情况下核函数中内容访问错误时，运行程序之后系统返回的报错信息是&lt;code&gt;free() error&lt;/code&gt;之类的错误，会严重误导错误查找过程。所以编写CUDA程序一定记得进行错误错误处理，多写几行代码，有可能省出很多的时间。假如自己的CUDA程序出现了各种奇葩、难以理解的错误，可以考虑加上错误处理，也许就柳岸花明了。&lt;br&gt;在&lt;a href=&quot;http://notes.maxwi.com/2015/06/11/CUDA-study-notes/&quot;&gt;CUDA学习笔记&lt;/a&gt;最后的总结中刻意提到编写CUDA程序一定要做错误处理，但其中一直未提及如何进行错误处理，这里给补上。&lt;/p&gt;
-      
-      </description>
-      
-      
-      <comments>http://notes.maxwi.com/3617/03/29/cuda-error-handle/#disqus_thread</comments>
-    </item>
-    
-    <item>
-      <title>C++静态绑定与动态绑定</title>
-      <link>http://notes.maxwi.com/3516/08/19/static-dynamic-binding/</link>
-      <guid>http://notes.maxwi.com/3516/08/19/static-dynamic-binding/</guid>
-      <pubDate>Sat, 19 Aug 3516 04:49:03 GMT</pubDate>
-      <description>
-      
-        &lt;p&gt;首先明确C++中引用或指针的动态类型（dynamic type）与静态类型（static type）可以不同是C++支持多态性（polymorphism）的根本所在。&lt;br&gt;四个概念：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;静态类型：就是对象声明时采用的类型，一旦确定就无法更改，编译期已经确定 &lt;/li&gt;
-&lt;li&gt;动态类型：通常是指一个指针或引用在调用时所指向的类型，可以理解为赋值号右侧对象的类型（当然采用直接赋值就是括号中的对象的类型），可以在运行时更改，在运行期决定&lt;/li&gt;
-&lt;li&gt;静态绑定（static binding）：又名前期绑定（early binding），绑定的是对象的静态类型，发生在编译期，即程序编译完成后就已经确定&lt;/li&gt;
-&lt;li&gt;动态绑定（dynamic binding）：又名后期绑定（late binding），绑定的是对象的动态类型，发生在运行期，即在运行期由当前的动态类型决定所需要调用的函数或属性&lt;/li&gt;
-&lt;/ul&gt;
-      
-      </description>
-      
-      
-      <comments>http://notes.maxwi.com/3516/08/19/static-dynamic-binding/#disqus_thread</comments>
-    </item>
-    
-    <item>
-      <title>实例验证C/C++源代码变成程序的过程</title>
-      <link>http://notes.maxwi.com/3416/06/05/source-to-program/</link>
-      <guid>http://notes.maxwi.com/3416/06/05/source-to-program/</guid>
-      <pubDate>Wed, 05 Jun 3416 07:58:11 GMT</pubDate>
-      <description>
-      
-        &lt;p&gt;本来只是为了从底层了解下堆和栈的区别，以及heap和free-store的区别，结果便引出了从源代码编译开始，直到可执行程序如何加载到内存，以及C/C++内存布局的问题，这里做个总结，主要参考&lt;a href=&quot;http://www.gahcep.com/cpp-internals-memory-layout/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;C++ Internals :: Memory Layout&lt;/a&gt;&lt;br&gt;本文所使用的环境：   &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Ubuntu-14.04 x64 kernel 4.2.0-36-generic&lt;/li&gt;
-&lt;li&gt;GCC version 4.8.4   &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;需要使用的其他工具：   &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;c++filt – Demangle C++ and Java symbols.详情可以自行查看man手册   &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;C++编译器通常进行以下4个步骤将源代码编译为可执行程序：   &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;预处理器的预处理阶段，替换#开头的内容   &lt;/li&gt;
-&lt;li&gt;编译器编译阶段，将预处理后的源程序处理成汇编源程序   &lt;/li&gt;
-&lt;li&gt;汇编器的汇编阶段，将汇编源程序汇编为可重定位的目标二进制程序   &lt;/li&gt;
-&lt;li&gt;连接器将可生定位的目标程序连接成为可执行的二进制目标程序   &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;以下面这段代码的编译链接过程举例：   &lt;/p&gt;
-      
-      </description>
-      
-      
-      <comments>http://notes.maxwi.com/3416/06/05/source-to-program/#disqus_thread</comments>
-    </item>
-    
-    <item>
-      <title>实例分析C++内存布局</title>
-      <link>http://notes.maxwi.com/3316/06/11/cpp-memory-layout/</link>
-      <guid>http://notes.maxwi.com/3316/06/11/cpp-memory-layout/</guid>
-      <pubDate>Thu, 11 Jun 3316 05:25:00 GMT</pubDate>
-      <description>
-      
-        &lt;p&gt;本文所使用的环境：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Ubuntu-14.04 x64 kernel 4.2.0-36-generic&lt;/li&gt;
-&lt;li&gt;GCC version 4.8.4   &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;需要用到的工具（都是系统自带的，以下是man的基本信息，详细信息可以直接查看man手册）：   &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;size - list section sizes and total size.可以列出section大小和总的大小，能够用于粗略估计，但不适合深度研究section大小   &lt;/li&gt;
-&lt;li&gt;readelf - Displays information about ELF files.显示ELF文件的信息，readelf非常强大，能够显示出ELF非常多的信息   &lt;/li&gt;
-&lt;li&gt;objdump - display information from object files. 显示object文件的信息，也就是目标文件，功能与readelf类似，但没有readelf强大，有些readelf可以显示的信息，它无法显示   &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;如果对编译过程不甚了解，可以参看这里&lt;a href=&quot;/2016/06/05/source-to-program/&quot;&gt;实例验证C/C++源代码如何变成程序的过程&lt;/a&gt;   &lt;/p&gt;
-      
-      </description>
-      
-      
-      <comments>http://notes.maxwi.com/3316/06/11/cpp-memory-layout/#disqus_thread</comments>
-    </item>
-    
-    <item>
-      <title>Streaming MultiProcessor、Register、Shared-Memory对CUDA线程块尺寸的影响</title>
-      <link>http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/</link>
-      <guid>http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/</guid>
-      <pubDate>Sat, 12 Aug 3015 02:46:17 GMT</pubDate>
-      <description>
-      
-        &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;线程块中线程总数的大小除了受到硬件中&lt;code&gt;Max Threads Per block&lt;/code&gt;的限制，同时还要受到&lt;code&gt;Streaming Multiprocessor、Register&lt;/code&gt;和&lt;code&gt;Shared Memory&lt;/code&gt;的影响。这些条件的共同作用下可以获得一个相对更合适的&lt;code&gt;block&lt;/code&gt;尺寸。当&lt;code&gt;block&lt;/code&gt;尺寸太小时，将无法充分利用所有线程；当&lt;code&gt;block&lt;/code&gt;尺寸太大时，如果线程需要的资源总和过多，&lt;code&gt;CUDA&lt;/code&gt;将通过强制减少&lt;code&gt;block&lt;/code&gt;数量来保证资源供应，同样无法利用所有线程。而&lt;code&gt;grid&lt;/code&gt;的尺寸通常越大越好，当&lt;code&gt;grid&lt;/code&gt;中的线程总数超过一次所能启动的并发线程总数时，过多的线程将以线程块为单位由CUDA进行新的调用，当然启动数量够用就可以了，以免浪费资源。&lt;/p&gt;
-      
-      </description>
-      
-      
-      <comments>http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/#disqus_thread</comments>
-    </item>
     
     <item>
       <title>Docker run命令参数</title>
@@ -383,6 +260,102 @@
       
       
       <comments>http://notes.maxwi.com/2017/11/09/makefile/#disqus_thread</comments>
+    </item>
+    
+    <item>
+      <title>为Linux系统导入根证书</title>
+      <link>http://notes.maxwi.com/2017/10/14/certificates-import-linux/</link>
+      <guid>http://notes.maxwi.com/2017/10/14/certificates-import-linux/</guid>
+      <pubDate>Fri, 13 Oct 2017 23:06:58 GMT</pubDate>
+      <description>
+      
+        &lt;p&gt;公司里面通常都会为了信息安全而要求个人电脑通过公司的根证书访问SSL加密的链接，如果系统里面没有根证书不管是浏览器还是需要访问SSL加密网络的系统命令都会出现证书相关错误。虽然这些证书错误都可以通过其他一些设置绕过去，但还是直接设置一下系统根证书更方便，一劳永逸（自己公司，忽略安全性）。&lt;/p&gt;
+      
+      </description>
+      
+      
+      <comments>http://notes.maxwi.com/2017/10/14/certificates-import-linux/#disqus_thread</comments>
+    </item>
+    
+    <item>
+      <title>Docker可用的镜像加速器</title>
+      <link>http://notes.maxwi.com/2017/10/14/docker-install-registry-mirrors/</link>
+      <guid>http://notes.maxwi.com/2017/10/14/docker-install-registry-mirrors/</guid>
+      <pubDate>Fri, 13 Oct 2017 23:06:58 GMT</pubDate>
+      <description>
+      
+        
+        
+          
+          
+            &lt;h3 id=&quot;普通用户无法运行docker命令&quot;&gt;&lt;a href=&quot;#普通用户无法运行docker命令&quot; class=&quot;headerlink&quot;
+          
+        
+      
+      </description>
+      
+      
+      <comments>http://notes.maxwi.com/2017/10/14/docker-install-registry-mirrors/#disqus_thread</comments>
+    </item>
+    
+    <item>
+      <title>Git submodule使用方法</title>
+      <link>http://notes.maxwi.com/2017/08/18/git-submodule/</link>
+      <guid>http://notes.maxwi.com/2017/08/18/git-submodule/</guid>
+      <pubDate>Fri, 18 Aug 2017 09:06:58 GMT</pubDate>
+      <description>
+      
+        &lt;p&gt;git的submodule可以用于在项目中添加子项目，这样就可以让主项目可以引用子项目的同时，子项目又可以进行独立的版本控制管理。当子项目有了更新之后，可以便捷的在主项目中对相应子项目进行更新。&lt;/p&gt;
+      
+      </description>
+      
+      
+      <comments>http://notes.maxwi.com/2017/08/18/git-submodule/#disqus_thread</comments>
+    </item>
+    
+    <item>
+      <title>Shell脚本简单入门</title>
+      <link>http://notes.maxwi.com/2017/04/23/shell-script/</link>
+      <guid>http://notes.maxwi.com/2017/04/23/shell-script/</guid>
+      <pubDate>Sun, 23 Apr 2017 11:21:00 GMT</pubDate>
+      <description>
+      
+        &lt;p&gt;Shell脚本简单入门，如果你分不清shell是什么，此文一定不适合你。毕竟只花了十多分钟看的教程，不会涉及细节，细节将在以后的使用中逐渐以示例形式给出。&lt;/p&gt;
+      
+      </description>
+      
+      
+      <comments>http://notes.maxwi.com/2017/04/23/shell-script/#disqus_thread</comments>
+    </item>
+    
+    <item>
+      <title>Java通过JNI调用C/C++动态链接库之参数传递及结果返回</title>
+      <link>http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/</link>
+      <guid>http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/</guid>
+      <pubDate>Thu, 20 Apr 2017 12:48:42 GMT</pubDate>
+      <description>
+      
+        &lt;p&gt;接上一篇关于JNI的基本入门&lt;a href=&quot;/2017/04/19/java-jni-cpp-hello/&quot; title=&quot;Java通过JNI调用C&amp;#x2F;C++动态链接库之HelloWorld&quot;&gt;Java通过JNI调用C&amp;#x2F;C++动态链接库之HelloWorld&lt;/a&gt;，简述给JNI函数传递参数，以及通过JNI函数返回值的方式。&lt;/p&gt;
+      
+      </description>
+      
+      
+      <comments>http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/#disqus_thread</comments>
+    </item>
+    
+    <item>
+      <title>Java通过JNI调用C/C++动态链接库之HelloWorld</title>
+      <link>http://notes.maxwi.com/2017/04/19/java-jni-cpp-hello/</link>
+      <guid>http://notes.maxwi.com/2017/04/19/java-jni-cpp-hello/</guid>
+      <pubDate>Wed, 19 Apr 2017 12:48:42 GMT</pubDate>
+      <description>
+      
+        &lt;p&gt;Java可以通过JNI（Java Native Interface）来调用本地库，从而解决一些需要使用C/C++来提高效率但却需要使用JAVA调用的场景，例如opencv库编写的图像处理函数，需要使用spark等大数据框架来调用。&lt;/p&gt;
+      
+      </description>
+      
+      
+      <comments>http://notes.maxwi.com/2017/04/19/java-jni-cpp-hello/#disqus_thread</comments>
     </item>
     
   </channel>

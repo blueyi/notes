@@ -196,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3715/06/11/CUDA-study-notes/">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2017/03/29/cuda-error-handle/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/default_avatar.jpg">
@@ -210,7 +210,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/3715/06/11/CUDA-study-notes/" class="post-title-link" itemprop="url">CUDA学习笔记</a>
+            <a href="/2017/03/29/cuda-error-handle/" class="post-title-link" itemprop="url">CUDA编程中的错误处理</a>
         </h2>
 
         <div class="post-meta">
@@ -220,14 +220,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 3715-06-11 16:42:08" itemprop="dateCreated datePublished" datetime="3715-06-11T16:42:08+08:00">3715-06-11</time>
+              <time title="Created: 2017-03-29 20:49:18" itemprop="dateCreated datePublished" datetime="2017-03-29T20:49:18+08:00">2017-03-29</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-23 00:52:46" itemprop="dateModified" datetime="2020-07-23T00:52:46+08:00">2020-07-23</time>
+                <time title="Modified: 2020-07-23 02:04:24" itemprop="dateModified" datetime="2020-07-23T02:04:24+08:00">2020-07-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,117 +248,8 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/3715/06/11/CUDA-study-notes/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3715/06/11/CUDA-study-notes/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>36k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>33 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="关于-准备"><a href="#关于-准备" class="headerlink" title="关于|准备"></a>关于|准备</h2><p>本为内容来源于《CUDA by Example.An Introduction to General-Purpose GPU Programming》学习整理，网上中英文版都有，其源码以及本文测试源码在<a href="https://github.com/blueyi/cuda_example" target="_blank" rel="noopener">github</a>。部分内容来源于CUDA官方文档<a href="http://docs.nvidia.com/cuda" target="_blank" rel="noopener">http://docs.nvidia.com/cuda</a>以及其他网上相关资料，官方文档右上角的搜索不是非常好用，如果没有搜索到你所需要的关键字可以定位到所需文档后试试<code>ctrl+f</code>,例如<code>dim3</code>的概念。这里是一个中文版本的<a href="http://www.nvidia.cn/docs/IO/57399/NVIDIA_CUDA_Programming_Guide_2.0Final.pdf" target="_blank" rel="noopener">NVIDIA_CUDA_Programming_Guide_2.0Final</a>。<br><strong>新人入坑看这里，系统学习强烈推荐直接看官方这份编程指南：<a href="http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html" target="_blank" rel="noopener">http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html</a>，本文后期补充的大量内容都来自该指南。</strong><br><strong>看完指南再看官方的进阶文档，最佳实践指南：<a href="http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/" target="_blank" rel="noopener">http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/</a>，这些看完你也就完全入门了，并且跟上了CUDA的最新技术发展。</strong></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/3715/06/11/CUDA-study-notes/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3617/03/29/cuda-error-handle/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/default_avatar.jpg">
-      <meta itemprop="name" content="blueyi">
-      <meta itemprop="description" content="心怀善意，虛怀若谷！">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="blueyi's notes">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/3617/03/29/cuda-error-handle/" class="post-title-link" itemprop="url">CUDA编程中的错误处理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 3617-03-29 20:49:18" itemprop="dateCreated datePublished" datetime="3617-03-29T20:49:18+08:00">3617-03-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-19 23:45:55" itemprop="dateModified" datetime="2020-07-19T23:45:55+08:00">2020-07-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CUDA/" itemprop="url" rel="index"><span itemprop="name">CUDA</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/3617/03/29/cuda-error-handle/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3617/03/29/cuda-error-handle/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2017/03/29/cuda-error-handle/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/29/cuda-error-handle/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -390,7 +281,7 @@
           <p>CUDA程序往往很难高度，特别是核函数出错时，甚至有些情况下核函数中内容访问错误时，运行程序之后系统返回的报错信息是<code>free() error</code>之类的错误，会严重误导错误查找过程。所以编写CUDA程序一定记得进行错误错误处理，多写几行代码，有可能省出很多的时间。假如自己的CUDA程序出现了各种奇葩、难以理解的错误，可以考虑加上错误处理，也许就柳岸花明了。<br>在<a href="http://notes.maxwi.com/2015/06/11/CUDA-study-notes/">CUDA学习笔记</a>最后的总结中刻意提到编写CUDA程序一定要做错误处理，但其中一直未提及如何进行错误处理，这里给补上。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/3617/03/29/cuda-error-handle/#more" rel="contents">
+              <a class="btn" href="/2017/03/29/cuda-error-handle/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -414,7 +305,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3516/08/19/static-dynamic-binding/">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/06/11/CUDA-study-notes/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/default_avatar.jpg">
@@ -428,7 +319,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/3516/08/19/static-dynamic-binding/" class="post-title-link" itemprop="url">C++静态绑定与动态绑定</a>
+            <a href="/2015/06/11/CUDA-study-notes/" class="post-title-link" itemprop="url">CUDA学习笔记</a>
         </h2>
 
         <div class="post-meta">
@@ -438,14 +329,123 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 3516-08-19 12:49:03" itemprop="dateCreated datePublished" datetime="3516-08-19T12:49:03+08:00">3516-08-19</time>
+              <time title="Created: 2015-06-11 16:42:08" itemprop="dateCreated datePublished" datetime="2015-06-11T16:42:08+08:00">2015-06-11</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2017-12-26 21:39:02" itemprop="dateModified" datetime="2017-12-26T21:39:02+08:00">2017-12-26</time>
+                <time title="Modified: 2020-07-23 02:03:58" itemprop="dateModified" datetime="2020-07-23T02:03:58+08:00">2020-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CUDA/" itemprop="url" rel="index"><span itemprop="name">CUDA</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2015/06/11/CUDA-study-notes/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/06/11/CUDA-study-notes/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>36k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>33 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="关于-准备"><a href="#关于-准备" class="headerlink" title="关于|准备"></a>关于|准备</h2><p>本为内容来源于《CUDA by Example.An Introduction to General-Purpose GPU Programming》学习整理，网上中英文版都有，其源码以及本文测试源码在<a href="https://github.com/blueyi/cuda_example" target="_blank" rel="noopener">github</a>。部分内容来源于CUDA官方文档<a href="http://docs.nvidia.com/cuda" target="_blank" rel="noopener">http://docs.nvidia.com/cuda</a>以及其他网上相关资料，官方文档右上角的搜索不是非常好用，如果没有搜索到你所需要的关键字可以定位到所需文档后试试<code>ctrl+f</code>,例如<code>dim3</code>的概念。这里是一个中文版本的<a href="http://www.nvidia.cn/docs/IO/57399/NVIDIA_CUDA_Programming_Guide_2.0Final.pdf" target="_blank" rel="noopener">NVIDIA_CUDA_Programming_Guide_2.0Final</a>。<br><strong>新人入坑看这里，系统学习强烈推荐直接看官方这份编程指南：<a href="http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html" target="_blank" rel="noopener">http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html</a>，本文后期补充的大量内容都来自该指南。</strong><br><strong>看完指南再看官方的进阶文档，最佳实践指南：<a href="http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/" target="_blank" rel="noopener">http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/</a>，这些看完你也就完全入门了，并且跟上了CUDA的最新技术发展。</strong></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2015/06/11/CUDA-study-notes/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/08/19/static-dynamic-binding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/08/19/static-dynamic-binding/" class="post-title-link" itemprop="url">C++静态绑定与动态绑定</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-08-19 12:49:03" itemprop="dateCreated datePublished" datetime="2016-08-19T12:49:03+08:00">2016-08-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-23 02:05:29" itemprop="dateModified" datetime="2020-07-23T02:05:29+08:00">2020-07-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -466,8 +466,8 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/3516/08/19/static-dynamic-binding/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3516/08/19/static-dynamic-binding/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2016/08/19/static-dynamic-binding/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/19/static-dynamic-binding/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -505,7 +505,7 @@
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/3516/08/19/static-dynamic-binding/#more" rel="contents">
+              <a class="btn" href="/2016/08/19/static-dynamic-binding/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -529,7 +529,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3416/06/05/source-to-program/">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/06/05/source-to-program/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/default_avatar.jpg">
@@ -543,7 +543,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/3416/06/05/source-to-program/" class="post-title-link" itemprop="url">实例验证C/C++源代码变成程序的过程</a>
+            <a href="/2016/06/05/source-to-program/" class="post-title-link" itemprop="url">实例验证C/C++源代码变成程序的过程</a>
         </h2>
 
         <div class="post-meta">
@@ -553,14 +553,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 3416-06-05 15:58:11" itemprop="dateCreated datePublished" datetime="3416-06-05T15:58:11+08:00">3416-06-05</time>
+              <time title="Created: 2016-06-05 15:58:11" itemprop="dateCreated datePublished" datetime="2016-06-05T15:58:11+08:00">2016-06-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2017-12-26 21:39:02" itemprop="dateModified" datetime="2017-12-26T21:39:02+08:00">2017-12-26</time>
+                <time title="Modified: 2020-07-23 02:05:49" itemprop="dateModified" datetime="2020-07-23T02:05:49+08:00">2020-07-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -581,8 +581,8 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/3416/06/05/source-to-program/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3416/06/05/source-to-program/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2016/06/05/source-to-program/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/05/source-to-program/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -630,7 +630,7 @@
 <p>以下面这段代码的编译链接过程举例：   </p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/3416/06/05/source-to-program/#more" rel="contents">
+              <a class="btn" href="/2016/06/05/source-to-program/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -654,7 +654,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/06/11/cpp-memory-layout/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/default_avatar.jpg">
@@ -668,7 +668,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/3316/06/11/cpp-memory-layout/" class="post-title-link" itemprop="url">实例分析C++内存布局</a>
+            <a href="/2016/06/11/cpp-memory-layout/" class="post-title-link" itemprop="url">实例分析C++内存布局</a>
         </h2>
 
         <div class="post-meta">
@@ -678,14 +678,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 3316-06-11 13:25:00" itemprop="dateCreated datePublished" datetime="3316-06-11T13:25:00+08:00">3316-06-11</time>
+              <time title="Created: 2016-06-11 13:25:00" itemprop="dateCreated datePublished" datetime="2016-06-11T13:25:00+08:00">2016-06-11</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-19 23:45:26" itemprop="dateModified" datetime="2020-07-19T23:45:26+08:00">2020-07-19</time>
+                <time title="Modified: 2020-07-23 02:06:11" itemprop="dateModified" datetime="2020-07-23T02:06:11+08:00">2020-07-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -706,8 +706,8 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/3316/06/11/cpp-memory-layout/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3316/06/11/cpp-memory-layout/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2016/06/11/cpp-memory-layout/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/11/cpp-memory-layout/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -750,7 +750,7 @@
 <p>如果对编译过程不甚了解，可以参看这里<a href="/2016/06/05/source-to-program/">实例验证C/C++源代码如何变成程序的过程</a>   </p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/3316/06/11/cpp-memory-layout/#more" rel="contents">
+              <a class="btn" href="/2016/06/11/cpp-memory-layout/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -774,7 +774,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/08/12/CUDA-Determine-block-size/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/default_avatar.jpg">
@@ -788,7 +788,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/3015/08/12/CUDA-Determine-block-size/" class="post-title-link" itemprop="url">Streaming MultiProcessor、Register、Shared-Memory对CUDA线程块尺寸的影响</a>
+            <a href="/2015/08/12/CUDA-Determine-block-size/" class="post-title-link" itemprop="url">Streaming MultiProcessor、Register、Shared-Memory对CUDA线程块尺寸的影响</a>
         </h2>
 
         <div class="post-meta">
@@ -798,14 +798,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 3015-08-12 10:46:17" itemprop="dateCreated datePublished" datetime="3015-08-12T10:46:17+08:00">3015-08-12</time>
+              <time title="Created: 2015-08-12 10:46:17" itemprop="dateCreated datePublished" datetime="2015-08-12T10:46:17+08:00">2015-08-12</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2017-12-26 22:52:36" itemprop="dateModified" datetime="2017-12-26T22:52:36+08:00">2017-12-26</time>
+                <time title="Modified: 2020-07-23 02:06:38" itemprop="dateModified" datetime="2020-07-23T02:06:38+08:00">2020-07-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -826,8 +826,8 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/3015/08/12/CUDA-Determine-block-size/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3015/08/12/CUDA-Determine-block-size/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2015/08/12/CUDA-Determine-block-size/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/08/12/CUDA-Determine-block-size/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -859,7 +859,7 @@
           <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>线程块中线程总数的大小除了受到硬件中<code>Max Threads Per block</code>的限制，同时还要受到<code>Streaming Multiprocessor、Register</code>和<code>Shared Memory</code>的影响。这些条件的共同作用下可以获得一个相对更合适的<code>block</code>尺寸。当<code>block</code>尺寸太小时，将无法充分利用所有线程；当<code>block</code>尺寸太大时，如果线程需要的资源总和过多，<code>CUDA</code>将通过强制减少<code>block</code>数量来保证资源供应，同样无法利用所有线程。而<code>grid</code>的尺寸通常越大越好，当<code>grid</code>中的线程总数超过一次所能启动的并发线程总数时，过多的线程将以线程块为单位由CUDA进行新的调用，当然启动数量够用就可以了，以免浪费资源。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/3015/08/12/CUDA-Determine-block-size/#more" rel="contents">
+              <a class="btn" href="/2015/08/12/CUDA-Determine-block-size/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

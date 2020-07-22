@@ -2,9 +2,44 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://notes.maxwi.com/3715/06/11/CUDA-study-notes/</loc>
+    <loc>http://notes.maxwi.com/2015/08/12/CUDA-Determine-block-size/</loc>
     
-    <lastmod>2020-07-22T16:52:46.089Z</lastmod>
+    <lastmod>2020-07-22T18:06:38.753Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/06/11/cpp-memory-layout/</loc>
+    
+    <lastmod>2020-07-22T18:06:11.624Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/06/05/source-to-program/</loc>
+    
+    <lastmod>2020-07-22T18:05:49.992Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/08/19/static-dynamic-binding/</loc>
+    
+    <lastmod>2020-07-22T18:05:29.287Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/29/cuda-error-handle/</loc>
+    
+    <lastmod>2020-07-22T18:04:24.682Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/06/11/CUDA-study-notes/</loc>
+    
+    <lastmod>2020-07-22T18:03:58.001Z</lastmod>
     
   </url>
   
@@ -44,20 +79,6 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/3617/03/29/cuda-error-handle/</loc>
-    
-    <lastmod>2020-07-19T15:45:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/3316/06/11/cpp-memory-layout/</loc>
-    
-    <lastmod>2020-07-19T15:45:26.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/2016/07/24/cpp-gleaning-static/</loc>
     
     <lastmod>2020-07-19T15:44:22.000Z</lastmod>
@@ -65,7 +86,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/03/01/ubuntu-compile-opencv2-with-cuda-and-ffmpeg/</loc>
+    <loc>http://notes.maxwi.com/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/</loc>
     
     <lastmod>2020-07-19T11:41:40.391Z</lastmod>
     
@@ -79,14 +100,14 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/</loc>
+    <loc>http://notes.maxwi.com/2017/03/01/ubuntu-compile-opencv2-with-cuda-and-ffmpeg/</loc>
     
     <lastmod>2020-07-19T11:41:40.391Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2014/03/19/hexo-github-to-gitcafe/</loc>
+    <loc>http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/</loc>
     
     <lastmod>2020-07-19T11:41:40.387Z</lastmod>
     
@@ -100,14 +121,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2014/03/20/introduction-markdown/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.387Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/</loc>
+    <loc>http://notes.maxwi.com/2016/11/03/java-study-notes-oop/</loc>
     
     <lastmod>2020-07-19T11:41:40.387Z</lastmod>
     
@@ -121,14 +135,70 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2016/11/03/java-study-notes-oop/</loc>
+    <loc>http://notes.maxwi.com/2014/03/20/introduction-markdown/</loc>
     
     <lastmod>2020-07-19T11:41:40.387Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2015/12/13/cpp-oop-copy-control/</loc>
+    <loc>http://notes.maxwi.com/2014/03/19/hexo-github-to-gitcafe/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.387Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/05/ffmpeg-codecs-formats/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/05/ffmpeg-streaming/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/04/ffmpeg-hdfs/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/04/10/cpp-random/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/04/03/cpp-problem/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/14/dynamic-two-dimension-arr/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/10/cpp-reference-pointer/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/01/23/cpp-oop-template/</loc>
     
     <lastmod>2020-07-19T11:41:40.383Z</lastmod>
     
@@ -149,56 +219,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2016/04/03/cpp-problem/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/01/23/cpp-oop-template/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/04/10/cpp-random/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/03/10/cpp-reference-pointer/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/03/14/dynamic-two-dimension-arr/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/04/04/ffmpeg-hdfs/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/04/05/ffmpeg-codecs-formats/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/04/05/ffmpeg-streaming/</loc>
+    <loc>http://notes.maxwi.com/2015/12/13/cpp-oop-copy-control/</loc>
     
     <lastmod>2020-07-19T11:41:40.383Z</lastmod>
     
@@ -208,20 +229,6 @@
     <loc>http://notes.maxwi.com/2015/06/22/cpp-study-notes/</loc>
     
     <lastmod>2020-07-19T11:41:40.383Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/03/15/array-pointer-function/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2014/03/18/bin-search/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
     
   </url>
   
@@ -240,49 +247,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2016/07/23/cpp-gleaning-bit-field/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/07/27/cpp-gleaning-conditional-compile/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/07/19/cpp-gleaning-fixed-width-integer/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/07/17/cpp-gleaning-function-object/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/03/25/cpp-dynamic-memory/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/07/25/cpp-gleaning-deep-copy-shallow-copy/</loc>
-    
-    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/07/21/cpp-gleaning-memory-allignment/</loc>
+    <loc>http://notes.maxwi.com/2016/07/30/cpp-gleaning/</loc>
     
     <lastmod>2020-07-19T11:41:40.379Z</lastmod>
     
@@ -296,7 +261,56 @@
   </url>
   
   <url>
+    <loc>http://notes.maxwi.com/2016/07/28/cpp-gleaning-extern-c/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/27/cpp-gleaning-conditional-compile/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/25/cpp-gleaning-deep-copy-shallow-copy/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/23/cpp-gleaning-bit-field/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/21/cpp-gleaning-memory-allignment/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/19/cpp-gleaning-fixed-width-integer/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://notes.maxwi.com/2016/07/18/cpp-gleaning-new-malloc/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/17/cpp-gleaning-function-object/</loc>
     
     <lastmod>2020-07-19T11:41:40.379Z</lastmod>
     
@@ -317,14 +331,21 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2016/07/30/cpp-gleaning/</loc>
+    <loc>http://notes.maxwi.com/2016/03/25/cpp-dynamic-memory/</loc>
     
     <lastmod>2020-07-19T11:41:40.379Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2016/07/28/cpp-gleaning-extern-c/</loc>
+    <loc>http://notes.maxwi.com/2016/03/15/array-pointer-function/</loc>
+    
+    <lastmod>2020-07-19T11:41:40.379Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/18/bin-search/</loc>
     
     <lastmod>2020-07-19T11:41:40.379Z</lastmod>
     
@@ -383,13 +404,6 @@
     <loc>http://notes.maxwi.com/categories/index.html</loc>
     
     <lastmod>2020-07-19T04:28:55.640Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/</loc>
-    
-    <lastmod>2017-12-26T14:52:36.000Z</lastmod>
     
   </url>
   
@@ -562,20 +576,6 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/3416/06/05/source-to-program/</loc>
-    
-    <lastmod>2017-12-26T13:39:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/3516/08/19/static-dynamic-binding/</loc>
-    
-    <lastmod>2017-12-26T13:39:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/2017/12/03/coredump/</loc>
     
     <lastmod>2017-12-26T13:38:31.000Z</lastmod>
@@ -597,28 +597,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2015/10/10/Regex-in-cpp/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2014/03/18/Replace-two-character-with-one/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2015/10/04/Regular-Expression-Study-Note/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2015/04/09/git-study-notes/</loc>
+    <loc>http://notes.maxwi.com/2017/12/05/yuv/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
     
@@ -632,56 +611,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2014/03/20/hexo-trap/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2014/03/20/learn-mardown-in-5-minutes/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/02/26/linux-command-tools-cron/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/01/19/linux-command-tools-ufw/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/2017/04/01/linux-proxy-ss/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/03/09/linux-ssh-nopasswd/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/08/17/linux-fork/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2016/03/14/linux-terminal-commands-and-shortcuts/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
     
@@ -695,6 +625,20 @@
   </url>
   
   <url>
+    <loc>http://notes.maxwi.com/2017/03/10/spark-on-yarn-configure/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/09/linux-ssh-nopasswd/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://notes.maxwi.com/2017/03/06/python-pyenv-virtualenv/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
@@ -702,7 +646,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/03/10/spark-on-yarn-configure/</loc>
+    <loc>http://notes.maxwi.com/2017/03/02/vmware-shared-folder/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
     
@@ -716,7 +660,42 @@
   </url>
   
   <url>
+    <loc>http://notes.maxwi.com/2017/01/19/linux-command-tools-ufw/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/08/17/linux-fork/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/06/21/sql-introduce/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://notes.maxwi.com/2016/05/05/unique-sorted-array/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/14/linux-terminal-commands-and-shortcuts/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/02/26/linux-command-tools-cron/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
     
@@ -737,13 +716,6 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/03/02/vmware-shared-folder/</loc>
-    
-    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/2015/11/21/winsock/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
@@ -751,14 +723,42 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/12/05/yuv/</loc>
+    <loc>http://notes.maxwi.com/2015/10/10/Regex-in-cpp/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2016/06/21/sql-introduce/</loc>
+    <loc>http://notes.maxwi.com/2015/10/04/Regular-Expression-Study-Note/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/04/09/git-study-notes/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/20/learn-mardown-in-5-minutes/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/20/hexo-trap/</loc>
+    
+    <lastmod>2017-12-19T16:24:08.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/18/Replace-two-character-with-one/</loc>
     
     <lastmod>2017-12-19T16:24:08.000Z</lastmod>
     
