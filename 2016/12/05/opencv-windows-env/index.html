@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="关于环境配置网上有一大堆这样那样的方法，官方有详细且简单的教程，为什么要舍近求远呢，甚至有些书上还义正言辞地认为自己的配置方法非常好，其实他自己都不清楚为什么需要那些步骤，官方教程的windows配置方法：http:&#x2F;&#x2F;docs.opencv.org&#x2F;3.0-last-rst&#x2F;doc&#x2F;tutorials&#x2F;introduction&#x2F;windows_install&#x2F;windows_install.ht">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows下OpenCV与VS开发环境配置">
+<meta property="og:url" content="http://notes.maxwi.com/2016/12/05/opencv-windows-env/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="关于环境配置网上有一大堆这样那样的方法，官方有详细且简单的教程，为什么要舍近求远呢，甚至有些书上还义正言辞地认为自己的配置方法非常好，其实他自己都不清楚为什么需要那些步骤，官方教程的windows配置方法：http:&#x2F;&#x2F;docs.opencv.org&#x2F;3.0-last-rst&#x2F;doc&#x2F;tutorials&#x2F;introduction&#x2F;windows_install&#x2F;windows_install.ht">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-05T13:47:16.000Z">
+<meta property="article:modified_time" content="2017-12-26T14:44:41.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="OpenCV">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/12/05/opencv-windows-env/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Windows下OpenCV与VS开发环境配置 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/12/05/opencv-windows-env/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows下OpenCV与VS开发环境配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-12-05 21:47:16" itemprop="dateCreated datePublished" datetime="2016-12-05T21:47:16+08:00">2016-12-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-26 22:44:41" itemprop="dateModified" datetime="2017-12-26T22:44:41+08:00">2017-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenCV/" itemprop="url" rel="index"><span itemprop="name">OpenCV</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/12/05/opencv-windows-env/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/05/opencv-windows-env/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="关于环境配置"><a href="#关于环境配置" class="headerlink" title="关于环境配置"></a>关于环境配置</h2><p>网上有一大堆这样那样的方法，官方有详细且简单的教程，为什么要舍近求远呢，甚至有些书上还义正言辞地认为自己的配置方法非常好，其实他自己都不清楚为什么需要那些步骤，官方教程的windows配置方法：<a href="http://docs.opencv.org/3.0-last-rst/doc/tutorials/introduction/windows_install/windows_install.html" target="_blank" rel="noopener">http://docs.opencv.org/3.0-last-rst/doc/tutorials/introduction/windows_install/windows_install.html</a></p>
+<a id="more"></a>
+
+<p>整理简化点，步骤如下：</p>
+<h2 id="下载并安装"><a href="#下载并安装" class="headerlink" title="下载并安装"></a>下载并安装</h2><p>官网下载地址：<a href="http://opencv.org/downloads.html" target="_blank" rel="noopener">http://opencv.org/downloads.html</a><br>双击下载下来的EXE文件后自解压到某一目录下，我是直接放D盘根目录了，即：<code>D:\opencv</code>，解压之后opencv会将整个源代码，即编译好的支持VS不同版本及不同位数二进制一并放在了这个目录，我们稍后只需要根据自己的系统需要来选择不同的版本即可，这里的版本不是指版本号，而是X64还是X86，VS2013还是VS2010</p>
+<h2 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h2><p><strong>新建系统环境变量OPENCV_DIR：</strong><br>我安装的是2.4.13版本，并且系统是64位win10下的VS2013，所以我需要使用的是支持x64的VS2013的opencv，那么实际上我需要使用的opencv的根目录就是<code>D:\opencv\build\x64\vc12</code>，vc12即对应VS2013，关于VS的对应关系如下：</p>
+<ul>
+<li>vc14: Visual Studio 2015</li>
+<li>vc12: Visual Studio 2013</li>
+<li>vc11: Visual Studio 2012</li>
+<li>vc10: Visual Studio 2010</li>
+</ul>
+<p>在系统属性-高级系统设置-环境变量-系统环境变量中新建一个名为OPENCV_DIR，值为<code>D:\opencv\build\x64\vc12</code>的系统环境变量用于后面需要引用opencv目录的地方使用环境变量来引用，方便以后更改opencv安装位置时只需要修改环境变量即可。值根据你的安装位置和需要的版本来自己修改，x64系统支持x86，所以如果想使用x86，也可以<br>或者可以直接使用命令来处理，需要管理员权限：<code>setx -m OPENCV_DIR D:\opencv\build\x64\vc12</code></p>
+<p><strong>追加PATH环境变量：</strong><br>为了使系统可以找到opencv的动态连接库和可执行程序，需要将我们所需要的opencv的bin目录加入到PATH环境变量中，WIN10系统直接双击PATH然后新建，输入<code>%OPENCV_DIR%\bin</code>保存即可，win7则需要在PATH变量的最后办输入<code>;%OPENCV_DIR%\bin</code>保存，注意不要落下那个分号。其实配置过JAVA环境变量的应该这些都非常容易</p>
+<h2 id="配置VS的项目属性"><a href="#配置VS的项目属性" class="headerlink" title="配置VS的项目属性"></a>配置VS的项目属性</h2><p>配置VS的项目属性其实就是告诉VS这个巨牛的IDE：去哪找opencv的头文件和去哪找opencv的动态连接库。由于为了调试方便，所以opencv的链接库在设计时有个debug版和普通版（即release版），所以可以在VS里面创建这两个版本的编译选项。<br>由于这些设置需要在用户属性页（即解决方案中的各项目属性）中设置，所以首先需要新建一个项目，然后在项目的属性页中设置。<br>其实也可以在项目属性页中直接设置所有项目所需要使用的库和头文件路径，但考虑到有可能还会需要有其他语言的项目，所以还是直接在所需要的类型语言下的项目下设置更合理。</p>
+<p><strong>新建项目</strong><br>打开VS2013-新建项目，选择Visual C++下的Win32控制台应用程序，记得输入你的项目名称和解决方案名称，选为空项目。</p>
+<p><strong>增加x64平台的debug和release的配置属性</strong><br>由于默认是32位，所以首先增加64的平台支持<br>点击菜单中的视图-属性管理器，会显示出来当前项目的属性管理器页面，展开后发现里面已经有了Win32平台下的Debug和Release，假如你是x86平台，可以跳过这步，直接配置win32下的对应属性即可。双击属性管理器窗口中你的项目名称即可打开项目属性页，点击左侧的配置属性激活配置管理器，在配置选项中可以看到显示的Win32处理活动状态。点击配置配置管理器，在活动解决方案平台下点击win32，即可新建x64平台，创建新的项目平台之后在属性管理器窗口中便可看见x64平台对应的Debug和Release版本。</p>
+<p><strong>Opencv属性页</strong><br>我们可以直接双击属性管理器中的Debug|x64来修改项目属性页，也可以新建一个项目属性表，便于以后使用，也以免搞混乱项目属性。在总的属性页中的修改会默认被继承到以后新建的其他项目中，所以网上提到的一劳永逸的方法，并不是好方法。<br>下面新建debug下的项目属性表：<br>右单击Debug|x64添加新项目属性表，可以看到右键里面有个添加现有表，所以新建之后保存那个属性表文件就可以随意携带和添加了。新建属性表名称输入：OpenCV_x64_Debug，然后就可以在属性管理器中看见了，双击它来配置属性。由于我们使用的opencv的开发是C++项目，所以在C/C++选项中设置，网上有方法在VC++目录下设置，也可以，但不推荐。<br>点击C/C++中的常规，附加包含目录右边小箭头点编辑，新建一行，输入：<code>$(OPENCV_DIR)\..\..\include</code>确定即可，记得你已经提前配置好了OPENCV_DIR环境变量。<br>点击链接器中的常规，同样的方法在附加库目录中添加新行，内容为<code>$(OPENCV_DIR)\lib</code><br>点击链接器中的输入，编辑添加附加依赖项。由于我们现在配置的是debug版本，所以在链接时要求VS输入我们debug版本的opencv链接库。按我之前的配置情况下，我所需要的所有链接库都在目录<code>D:\opencv\build\x64\vc12\lib</code>中，里面所有lib文件名中点前面带d结尾的都是debug版本的，不带d结尾的是release，所以我们把所有带d结尾的完整文件名，一行一个输入即可。这里提供一个方法批量提取带d的文件名文本：<br>在lib目录下右单击，打开命令行，输入<code>dir /b &gt; t.txt</code>，将所有文件名一行一个输出到t.txt中。假如电脑上有vim，用vim打开，首先删除不是以lib结尾的行，然后输入<code>:g /.*\d\./d</code>，剩下的19行就是我们需要的内容，复制出来粘贴到VS那个附加依赖项中即可。如果需要的是release版本的内容，把刚才的命令换成<code>:g /.*\dd\./d</code>即可。<br>获取到的debug版本的库如下，如果觉得上面的过程麻烦，直接复制这个，把我安装的2413换成你的版本号去掉点就可以了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">opencv_calib3d2413d.lib</span><br><span class="line">opencv_contrib2413d.lib</span><br><span class="line">opencv_core2413d.lib</span><br><span class="line">opencv_features2d2413d.lib</span><br><span class="line">opencv_flann2413d.lib</span><br><span class="line">opencv_gpu2413d.lib</span><br><span class="line">opencv_highgui2413d.lib</span><br><span class="line">opencv_imgproc2413d.lib</span><br><span class="line">opencv_legacy2413d.lib</span><br><span class="line">opencv_ml2413d.lib</span><br><span class="line">opencv_nonfree2413d.lib</span><br><span class="line">opencv_objdetect2413d.lib</span><br><span class="line">opencv_ocl2413d.lib</span><br><span class="line">opencv_photo2413d.lib</span><br><span class="line">opencv_stitching2413d.lib</span><br><span class="line">opencv_superres2413d.lib</span><br><span class="line">opencv_ts2413d.lib</span><br><span class="line">opencv_video2413d.lib</span><br><span class="line">opencv_videostab2413d.lib</span><br></pre></td></tr></table></figure>
+
+<p>应用-确定即可完成保存，然后在属性管理器窗口中右键我们刚新建的配置点击保存，在项目文件夹中会看到名为<code>OpenCV_x64_Debug.props</code>的文件，该文件即可在以后其他的项目中加载来省去我们的配置过程。当然如果你刚才不是通过新建而是直接修改的属性，会在你以后新建项目时永久生效。<br>release版本的步骤完全一样，只是把那库改成不带d的版本即可。<br>下面给出release版本的库文件名列表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">opencv_calib3d2413.lib</span><br><span class="line">opencv_contrib2413.lib</span><br><span class="line">opencv_core2413.lib</span><br><span class="line">opencv_features2d2413.lib</span><br><span class="line">opencv_flann2413.lib</span><br><span class="line">opencv_gpu2413.lib</span><br><span class="line">opencv_highgui2413.lib</span><br><span class="line">opencv_imgproc2413.lib</span><br><span class="line">opencv_legacy2413.lib</span><br><span class="line">opencv_ml2413.lib</span><br><span class="line">opencv_nonfree2413.lib</span><br><span class="line">opencv_objdetect2413.lib</span><br><span class="line">opencv_ocl2413.lib</span><br><span class="line">opencv_photo2413.lib</span><br><span class="line">opencv_stitching2413.lib</span><br><span class="line">opencv_superres2413.lib</span><br><span class="line">opencv_ts2413.lib</span><br><span class="line">opencv_video2413.lib</span><br><span class="line">opencv_videostab2413.lib</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证环境"><a href="#验证环境" class="headerlink" title="验证环境"></a>验证环境</h2><p>切换到解决方案资源管理器，右单击新建项选择C++文件，输入文件名并添加。输入如下源代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/core.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;opencv2/highgui.hpp&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> cv;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    Mat image;</span><br><span class="line">    image = imread(<span class="string">"F:\\cat.jpg"</span>, IMREAD_COLOR); <span class="comment">// Read the file，注意换成你自己的图片文件路径</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (image.empty()) <span class="comment">// Check for invalid input</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not open or find the image"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    namedWindow(<span class="string">"Display window"</span>, WINDOW_AUTOSIZE); <span class="comment">// Create a window for display.</span></span><br><span class="line">    imshow(<span class="string">"Display window"</span>, image); <span class="comment">// Show our image inside it.</span></span><br><span class="line"></span><br><span class="line">    waitKey(<span class="number">0</span>); <span class="comment">// Wait for a keystroke in the window</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调试中选择开始执行不调试，或者直接ctrl+F5，确定生成，如果出现了你指定的图片，则表示环境配置成功<br>可以在VS上方选择解决方案配置Debug还是Release，以及在平台中选择x64还是Win32</p>
+<p>到这里你应该明白VS的项目属性管理的作用和处理方法了，如果想开发32位版的程序，只需要类似的方法添加32位版本的属性并修改之前设置的环境变量即可。甚至可以直接修改32位版的属性时指定绝对路径，而无需修改环境变量。</p>
+<p>从上面的代码也可以看出opencv编程其实就是包括上opencv的头文件，然后调用相应的函数即可，剩下的就完全是C++了。<br><code>opencv2/opencv.hpp</code>中包含了几乎所有opencv库的重要头文件，所以直接只包含这一个头文件即可引入几乎整个opencv的库。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OpenCV/" rel="tag"># OpenCV</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/11/29/kvm-create-and-manage/" rel="prev" title="Ubuntu Server/Debian下的KVM虚拟机创建及管理详解">
+      <i class="fa fa-chevron-left"></i> Ubuntu Server/Debian下的KVM虚拟机创建及管理详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/06/opencv-study-notes/" rel="next" title="OpenCV学习小记">
+      OpenCV学习小记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于环境配置"><span class="nav-number">1.</span> <span class="nav-text">关于环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载并安装"><span class="nav-number">2.</span> <span class="nav-text">下载并安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置环境变量"><span class="nav-number">3.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置VS的项目属性"><span class="nav-number">4.</span> <span class="nav-text">配置VS的项目属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证环境"><span class="nav-number">5.</span> <span class="nav-text">验证环境</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/12/05/opencv-windows-env/";
+    this.page.identifier = "2016/12/05/opencv-windows-env/";
+    this.page.title = "Windows下OpenCV与VS开发环境配置";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

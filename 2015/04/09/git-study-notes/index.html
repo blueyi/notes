@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="git常用配置命令:git config --global user.name &quot;Your Name&quot; 相当于设置你将来的仓库所有人   git config --global user.email &quot;you@example.com&quot; 仓库所有人的邮箱   git config --global color.ui true 让git显示颜色   在仓库目录下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git学习笔记">
+<meta property="og:url" content="http://notes.maxwi.com/2015/04/09/git-study-notes/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="git常用配置命令:git config --global user.name &quot;Your Name&quot; 相当于设置你将来的仓库所有人   git config --global user.email &quot;you@example.com&quot; 仓库所有人的邮箱   git config --global color.ui true 让git显示颜色   在仓库目录下">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://notes.maxwi.com/2015/04/09/git-study-notes/1.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/2015/04/09/git-study-notes/2.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/2015/04/09/git-study-notes/3.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/2015/04/09/git-study-notes/4.jpg">
+<meta property="article:published_time" content="2015-04-09T08:55:01.000Z">
+<meta property="article:modified_time" content="2017-12-19T16:24:08.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Notes">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://notes.maxwi.com/2015/04/09/git-study-notes/1.jpg">
+
+<link rel="canonical" href="http://notes.maxwi.com/2015/04/09/git-study-notes/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Git学习笔记 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/04/09/git-study-notes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-04-09 16:55:01" itemprop="dateCreated datePublished" datetime="2015-04-09T16:55:01+08:00">2015-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-20 00:24:08" itemprop="dateModified" datetime="2017-12-20T00:24:08+08:00">2017-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2015/04/09/git-study-notes/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/04/09/git-study-notes/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="git常用配置命令"><a href="#git常用配置命令" class="headerlink" title="git常用配置命令:"></a>git常用配置命令:</h2><p><code>git config --global user.name &quot;Your Name&quot;</code> 相当于设置你将来的仓库所有人  </p>
+<p><code>git config --global user.email &quot;you@example.com&quot;</code> 仓库所有人的邮箱  </p>
+<p><code>git config --global color.ui true</code> 让git显示颜色  </p>
+<p>在仓库目录下新建<code>.gitignore</code>，编辑需要忽略掉的文件，支持通配符，并把它提交到仓库即可。可以访问<a href="https://github.com/github/gitignore" target="_blank" rel="noopener">https://github.com/github/gitignore</a> 寻找常用的<code>.gitignore</code>文件  </p>
+<p><code>git config --global alias.[alias_name] [git_command]</code> 为git命令配置别名，跟bash里面的别名配置类似</p>
+<a id="more"></a>
+
+<p>例如: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.lg &quot;log --color --graph --pretty&#x3D;format:&#39;%Cred%h%Creset  </span><br><span class="line">-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#39; --abbrev-commit&quot;</span><br></pre></td></tr></table></figure>
+<p>配置之后执行<code>git lg</code>就等价于执行上面双引号中的一大堆。</p>
+<p>git的全局配置文件在<code>/home/username/.gitconfig</code></p>
+<p>git的各个仓库配置文件在仓库目录下的<code>.git/config</code></p>
+<h2 id="git本地维护常用命令"><a href="#git本地维护常用命令" class="headerlink" title="git本地维护常用命令"></a>git本地维护常用命令</h2><p><code>git init</code> 初始化当前目录为git的版本控制仓库</p>
+<p><code>git add [FILES..]</code> 把文件添加到仓库的暂存区，方便一并提交</p>
+<p><code>git commit -m &quot;STRING&quot;</code> 提交刚才添加到仓库暂存区的文件，相当于是对文件建了一个快照，所以提交的只相当于是修改，STRING可以设置成方便自己以后查看的快照备注</p>
+<p><code>git status</code> 查看当前的仓库状态，例如都添加了哪些文件，哪些没有被添加，哪些做了修改还没有提交</p>
+<p><code>git diff [FILENAME]</code> 查看当前名为FILENAME的文件与上次commit的文件有哪些不同</p>
+<p><code>git diff [HEAD[N个^]] -- [FILENAME]</code>查看FILENAME当前文件内容与之前某个版本内容的差异</p>
+<p><code>git log (--pretty=oneline)</code> 查看当前的提交历史 (<code>--graph</code>) 查看分支合并图</p>
+<p><code>git reflog</code> 查看命令历史，可以显示对文件操作过的所有命令历史，包含SHA1码的一部分，可以方便的回退到任何一个版本</p>
+<p><code>git reset --hard  [commit_id/HEAD[^]]</code> 回退版本,它会撤销某次提交，但是此次提交之后的修改都会被退回到暂存区。其中commit_id即为SHA1码的一部分，HEAD后面有几个^就表示回退几个版本，或者使用<code>HEAD~[n]</code>，其中<code>n</code>即是通过<code>git reflog</code>查看到的序号。  </p>
+<p><code>git reset HEAD -- [FILENAME]</code> 将添加到暂存区的文件撤消到工作区  </p>
+<p><code>git reset HEAD</code> 撤销当前add的所有文件，相当于撤销add操作</p>
+<p><code>git revert [commit_id/HEAD[^]/HEAD[n]]</code> 撤销某次操作，此次操作之后的<code>commit</code>都会被保留，例如有1,2,3个<code>commit</code>,<code>git revert 2</code>之后通过<code>git log</code>查看时会发现，只有1,3。  </p>
+<p><code>git checkout -- [FILENAME]</code> 丢弃工作区中对应文件的修改 相当于使用版本库中的相应文件替换工作区中的文件</p>
+<p><code>git rm [FILENAME]</code> 删除文件</p>
+<h2 id="git分支相关命令"><a href="#git分支相关命令" class="headerlink" title="git分支相关命令"></a>git分支相关命令</h2><p> <code>git branch</code> 查看分支  </p>
+<p> <code>git branch [branch_name]</code> 创建名为branchname的分支</p>
+<p> <code>git checkout [branch_name]</code> 切换分支</p>
+<p> <code>git checkout -b [branch_name]</code> 创建并切换分支</p>
+<p> <code>git merge [branch_name]</code> 将分支branch_name合并到当前分支,使用的是快速合并模式(fast forward)，删除分支后会丢失分支信息，以后将无法查看到分支合并记录</p>
+<p> <code>git merge --no-ff -m &quot;string&quot; [branch_name]</code> 普通合并模式，可以使用<code>git log --graph</code>查看分支合并情况</p>
+<p> <code>git branch -d [branch_name]</code> 删除已经合并的分支。 “-d”参数改为”-D”后可以强制删除未合并的分支</p>
+<p><code>git stash</code> 暂存当前分支的工作现场</p>
+<p><code>git stash apply ([stash@{n}])</code> 恢复当前分支到暂存n或者直接恢复最近一个stash，参数可选,这里的暂存跟<code>git add</code>到的暂存区不是同一个意思，这个相当于工作状态收藏夹</p>
+<p><code>git stash drop ([stash@{n}])</code> 删除某个暂存，参数可选</p>
+<p><code>git stash pop ([stash@{n}])</code> 恢复并删除某个暂存，参数可选</p>
+<h2 id="git远程操作命令"><a href="#git远程操作命令" class="headerlink" title="git远程操作命令"></a>git远程操作命令</h2><h3 id="远程操作相关命令"><a href="#远程操作相关命令" class="headerlink" title="远程操作相关命令"></a>远程操作相关命令</h3><p>下面以github上的远程仓库为便演示，当然该远程仓库地址为本地裸版本库也是一样的。<br><code>ssh-keygen -t rsa -b 4096 -C &quot;YOUREMAIL@YOUREMAIL.COM&quot;</code> 生成新的SSH密钥，以便使用远程仓库时使用SSH加密传输,生成SSH key之后复试<code>.ssh/id_rsa.pub</code> 中的内容添加到github，详情可以查看github帮助</p>
+<p><code>ssh -T git@github.com</code> 测试GITHUB上的密钥是否设置正确</p>
+<p><code>git remote add  origin &#39;git@github.com:yourusername/projectname.git&#39;</code><br>或<br><code>git remote add  origin &#39;https://github.com/yourname/projectname.git&#39;</code><br>将本地仓库添加到远程仓库，远程仓库的名字为<code>origin</code>，远程仓库的项目名字即为<code>projectname</code><br>如果出现403错误，可以考虑将<code>.git/config</code>中的url修改为<code>ssh://git@github.com/FanChael/Hash.git</code></p>
+<p><code>git push -u origin master</code> 第一次将本地仓库的master分支推送到远程 并关联本地和远程的master分支</p>
+<p><code>git push origin master</code> 把本地master分支的最新修改推送至GitHub</p>
+<p><code>git push origin dev:dev</code> 提交本地创建的<code>dev</code>分支为远程的<code>dev</code>分支   </p>
+<p><code>git push origin :dev</code> 删除刚提交到远程的<code>dev</code>分支   </p>
+<p><code>git push [origin branch-name]</code> 推送某个分支到远程，如果不加参数则推送push.default设置的默认推送内容，如果未设置push.default则推送当前分支，如果当前分支与远程分支没有关联，则使用以下命令关联即可</p>
+<p><code>git branch --set-upstream origin remote_branch_name</code> 关联本地当前分支与远程分支以便使用不带参数的git push命令进行推送</p>
+<p><code>git remote (-v)</code> 查看远程名称，加上”-v”参数可以查看更详细的内容</p>
+<p><code>git branch -r</code> 查看远程跟踪的分支，即所有的远程分支</p>
+<p><code>git clone [URL]</code> 将远程仓库克隆到本地</p>
+<p><code>git pull [origin branch_name]</code> 拉取远程仓库中branch_name分支的最新内容到本地，并直接与当前本地分支merge,以更新本地分支内容</p>
+<p><code>git fetch [origin branch_name]</code> 获取远程分支到origin/branch_name分支，不会自动合并。 </p>
+<p><code>git diff branch_name..origin/branch_name</code> 查看本地与刚fetch回来的数据差异  </p>
+<p><code>git fetch origin</code> 即获取远程仓库到本地  </p>
+<p><code>git checkout -b local_branch_name origin/remote_branch_name</code> 在本地创建并切换到与远程分支对应的分支，最好两个分支名字一样，常应用于先有远程分支时。</p>
+<p><code>git diff local_branch_name remote_branch_name FILENAME</code> 比较本地某个文件与远程分支上的区别</p>
+<p><code>git tag [tag_name]  ([commit id])</code> 将当前分支的最后一次提交加上标签名tab_name,或者指定某个commit id，例如标签即为版本号</p>
+<p><code>git tag -d [tag_name]</code> 删除某个标签</p>
+<p><code>git tag -a [tag_name] -m &quot;string&quot;</code> 添加标签并附带描述</p>
+<p><code>git tag -s [tag_name] -m &quot;string&quot;</code> 添加带PGP签名的的标签及描述</p>
+<p><code>git tag</code> 显示所有标签</p>
+<p><code>git show [tag_name]</code> 显示标签的详细信息</p>
+<p><code>git push origin [tag_name]</code> 推送本地标签到远程</p>
+<p><code>git push origin --tags</code> 推送本地所有未被推送到远程的标签</p>
+<p><code>git push origin :refs/tags/tag_name</code> 删除远程上某个的标签  </p>
+<h3 id="创建本地的祼版本库"><a href="#创建本地的祼版本库" class="headerlink" title="创建本地的祼版本库"></a>创建本地的祼版本库</h3><p>祼版本库是指仅用于存放仓库版本信息，不含有工作区的git源库。例如我们在github上存储的仓库，实际并不与我们的本地仓库目录结构一致，它只是保存了我们的仓库版本信息，以便需要时将其克隆到本地，成为带工作区的git版本控制仓库，以及推送时将本地库推送后自动被转换为远程的裸版本库。为了方便我们在本地操作或者以本地硬盘存储git仓库，可以采用本地裸版本库。祼版本库通常以后缀<code>.git</code>结尾。有两种方式为一个项目创建本地的祼版本库，实际上当这个仓库有个绝对地址时，也就类似于github上的了。</p>
+<h4 id="克隆生成祼版本库"><a href="#克隆生成祼版本库" class="headerlink" title="克隆生成祼版本库"></a>克隆生成祼版本库</h4><p>假如已经在本地初始化一个git的工作目录，现在想为其创建一个相应的祼版本库，以便向其中推送我们的版本控制。命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --bare &#x2F;path&#x2F;to&#x2F;my&#x2F;workspace&#x2F;demo &#x2F;path&#x2F;to&#x2F;repos&#x2F;demo.git</span><br></pre></td></tr></table></figure>
+<p>查看裸库目录结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ls -a</span><br><span class="line">.&#x2F;  ..&#x2F;  config  description  HEAD  hooks&#x2F;  info&#x2F;  objects&#x2F;  refs&#x2F;</span><br></pre></td></tr></table></figure>
+<p>现在可以将我们的工作目录推送到该库了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin &#x2F;path&#x2F;to&#x2F;repos&#x2F;demo.git</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>或者直接推送：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git push &#x2F;path&#x2F;to&#x2F;repos&#x2F;demo.git</span><br><span class="line"># 可能需要以下命令</span><br><span class="line">git push --set-upstream &#x2F;path&#x2F;to&#x2F;repos&#x2F;demo.git master</span><br></pre></td></tr></table></figure>
+<h4 id="创建生成裸版本库"><a href="#创建生成裸版本库" class="headerlink" title="创建生成裸版本库"></a>创建生成裸版本库</h4><p>命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init --bare &#x2F;path&#x2F;to&#x2F;repos&#x2F;demo.git</span><br></pre></td></tr></table></figure>
+<p>有了裸版本库地址<code>/path/to/repos/demo.git</code>，后面的操作就都一样了，可以直接从其克隆来创建本地库工作目录，也可以将其添加为本地工作目录的一个远程存储仓库</p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="将master分支整个替换为dev分支"><a href="#将master分支整个替换为dev分支" class="headerlink" title="将master分支整个替换为dev分支"></a>将master分支整个替换为dev分支</h3><p>场景：假如使用<code>dev</code>分支已经工作了一段时间，<code>master</code>分支已经落后数个版本，现在想将当前的<code>dev</code>分支设为新的<code>master</code>。方法如下：<br>方法一：<br><code>git checkout dev</code>  切换到<code>dev</code>分支<br><code>git merge --strategy=ours master</code>  保留<code>dev</code>分支的全部内容，并记录合并<br><code>git checkout master</code>  切换回<code>master</code><br><code>git merge dev</code>  使用快速合并将<code>dev</code>合并到<code>master</code>分支，不会有冲突问题<br><code>git push -f origin master</code>  防止推送冲突，强制推送  </p>
+<p>方法二(不推荐)：<br><code>git branch -m master old_master</code>  修改当前<code>master</code>分支名字为<code>old_master</code><br><code>git branch -m dev master</code>  将<code>dev</code>修改为<code>master</code><br><code>git push -f origin master</code>  强制推送   </p>
+<h3 id="如何撤销合并"><a href="#如何撤销合并" class="headerlink" title="如何撤销合并"></a>如何撤销合并</h3><p>场景：在<code>master</code>分支上将<code>dev</code>合并到<code>master</code>分支后，发现合并错了分支，或者觉得暂时不应该合并，可以使用以下方法撤消合并。这是官方的教程<a href="http://git-scm.com/blog/2010/03/02/undoing-merges.html" target="_blank" rel="noopener">http://git-scm.com/blog/2010/03/02/undoing-merges.html</a><br>方法一：<code>reset</code>到<code>merge</code>前的版本即可，要求每个合作者都将本在的<code>HEAD</code>回滚回去<br><code>git checkout master</code>  切换到进行合并操作时的分支<br><code>git reset --hard [merge前的版本号]</code>  回滚到<code>merge</code>前的版本号，例如<code>HEAD^</code>  </p>
+<h3 id="gitignore排除总结"><a href="#gitignore排除总结" class="headerlink" title=".gitignore排除总结"></a>.gitignore排除总结</h3><ul>
+<li>忽略一个特定的文件：/filename.extension</li>
+<li>忽略所有同名的文件：filename.extension</li>
+<li>忽略一个特定的目录：folder/ （这会连同其下所有子目录及文件都被忽略）</li>
+<li>但是排除一个特定的模式：（在 3 的基础上）!folder/some/important/filename.extension</li>
+<li>忽略指定目录下所有子目录下的特定文件：folder/**/filename.extension</li>
+<li>同上，但是只匹配文件扩展名：folder/<em>*/</em>.extension</li>
+<li>同上，但是只匹配特定的目录：folder/**/tmp/<br>参考：<a href="https://ruby-china.org/topics/23561" target="_blank" rel="noopener">https://ruby-china.org/topics/23561</a></li>
+</ul>
+<h3 id="git-fetch-与-git-pull的区别"><a href="#git-fetch-与-git-pull的区别" class="headerlink" title="git fetch 与 git pull的区别"></a>git fetch 与 git pull的区别</h3><ol>
+<li><p><code>git fetch</code>: 相当于是从远程获取最新版本到本地，不会自动<code>merge</code><br>常用使用场景：获取远程分支到origin/master，然后与本地master分支比较之后，再合并  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin master</span><br><span class="line">git log -p master..origin&#x2F;master</span><br><span class="line">git merge origin&#x2F;master</span><br></pre></td></tr></table></figure>
+<p>类似的实现方式如下  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin master:temp</span><br><span class="line">git diff temp</span><br><span class="line">git merge temp</span><br></pre></td></tr></table></figure>
+<p>即：首先获取远程master分支到temp分支，比较之后再合并</p>
+</li>
+<li><p><code>git pull</code>:相当于从远程获取分支的最新版本并与本地对应分支进行<code>merge</code>。eg:<br><code>git pull [origin branch_name]</code> 即从远程获取branch_name分支并与本地的branch_name分支合并，如果去除可选参数则表示获取当前本地分支的远程分支并合并。相当于<code>git fetch</code>与<code>git merge</code>两个命令，但会隐藏掉过程细节，所以通常建议使用fetch而不是pull。  </p>
+</li>
+</ol>
+<h3 id="GitHub上与他人合作个人项目"><a href="#GitHub上与他人合作个人项目" class="headerlink" title="GitHub上与他人合作个人项目"></a>GitHub上与他人合作个人项目</h3><p>仅限于个人建立的项目，不包括组织项目。<br>GitHub官方对应的相关链接如下：  </p>
+<ol>
+<li><code>Fork A Repo</code>: <a href="https://help.github.com/articles/fork-a-repo/" target="_blank" rel="noopener">https://help.github.com/articles/fork-a-repo/</a>    </li>
+<li><code>Syncing a fork</code>: <a href="https://help.github.com/articles/syncing-a-fork/" target="_blank" rel="noopener">https://help.github.com/articles/syncing-a-fork/</a>   </li>
+<li><code>Using pull requests</code>: <a href="https://help.github.com/articles/using-pull-requests/" target="_blank" rel="noopener">https://help.github.com/articles/using-pull-requests/</a>  </li>
+<li><code>Merging a pull request</code>: <a href="https://help.github.com/articles/merging-a-pull-request/" target="_blank" rel="noopener">https://help.github.com/articles/merging-a-pull-request/</a>  </li>
+<li><code>Closing a pull request</code>: <a href="https://help.github.com/articles/closing-a-pull-request/" target="_blank" rel="noopener">https://help.github.com/articles/closing-a-pull-request/</a>  </li>
+</ol>
+<p>一、如果对方将你添加为合作者，也就是将你添加到<code>Collaborators</code>列表，那么，你将自动拥有对该项目的几乎所有的修改权限，所有此时只需要新建分支就可以直接开写代码了。当然，如果项目为私有项目，必须添加队友为合作者时，队友才能看见你的代码仓库。  </p>
+<p>二、如果不是合作者，则需要通过<code>fork</code>别人的代码仓库，然后修改之后再通过创建<code>pull request</code>申请将代码合并。如果<code>fork</code>之后原仓库代码又有了更新，则可以通过同步这个fork来更新你当前的代码。具体操作如下：  </p>
+<ol>
+<li><p>首先通过github网站上项目右上角的Fork按钮来Fork一份想要协作的项目仓库。Fork结束后就会在你的账号下拷贝一份该项目的副本。  </p>
+</li>
+<li><p>通过<code>git clone https://github.com/YOUR_USERNAME/YOUR_FORK.git</code>克隆你账号下Fork的项目到本地。通过<code>git remote -v</code>命令可以查看该仓库所配置的远程仓库详情。然后通过命令<code>git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY.git</code>将你的仓库与原仓库的远程地址相关联，以便接收原仓库的更新，通过<code>git remote -v</code>来查看当前配置。  </p>
+</li>
+<li><p>通过<code>git fetch upstream</code>将原仓库的更新接收到本地的<code>upstream</code>中，<code>master</code>中commit将会存储在本地的<code>upstream/master</code>。本地切换到master分支后通过<code>git merge upstream/master</code>将fork的master分支与upstream同步。  </p>
+</li>
+<li><p>本地修改过fork的仓库代码后，先提交到自己账号下的相应仓库，然后通过GitHub网站上分支旁边的<code>compare,review,create a pull request</code>按钮来查看代码更新并创建<code>pull request</code>。当确定你的代码可以提交给原仓库主合并时，点击<code>Create pull request</code>即可创建一个pull request提示原仓库主及其合作者可以考虑将你的修改与当前仓库相应分支进行合并。  </p>
+</li>
+</ol>
+<h3 id="解决部分网络无法使用SSH连接的问题"><a href="#解决部分网络无法使用SSH连接的问题" class="headerlink" title="解决部分网络无法使用SSH连接的问题"></a>解决部分网络无法使用SSH连接的问题</h3><p>使用ssh连接最大的好处是可以不需要每次进行远程操作都输入密码，但github官方比较推荐使用https连接，应该是考虑更安全。<br>有些网络禁用了部分SSH连接，导致使用命令<code>ssh -T git@github.com</code>测试连接时提示连接超时，此时可以通过以下方式测试是否可以让SSH使用HTTPS的443端口连通<code>ssh -T -p 443 git@ssh.github.com</code>，如果测试通过，则说明可以让ssh通过HTTPS的端口来通信。此时需要创建以下文件<code>~/.ssh/config</code>，如果是windows，则在用户目录下面的<code>.ssh</code>文件夹中创建config文件，内容如下：  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">  Hostname ssh.github.com</span><br><span class="line">  Port 443</span><br></pre></td></tr></table></figure>
+<p>保存后应该就可以正常使用<code>ssh -T git@github.com</code>测试通过了。<br>官网链接在此： <a href="https://help.github.com/articles/using-ssh-over-the-https-port/" target="_blank" rel="noopener">Using SSH over the HTTPS port</a>    </p>
+<h3 id="如何让github上fork的项目保持更新"><a href="#如何让github上fork的项目保持更新" class="headerlink" title="如何让github上fork的项目保持更新"></a>如何让github上fork的项目保持更新</h3><p>应用场景为：当你看到某一个好的项目，觉得很不错，以后有可以自己会使用到，然后你可能会考虑到先<code>fork</code>到自己的账号下。<code>fork</code>的作用就是在你的账号下建立一份该仓库的关联副本，你可能通过修改你账号下的该副本然后提交后给原仓库发一个<code>pull request</code>来请求原仓库作者合并你的提交。当你<code>fork</code>过原仓库一段时间后，发现原仓库又更新了很多提交，你现在希望自己账号下的该仓库副本与原仓库保持同步，当然你可以删除你的这个副本然后重新<code>fork</code>一次，或者你的副本已经有了自己的修改需要保留，那么你可以采用以下两种方法：  </p>
+<ul>
+<li>直接在<code>github</code>网页上操作，即利用<code>github</code>上的<code>pull request</code>功能，所以这个<code>pull request</code>不仅仅可以向原仓主发出合并请求，还可以更新你的副本仓库。操作截图如下：  <ul>
+<li>1.首先打开你的副本仓库，点击<code>Pull request</code>或<code>Compare</code>按钮<br><img data-src="1.jpg" alt="">  </li>
+<li>2.点击<code>switching the base</code>，或者手动切换<code>base fork</code>为你的副本仓库以及<code>head fork</code>为原仓库<br><img data-src="2.jpg" alt="">  </li>
+<li>3.切换完成之后点击<code>Create pull request</code>，并填写<code>Title</code>（就是你想备注的信息）之后即可<code>Create pull request</code><br><img data-src="3.jpg" alt="">  </li>
+<li>4.滚动窗口到最下面后点击<code>Merge pull request</code>即可（同样可能需要填写你想要的备注信息），然后<code>Confirm merge</code>。<br><img data-src="4.jpg" alt="">  </li>
+</ul>
+</li>
+<li>通过在本地仓库中增加原仓库地址为一个<code>remote</code>仓库，然后<code>fetch</code>后切换到相应的分支或者将更新分支合并到希望更新的分支，在更新本地仓库后，再提交即可。具体操作过程如下：  <ul>
+<li>1.增加原分支为远程分支，命名为<code>upstream</code>：<code>git remote add upstream https://github.com/whoever/whatever.git</code>  </li>
+<li>2.<code>fetch</code>该远程仓库下的所有分支到<code>remote-tracking</code>分支：<code>git fetch upstream</code>  </li>
+<li>3.确保你当前在<code>master</code>分支：<code>git checkout master</code>  </li>
+<li>4.如果你已经对当前自己的副本做过更改，并且想要保留，则将更新合并到主分支：<code>git merge upstream/master</code>，如果想要保留所有原仓库的历史更新则使用<code>rebase</code>复写当前分支：<code>git rebase upstream/master</code>  </li>
+<li>5.然后正常推送即可，如果推送有冲突，可以直接强制推送：<code>git push -f origin master</code>  </li>
+</ul>
+</li>
+</ul>
+<h3 id="如何提交时忽略所有删除的文件"><a href="#如何提交时忽略所有删除的文件" class="headerlink" title="如何提交时忽略所有删除的文件"></a>如何提交时忽略所有删除的文件</h3><p>应用场景：当使用git一段时间之后，如果对文件做过较多的删除操作之后，使用<code>git add .</code>之后会提示手动使用<code>git rm</code>来删除那些已经被删除的文件，此时如果想一条命令来忽略掉所以这些需要使用<code>git rm</code>来删除的操作，那就使用<code>git add -A</code>。然后就不会再有那一堆的红色提示了。  </p>
+<h3 id="git如何永久性地从历史提交中删除某个文件"><a href="#git如何永久性地从历史提交中删除某个文件" class="headerlink" title="git如何永久性地从历史提交中删除某个文件"></a>git如何永久性地从历史提交中删除某个文件</h3><p>应用场景：某次不小心将含有密码等重要数据的文件提交到了仓库中，后来又commit多次之后才发现，曾经提交了一个不该提交的文件，需要将其从所有历史中删除。可以如下操作：<br><strong>删除文件历史</strong><br>进入你的仓库根目录，进行以下操作，其中PATH-TO-YOUR-FILE-WITH-SENSITIVE-DATA是你需要删除的文件的相对路径</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git filter-branch --force --index-filter \</span></span><br><span class="line">'git rm --cached --ignore-unmatch PATH-TO-YOUR-FILE-WITH-SENSITIVE-DATA' \</span><br><span class="line">--prune-empty --tag-name-filter cat -- --all</span><br></pre></td></tr></table></figure>
+<p><em>如果该文件曾经在其他路径，并被重新命名后移到了现在的路径，同样需要对原文件执行相同的操作</em></p>
+<p><strong>确认已经完成删除</strong><br>确认你的文件以及相应的历史是否已经完全移除，可以通过以下命令查看相应文件的commit id:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">log</span> --pretty=oneline &lt;PATH-TO-YOUR-FILE-WITH-SENSITIVE-DATA&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后根据commit id查看文件修改历史：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git show &lt;commit-id&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>强制更新远程仓库</strong><br>确认后可以将你的敏感文件加入.gitignore，然后后进行强制更新远程仓库即可：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push origin --force --all</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>更新tags</strong><br>如果有相应的tags，也应该更新tags</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push origin --force --tags</span></span><br></pre></td></tr></table></figure>
+
+<p>还有其他多种方法，可以参考：<br>1.<a href="https://help.github.com/articles/removing-sensitive-data-from-a-repository/" target="_blank" rel="noopener">https://help.github.com/articles/removing-sensitive-data-from-a-repository/</a><br>2.<a href="http://stackoverflow.com/questions/307828/completely-remove-file-from-all-git-repository-commit-history" target="_blank" rel="noopener">http://stackoverflow.com/questions/307828/completely-remove-file-from-all-git-repository-commit-history</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Notes/" rel="tag"># Notes</a>
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/03/20/learn-mardown-in-5-minutes/" rel="prev" title="5分钟掌握Markdown基本语法">
+      <i class="fa fa-chevron-left"></i> 5分钟掌握Markdown基本语法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/05/03/Python-study-notes/" rel="next" title="Python学习笔记">
+      Python学习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git常用配置命令"><span class="nav-number">1.</span> <span class="nav-text">git常用配置命令:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git本地维护常用命令"><span class="nav-number">2.</span> <span class="nav-text">git本地维护常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git分支相关命令"><span class="nav-number">3.</span> <span class="nav-text">git分支相关命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git远程操作命令"><span class="nav-number">4.</span> <span class="nav-text">git远程操作命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#远程操作相关命令"><span class="nav-number">4.1.</span> <span class="nav-text">远程操作相关命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建本地的祼版本库"><span class="nav-number">4.2.</span> <span class="nav-text">创建本地的祼版本库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#克隆生成祼版本库"><span class="nav-number">4.2.1.</span> <span class="nav-text">克隆生成祼版本库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建生成裸版本库"><span class="nav-number">4.2.2.</span> <span class="nav-text">创建生成裸版本库</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见问题"><span class="nav-number">5.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将master分支整个替换为dev分支"><span class="nav-number">5.1.</span> <span class="nav-text">将master分支整个替换为dev分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何撤销合并"><span class="nav-number">5.2.</span> <span class="nav-text">如何撤销合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitignore排除总结"><span class="nav-number">5.3.</span> <span class="nav-text">.gitignore排除总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-fetch-与-git-pull的区别"><span class="nav-number">5.4.</span> <span class="nav-text">git fetch 与 git pull的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub上与他人合作个人项目"><span class="nav-number">5.5.</span> <span class="nav-text">GitHub上与他人合作个人项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决部分网络无法使用SSH连接的问题"><span class="nav-number">5.6.</span> <span class="nav-text">解决部分网络无法使用SSH连接的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何让github上fork的项目保持更新"><span class="nav-number">5.7.</span> <span class="nav-text">如何让github上fork的项目保持更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何提交时忽略所有删除的文件"><span class="nav-number">5.8.</span> <span class="nav-text">如何提交时忽略所有删除的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git如何永久性地从历史提交中删除某个文件"><span class="nav-number">5.9.</span> <span class="nav-text">git如何永久性地从历史提交中删除某个文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2015/04/09/git-study-notes/";
+    this.page.identifier = "2015/04/09/git-study-notes/";
+    this.page.title = "Git学习笔记";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

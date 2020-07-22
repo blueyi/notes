@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="关于使用gcc或g++编译程序时加上-g参数即可将调试信息加入生成的目标文件，否则使用gdb调试时函数名、变量名都只能显示内存地址。直接运行gdb即可进入gdb，然后输入file a.out即可开始调试a.out，当然也可以直接gdb a.out进入a.out的调试状态。可以使用在命令行状态下使用gdb -help来查看帮助，当然也可以用man。在gdb调试状态下使用help可心获得更强大的帮助，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GDB调试详解">
+<meta property="og:url" content="http://notes.maxwi.com/2016/03/19/gdb/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="关于使用gcc或g++编译程序时加上-g参数即可将调试信息加入生成的目标文件，否则使用gdb调试时函数名、变量名都只能显示内存地址。直接运行gdb即可进入gdb，然后输入file a.out即可开始调试a.out，当然也可以直接gdb a.out进入a.out的调试状态。可以使用在命令行状态下使用gdb -help来查看帮助，当然也可以用man。在gdb调试状态下使用help可心获得更强大的帮助，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-03-19T02:11:44.000Z">
+<meta property="article:modified_time" content="2017-12-26T13:38:31.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="CPP">
+<meta property="article:tag" content="gdb">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/03/19/gdb/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>GDB调试详解 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/03/19/gdb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GDB调试详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-03-19 10:11:44" itemprop="dateCreated datePublished" datetime="2016-03-19T10:11:44+08:00">2016-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-26 21:38:31" itemprop="dateModified" datetime="2017-12-26T21:38:31+08:00">2017-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/03/19/gdb/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/03/19/gdb/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h1><p>使用<code>gcc</code>或<code>g++</code>编译程序时加上<code>-g</code>参数即可将调试信息加入生成的目标文件，否则使用gdb调试时函数名、变量名都只能显示内存地址。直接运行<code>gdb</code>即可进入gdb，然后输入<code>file a.out</code>即可开始调试a.out，当然也可以直接<code>gdb a.out</code>进入<code>a.out</code>的调试状态。可以使用在命令行状态下使用<code>gdb -help</code>来查看帮助，当然也可以用man。在gdb调试状态下使用help可心获得更强大的帮助，类似vim中的帮助，gdb调试状态下使用<code>help step</code>即可查看单步调试相关的帮助。gdb状态下使用<code>quit</code>退出gdb。进入GDB时可以使用可选参数<code>-tui</code>进入GDB的文本用户界面，该界面可以分屏显示源代码及断点所在行，比使用list查看代码方便很多，而且支持使用上下键来滚动显示代码，此时的命令行历史切换需要使用ctrl+n和ctrl+p。当然有一些支持GDB调试的图形软件ddd和code::block。</p>
+<h1 id="GDB基本用法"><a href="#GDB基本用法" class="headerlink" title="GDB基本用法"></a>GDB基本用法</h1><a id="more"></a>
+
+<ol>
+<li><code>$gdb app -tui</code>：进入调试状态<br>选择一种方式进入gdb，例如<code>$gdb app -tui</code>或者<code>$gdb -tui</code>和<code>(gdb)file app</code>，当然也可以执行程序之后再启动gdb，然后使用指定pid的方式 调试，此处<code>$</code>和<code>(gdb)</code>分别表示bash上的命令行前导符和gdb运行时的前导符  </li>
+<li><code>(gdb)break main</code>或<code>(gdb)b N</code>：添加断点<br>在main函数所在行添加断点，当然可以使用<code>(gdb)b 20</code>在第20行添加断点。  </li>
+<li><code>(gdb)run args-list</code>：运行调试程序<br>运行程序，run后面可以跟想要传递给所有调试的程序的参数列表。当然可以<code>(gdb)r</code>，即没有输入参数直接运行到断点处  </li>
+<li><code>(gdb)list n1,n2</code>：显示被调试程序源代码<br>显示n1到n2行之间的程序源码。或者<code>(gdb)l</code>显示当前行和其后10行的代码  </li>
+<li><code>(gdb)next N</code>或者<code>(gdb)step N</code>：单步执行<br>next将单步执行，一次运行N行，当然省略N则表示一次一行，如果当前行是一个函数，next会直接一次运行完该函数，然后继续进入下一行。而step则是单步进入执行，一次执行一行，遇到函数也会进入函数内部执行，遇到对象转到相应类的构造函数。当然这两个命令可以省略为n和s，也可以直接回车表示执行一次的命令。  </li>
+<li><code>(gdb)finish</code>或<code>(gdb)until</code>：跳出当前函数或循环体<br>finish执行完当前函数后返回到调用它的函数，并给出函数返回值。例如使用step时，想跳出当前函数即可以使用finish。until在循环开始处使用会直接执行完整个循环体。    </li>
+<li><code>(gdb)print var</code>或<code>(gdb)print var=5</code>：显示变量var的值，或将变量var的值修改为5<br>print后面可以是变量名也可以是函数名，还可以是历史记录，当然可以省略为p，可以显示var的状态信息，并且存放在历史记录中。历史记录以<code>$</code>开头，形如<code>$7</code>，使用<code>(gdb)p $7</code>，即可以显示<code>$7</code>中的内容。  </li>
+<li><code>(gdb)info breakpoints</code>和<code>(gdb)delete N</code>：显示所以断点和删除断点号为N的断点<br>可以省略为<code>(gdb)i b</code>和<code>(gdb)d N</code></li>
+<li><code>(gdb)watch var</code>和<code>(gdb)info watch</code>：监视变量var的值和查看当前所有监视信息<br>当变量var的值变化时显示var的值并暂停程序执行，后面一个命令可以省略为<code>i watch</code>，显示的信息也会跟<code>i b</code>一样带有一个序号，可以使用<code>d N</code>来删除监视对象    </li>
+<li><code>(gdb)continue</code>和<code>kill</code>：继续运行程序到下一个断点处和停止本次调试</li>
+</ol>
+<p>以下是GDB详细用法：  </p>
+<h1 id="GDB重要提示"><a href="#GDB重要提示" class="headerlink" title="GDB重要提示"></a>GDB重要提示</h1><ul>
+<li>首先编译时必须带上参数<code>-g</code>，如<code>g++ a.cpp -o a -g -std=c++11</code>，这样才能在可执行程序中生成调试信息，以供GDB使用 </li>
+<li>不能使用编译优化参数，例如<code>-O</code>或者<code>-O2</code>，由于这些优化参数为了提高性能会重新安排程序执行操作，导致调试信息与源码不匹配 </li>
+<li>GDB内部可以使用<code>! command</code>或<code>shell command</code>来执行shell命令  </li>
+<li>GDB内部可以使用<code>TAB</code>键进行自动补全，例如<code>info bre</code>+TAB会自动输入命令<code>info breakpoints</code></li>
+<li>GDB内部可以使用很多缩写，只要缩写的匹配是唯一的，例如<code>info bre</code>+回车，相当于执行了<code>info breakpoints</code>+回车  </li>
+<li>GDB内部使用<code>ctrl+c</code>可以在当前位置处暂停执行正在执行的程序，例如当循环很大或者死循环时又不想退出调试时  </li>
+</ul>
+<h1 id="GDB传递命令行参数"><a href="#GDB传递命令行参数" class="headerlink" title="GDB传递命令行参数"></a>GDB传递命令行参数</h1><p><code>gdb test</code> 进入调试之后</p>
+<p>可以使用以下两种方法输入命令行参数：</p>
+<ul>
+<li><code>run &lt;命令行参数&gt;</code></li>
+<li><code>set args</code>&lt;命令行参数&gt;`</li>
+</ul>
+<h1 id="GDB所有可用的命令行参数"><a href="#GDB所有可用的命令行参数" class="headerlink" title="GDB所有可用的命令行参数"></a>GDB所有可用的命令行参数</h1><p><strong>调试可执行程序</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb &lt;name-of-excutable&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>调试带有core文件的可执行程序</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb -e &lt;name-of-excutable&gt; -c &lt;name-of-core-file&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>调试进程</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gdb &lt;name-of-excutable&gt; --pid&#x3D;&lt;process-id&gt; # 或者 gdb &lt;name-of-excutable&gt; -p [pid]</span><br></pre></td></tr></table></figure>
+
+<p>可以使用<code>ps -auxw</code>来列出当前正在运行的进程，或者直接<code>pgrep &lt;进程名&gt;</code></p>
+<p><strong>调试多线程</strong><br><code>info threads</code> 显示当前可调试的所有线程，每个线程会有一个GDB为其分配的ID，后面操作线程的时候会用到这个ID。 前面有*的是当前调试的线程。</p>
+<p><code>thread ID</code> 切换当前调试的线程为指定ID的线程。</p>
+<p><code>break thread_test.c:123 thread all</code> 在所有线程中相应的行上设置断点</p>
+<p><code>thread apply ID1 ID2 command</code> 让一个或者多个线程执行GDB命令command。 </p>
+<p><code>thread apply all command</code> 让所有被调试线程执行GDB命令command。</p>
+<p><code>set scheduler-locking off|on|step</code> 估计是实际使用过多线程调试的人都可以发现，在使用step或者continue命令调试当前被调试线程的时候，<br>其他线程也是同时执行的，怎么只让被调试程序执行呢？通过这个命令就可以实现这个需求。off 不锁定任何线程，也就是所有线程都执行，这是默认值。 on 只有当前被调试程序会执行。 step 在单步的时候，除了next过一个函数的情况(熟悉情况的人可能知道，这其实是一个设置断点然后continue的行为)以外，只有当前线程会执行。</p>
+<p><strong>调试多进程</strong><br>使用gdb调试多进程时，如果想要在进程间进行切换，那么就需要在fork调用前设置： <code>set detach-on-fork off</code> ，然后使用 <code>info inferiors</code> 来查看进程信息，得到的信息可以看到最前面有一个进程编号，使用 <code>inferior num</code> 来进行进程切换。<br>那么为什么要使用 <code>set detache-on-fork off</code> 呢？它的意思是在调用fork后相关进程的运行行为是怎么样的，是<code>detache on/off</code> 也就是说分离出去独立运行，不受gdb控制还是不分离，被阻塞住。<br>这里还涉及到一个设置 <code>set follow-fork-mode [parents/child]</code> ,就是fork之后，gdb的控制落在谁身上，如果是父进程，那么分离的就是子进程，反之亦然。如果<code>detache-on-fork</code>被off了，那么未受控的那个进程就会被阻塞住，进程状态为T，即处于调试状态。 </p>
+
+      <p> GDB可选的命令行参数: (version 6. 老版本使用一个短划线 "-") </p>
+      <dl>
+        <dd>
+          <table border="1">
+
+            <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Option</th>
+                <th>Description</th>
+              </tr>
+
+              <tr>
+                <td valign="top">--help<br /> -h</td>
+                <td valign="top">List command line arguments</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--exec=<i>file-name</i><br /> -e <i>file-name</i></td>
+                <td valign="top">Identify executable associated with core file.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--core=<i>name-of-core-file</i><br /> -c <i>name-of-core-file</i></td>
+                <td valign="top">Specify core file.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--command=<i>command-file</i><br />
+-x <i>command-file</i></td>
+                <td valign="top">File listing GDB commands to perform. Good for automating set-up.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--directory=<i>directory</i><br />
+-d <i>directory</i></td>
+                <td valign="top">Add directory to the path to search for source files.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--cd=<i>directory</i></td>
+                <td valign="top">Run GDB using specified directory as the current working directory.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--nx<br />
+-n</td>
+                <td valign="top">Do not  execute  commands  from <tt>~/.gdbinit</tt> initialization file. 
+                Default is to look at this file and execute the list of commands.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--batch -x <i>command-file</i></td>
+                <td valign="top">Run in batch (not interactive) mode. Execute commands from file. Requires <tt>-x</tt> option.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--symbols=<i>file-name</i><br />
+-s <i>file-name</i></td>
+                <td valign="top">Read symbol table from file file.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--se=<i>file-name</i></td>
+                <td valign="top">Use FILE as symbol file and executable file.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--write</td>
+                <td valign="top">Enable writing into executable and core files.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--quiet<br />
+-q</td>
+                <td valign="top">Do not print the  introductory  and  copyright messages.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--tty=<i>device</i></td>
+                <td valign="top">Specify <i>device</i> for running program's standard input and output.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--tui</td>
+                <td valign="top">Use a terminal user interface. Console curses based GUI interface for GDB. Generates a source and debug console area.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--pid=<i>process-id</i><br /> -p <i>process-id</i></td>
+                <td valign="top">Specify process ID number to attach to.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">--version</td>
+                <td valign="top">Print version information and then exit.</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+        </dd>
+      </dl>
+
+
+<h1 id="GDB常用调试命令"><a href="#GDB常用调试命令" class="headerlink" title="GDB常用调试命令"></a>GDB常用调试命令</h1><p>GDB运行时在GDB内部使用的命令</p>
+<h2 id="帮助和查看信息命令"><a href="#帮助和查看信息命令" class="headerlink" title="帮助和查看信息命令"></a>帮助和查看信息命令</h2>
+          <table border="1">
+
+            <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Command</th>
+                <th>Description</th>
+              </tr>
+
+              <tr>
+                <td valign="top">help</td>
+                <td valign="top">List gdb command topics.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">help <i>topic-classes</i></td>
+                <td valign="top">List gdb command within class.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">help <i>command</i></td>
+                <td valign="top">Command description. <br/>eg <tt>help show</tt> to list the show commands</td>
+              </tr>
+
+              <tr>
+                <td valign="top">apropos <i>search-word</i></td>
+                <td valign="top">Search for commands and command topics containing <i>search-word</i>.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info args<br /> i args</td>
+                <td valign="top">List program command line arguments</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info breakpoints</td>
+                <td valign="top">List breakpoints</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info break</td>
+                <td valign="top">List breakpoint numbers.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info break <i>breakpoint-number</i></td>
+                <td valign="top">List info about specific breakpoint.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info watchpoints</td>
+                <td valign="top">List breakpoints</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info registers</td>
+                <td valign="top">List registers in use</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info threads</td>
+                <td valign="top">List threads in use</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info set</td>
+                <td valign="top">List set-able option</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="断点和监视命令"><a href="#断点和监视命令" class="headerlink" title="断点和监视命令"></a>断点和监视命令</h2>
+    <table>
+      <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Break and Watch </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">break <i>funtion-name</i><br />break <i>line-number</i><br /><tt>break <i>ClassName::functionName</i></tt></td>
+                <td valign="top">Suspend program at specified function of line number.</tt></td>
+              </tr>
+
+              <tr>
+                <td valign="top">break +<i>offset</i><br />
+break -<i>offset</i></td>
+                <td valign="top">Set a breakpoint specified number of lines forward or back from the position at which execution stopped.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">break <i>filename:function</i></td>
+                <td valign="top">Don't specify path, just the file name and function name.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">break <i>filename:line-number</i></td>
+                <td valign="top">Don't specify path, just the file name and line number.<br /><tt>break <i>Directory/Path/filename</i>.cpp:62</tt></td>
+              </tr>
+
+              <tr>
+                <td valign="top">break *<i>address</i></td>
+                <td valign="top">Suspend processing at an instruction address. Used when you do not have source.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">break <i>line-number</i> if <i>condition</i></td>
+                <td valign="top">Where condition is an expression. i.e. <tt>x &gt; 5</tt><br />
+Suspend when boolean expression is true.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">break <i>line</i> thread <i>thread-number</i></td>
+                <td valign="top">Break in thread at specified line number. Use <tt>info threads</tt> to display thread numbers.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">tbreak</td>
+                <td valign="top">Temporary break. Break once only. Break is then removed. See "break" above for options.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">watch <i>condition</i></td>
+                <td valign="top">Suspend processing when condition is met. i.e. <tt>x &gt; 5</tt></td>
+              </tr>
+
+              <tr>
+                <td valign="top">clear<br /> clear <i>function</i><br /> clear <i>line-number</i></td>
+                <td valign="top">Delete breakpoints as identified by command option.<br/>Delete all breakpoints in <i>function</i><br/>Delete breakpoints at a given line</td>
+              </tr>
+
+              <tr>
+                <td valign="top">delete<br />
+d</td>
+                <td valign="top">Delete all breakpoints, watchpoints, or catchpoints.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">delete <i>breakpoint-number</i><br />
+delete <i>range</i></td>
+                <td valign="top">Delete the breakpoints, watchpoints, or catchpoints of the breakpoint ranges specified as arguments.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">disable <i>breakpoint-number-or-range</i><br />
+enable <i>breakpoint-number-or-range</i></td>
+                <td valign="top">Does not delete breakpoints. Just enables/disables them.<br />
+Example:<br />
+Show breakpoints: <tt>info break</tt><br />
+Disable: <tt>disable 2-9</tt></td>
+              </tr>
+
+              <tr>
+                <td valign="top">enable <i>breakpoint-number</i> once</td>
+                <td valign="top">Enables once</td>
+              </tr>
+
+              <tr>
+                <td valign="top">continue<br />
+c</td>
+                <td valign="top">Continue executing until next break point/watchpoint.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">continue <i>number</i></td>
+                <td valign="top">Continue but ignore current breakpoint <i>number</i> times. 
+                Usefull for breakpoints within a loop.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">finish</td>
+                <td valign="top">Continue to end of function.</td>
+		</tr>
+		</tbody>
+          </table>
+
+
+
+<h2 id="单步执行相关命令"><a href="#单步执行相关命令" class="headerlink" title="单步执行相关命令"></a>单步执行相关命令</h2>
+          <table>
+            <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Line Execution </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">step<br />
+s<br />
+step <i>number-of-steps-to-perform</i></td>
+                <td valign="top">Step to next line of code. Will step into a function.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">next<br />
+n<br />
+next <i>number</i></td>
+                <td valign="top">Execute next line of code. Will not enter functions. </td>
+              </tr>
+
+              <tr>
+                <td valign="top">until<br />
+until <i>line-number</i></td>
+                <td valign="top">Continue processing until you reach a
+specified line number. 
+                Also: function name, address, filename:function or filename:line-number.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info signals<br />
+info handle<br />
+handle <i>SIGNAL-NAME</i> <i>option</i></td>
+                <td valign="top">Perform the following option when signal recieved: nostop, stop, print, noprint, pass/noignore or nopass/ignore</td>
+              </tr>
+
+              <tr>
+                <td valign="top">where</td>
+                <td valign="top">Shows current line number and which function you are in.</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="查看堆栈信息命令"><a href="#查看堆栈信息命令" class="headerlink" title="查看堆栈信息命令"></a>查看堆栈信息命令</h2>
+          <table>
+            <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Stack </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">backtrace<br />
+bt<br />
+bt <i>inner-function-nesting-depth</i><br />
+bt -<i>outer-function-nesting-depth</i></td>
+                <td valign="top">Show trace of where you are currently. Which functions you are in. Prints stack backtrace.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">backtrace full</td>
+                <td valign="top">Print values of local variables.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">frame<br/>frame <i>number</i><br />
+f <i>number</i></td>
+                <td valign="top">Show current stack frame (function where you are stopped)<br/>Select frame number. (can also user up/down to navigate frames)</td>
+              </tr>
+
+              <tr>
+                <td valign="top">up<br/>down<br/>up <i>number</i><br />
+down <i>number</i></td>
+                <td valign="top">Move up a single frame (element in the call stack)<br/>Move down a single frame<br/>Move up/down the specified number of frames in the stack.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info frame</td>
+                <td valign="top">List address, language, address of arguments/local variables and which registers were saved in frame.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">info args<br />
+info locals<br />
+info catch</td>
+                <td valign="top">Info arguments of selected frame, local variables and exception handlers.</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="查看源代码相关信息命令"><a href="#查看源代码相关信息命令" class="headerlink" title="查看源代码相关信息命令"></a>查看源代码相关信息命令</h2>
+          <table>
+            <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Source Code </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">
+list<br />
+l<br />
+list <i>line-number</i><br />
+list <i>function</i><br />
+list -<br />
+list <i>start#,end#</i><br />
+list <i>filename:function</i></td>
+                <td valign="top">List source code.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">set listsize <i>count</i><br />
+show listsize</td>
+                <td valign="top">Number of lines listed when <tt>list command given.</tt></td>
+              </tr>
+
+              <tr>
+                <td valign="top">directory <i>directory-name</i><br />
+dir <i>directory-name</i><br />
+show directories</td>
+                <td valign="top">Add specified directory to front of source code path.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">directory</td>
+                <td valign="top">Clear sourcepath when nothing specified.</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="查看机器代码相关命令"><a href="#查看机器代码相关命令" class="headerlink" title="查看机器代码相关命令"></a>查看机器代码相关命令</h2>
+          <table>
+            <tbody>
+ 
+
+              <tr bgcolor="#c0c0c0">
+                <th>Machine Language </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">info line<br/>info line <i>number</i></td>
+                <td valign="top">Displays the start and end position in object code for the current line in source.<br/>Display position in object code for a specified line in source.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">disassemble <i>0xstart 0xend</i></td>
+                <td valign="top">Displays machine code for positions in object code specified (can use start and end hex memory values given by the <tt>info line</tt> command.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">stepi<br /> si<br /> nexti<br /> ni</td>
+                <td valign="top">step/next assembly/processor instruction.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">x <i>0xaddress</i><br/>x/nfu <i>0xaddress</i></td>
+                <td valign="top">Examine the contents of memory.<br/>Examine the contents of memory and specify formatting.<ul><li>n: number of display items to print</li><li>f: specify the format for the output</li><li>u: specify the size of the data unit (eg. byte, word, ...)</li></ul>Example: <tt>x/4dw var</tt>
+</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="测试变量信息的相关命令"><a href="#测试变量信息的相关命令" class="headerlink" title="测试变量信息的相关命令"></a>测试变量信息的相关命令</h2>
+          <table>
+            <tbody>
+ 
+
+              <tr bgcolor="#c0c0c0">
+                <th>Examine Variables </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">print <i>variable-name</i><br />
+p <i>variable-name</i><br />
+p <i>file-name::variable-name</i><br />
+p '<i>file-name</i>'::<i>variable-name</i></td>
+                <td valign="top">Print value stored in variable.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p *<i>array-variable</i>@<i>length</i></td>
+                <td valign="top">Print first # values of array specified by <i>length</i>. Good for pointers to dynamicaly allocated memory.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/x <i>variable</i></td>
+                <td valign="top">Print as integer variable in hex.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/d <i>variable</i></td>
+                <td valign="top">Print variable as a signed integer.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/u <i>variable</i></td>
+                <td valign="top">Print variable as a un-signed integer.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/o <i>variable</i></td>
+                <td valign="top">Print variable as a octal.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/t <i>variable</i><br />
+x/b <i>address</i><br />
+x/b &amp;<i>variable</i></td>
+                <td valign="top">Print as integer value in binary. (1 byte/8bits)</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/c <i>variable</i></td>
+                <td valign="top">Print integer as character.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/f <i>variable</i></td>
+                <td valign="top">Print variable as floating point number.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">p/a <i>variable</i></td>
+                <td valign="top">Print as a hex address.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">x/w <i>address</i><br />
+x/4b &amp;<i>variable</i></td>
+                <td valign="top">Print binary representation of 4 bytes (1 32 bit word) of memory pointed to by address.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">ptype <i>variable</i><br />ptype <i>data-type</i></td>
+                <td valign="top">Prints type definition of the variable or declared variable type. Helpful for viewing class or struct definitions while debugging.</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="测试GDB模式的命令"><a href="#测试GDB模式的命令" class="headerlink" title="测试GDB模式的命令"></a>测试GDB模式的命令</h2>
+          <table>
+            <tbody>
+ 
+
+              <tr bgcolor="#c0c0c0">
+                <th>GDB Modes </th>
+                <th><br />
+                </th>
+              </tr>
+
+              <tr>
+                <td valign="top">set <i>gdb-option</i> <i>value</i></td>
+                <td valign="top">Set a GDB option</td>
+              </tr>
+
+              <tr>
+                <td valign="top">set logging on<br />
+set logging off<br />
+show logging<br />
+set logging file <i>log-file</i></td>
+                <td valign="top">Turn on/off logging. Default name of file is <tt>gdb.txt</tt></td>
+              </tr>
+
+              <tr>
+                <td valign="top">set print array on<br />
+set print array off<br />
+show print array</td>
+                <td valign="top">Default is off. Convient readable format for arrays turned on/off.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">set print array-indexes on<br />
+set print array-indexes off<br />
+show print array-indexes</td>
+                <td valign="top">Default off. Print index of array elements.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">set print pretty on<br />
+set print pretty off<br />
+show print pretty</td>
+                <td valign="top">Format printing of C structures.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">set print union on<br />
+set print union off<br />
+show print union</td>
+                <td valign="top">Default is on. Print C unions.</td>
+              </tr>
+
+              <tr>
+                <td valign="top">set print demangle on<br />
+set print demangle off<br />
+show print demangle</td>
+                <td valign="top">Default on. Controls printing of C++ names.</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+
+<h2 id="启动和停止的相关命令"><a href="#启动和停止的相关命令" class="headerlink" title="启动和停止的相关命令"></a>启动和停止的相关命令</h2>
+          <table>
+            <tbody>
+              <tr bgcolor="#c0c0c0">
+                <th>Start and Stop </th>
+                <th><br />
+                </th>
+              </tr>
+
+<tr>
+<td valign="top">
+run<br />
+r<br />
+run <i>command-line-arguments</i><br />
+run &lt; <i>infile</i> &gt; <i>outfile</i></td>
+<td valign="top">Start program execution from the beginning of the program. 
+The command <tt>break main</tt> will get you started. Also allows basic I/O redirection.</td>
+</tr>
+
+<tr>
+<td valign="top">continue<br />c</td>
+<td valign="top">Continue execution to next break point.</td>
+</tr>
+
+<tr>
+<td valign="top">kill</td>
+<td valign="top">Stop program execution.</td>
+</tr>
+
+              <tr>
+                <td valign="top">quit<br />
+q</td>
+                <td valign="top">Exit GDB debugger.</td>
+              </tr>
+
+            </tbody>
+          </table>
+
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>主要参考资料：</p>
+<ol>
+<li><a href="http://www.yolinux.com/TUTORIALS/GDB-Commands.html" target="_blank" rel="noopener">GNU GDB Debugger Command Cheat Sheet</a></li>
+<li><a href="http://wiki.ubuntu.org.cn/index.php?title=%E7%94%A8GDB%E8%B0%83%E8%AF%95%E7%A8%8B%E5%BA%8F&variant=zh-cn" target="_blank" rel="noopener">用GDB调试程序</a>  </li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+              <a href="/tags/gdb/" rel="tag"># gdb</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/03/15/array-pointer-function/" rel="prev" title="举例详解一维数组、二维数组与指针、函数的问题">
+      <i class="fa fa-chevron-left"></i> 举例详解一维数组、二维数组与指针、函数的问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/03/25/cpp-dynamic-memory/" rel="next" title="C++之动态内存管理">
+      C++之动态内存管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于"><span class="nav-number">1.</span> <span class="nav-text">关于</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GDB基本用法"><span class="nav-number">2.</span> <span class="nav-text">GDB基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GDB重要提示"><span class="nav-number">3.</span> <span class="nav-text">GDB重要提示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GDB传递命令行参数"><span class="nav-number">4.</span> <span class="nav-text">GDB传递命令行参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GDB所有可用的命令行参数"><span class="nav-number">5.</span> <span class="nav-text">GDB所有可用的命令行参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GDB常用调试命令"><span class="nav-number">6.</span> <span class="nav-text">GDB常用调试命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#帮助和查看信息命令"><span class="nav-number">6.1.</span> <span class="nav-text">帮助和查看信息命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#断点和监视命令"><span class="nav-number">6.2.</span> <span class="nav-text">断点和监视命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单步执行相关命令"><span class="nav-number">6.3.</span> <span class="nav-text">单步执行相关命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看堆栈信息命令"><span class="nav-number">6.4.</span> <span class="nav-text">查看堆栈信息命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看源代码相关信息命令"><span class="nav-number">6.5.</span> <span class="nav-text">查看源代码相关信息命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看机器代码相关命令"><span class="nav-number">6.6.</span> <span class="nav-text">查看机器代码相关命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试变量信息的相关命令"><span class="nav-number">6.7.</span> <span class="nav-text">测试变量信息的相关命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试GDB模式的命令"><span class="nav-number">6.8.</span> <span class="nav-text">测试GDB模式的命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动和停止的相关命令"><span class="nav-number">6.9.</span> <span class="nav-text">启动和停止的相关命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/03/19/gdb/";
+    this.page.identifier = "2016/03/19/gdb/";
+    this.page.title = "GDB调试详解";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

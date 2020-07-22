@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里正则表达式学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux实用工具总结之grep">
+<meta property="og:url" content="http://notes.maxwi.com/2016/02/22/linux-command-tools-grep/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里正则表达式学习笔记">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-02-22T01:34:02.000Z">
+<meta property="article:modified_time" content="2017-12-26T14:44:01.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="grep">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/02/22/linux-command-tools-grep/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux实用工具总结之grep | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/02/22/linux-command-tools-grep/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux实用工具总结之grep
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-02-22 09:34:02" itemprop="dateCreated datePublished" datetime="2016-02-22T09:34:02+08:00">2016-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-26 22:44:01" itemprop="dateModified" datetime="2017-12-26T22:44:01+08:00">2017-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/02/22/linux-command-tools-grep/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/22/linux-command-tools-grep/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里<a href="http://notes.maxwi.com/2015/10/04/Regular-Expression-Study-Note/">正则表达式学习笔记</a>   </p>
+<a id="more"></a>
+
+<h2 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h2><p>grep的作用就是根据模式（可以是正则表达式或字符串）打印匹配到的内容到标准输出，即可以对管道输出的内容进行匹配，也可以对文件或文件下的文件进行匹配。如果不使用-P指定正则表达式语法兼容Perl，则默认使用-G参数，指定为基本正则表达式<br>用法（来自于man手册）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep [OPTIONS] PATTERN [FILE...]</span><br><span class="line">grep [OPTIONS] [-e PATTERN | -f FILE] [FILE...]</span><br></pre></td></tr></table></figure>
+<p>OPEIONS的可选项有很多，比较常见的有（加粗表示很实用）：</p>
+<h2 id="匹配模式选择"><a href="#匹配模式选择" class="headerlink" title="匹配模式选择"></a>匹配模式选择</h2><p> -E, –extended-regexp     扩展正则表达式egrep<br> -F, –fixed-strings       一个换行符分隔的字符串的集合fgrep<br> -G, –basic-regexp        基本正则<br> -P, –perl-regexp         调用的perl正则<br> -e, –regexp=PATTERN      后面根正则模式，默认就是这个选项<br> -f, –file=FILE           从文件中获得匹配模式<br><strong>-i, –ignore-case         不区分大小写</strong><br><strong>-w, –word-regexp         匹配整个单词</strong><br><strong>-x, –line-regexp         匹配整行</strong><br> -z, –null-data           a data line ends in 0 byte, not newline  </p>
+<p>杂项:<br> -s, –no-messages         不显示错误信息<br><strong>-v, –invert-match        显示不匹配的行</strong><br> -V, –version             显示版本号<br> –help                    显示帮助信息<br> –mmap                use memory-mapped input if possible  </p>
+<h2 id="输出控制"><a href="#输出控制" class="headerlink" title="输出控制"></a>输出控制</h2><p> -m, –max-count=NUM       显示每一个文件中匹配到的最大次数<br> -b, –byte-offset         打印匹配行前面打印该行所在的块号码。<br><strong>-n, –line-number         显示的加上匹配所在的行号</strong><br> –line-buffered           刷新输出每一行<br> -H, –with-filename       当搜索多个文件时，显示匹配文件名前缀<br> -h, –no-filename         当搜索多个文件时，不显示匹配文件名前缀<br> –label=LABEL            print LABEL as filename for standard input<br><strong>-o, –only-matching       只显示匹配成功的内容，而不是整行。当某个匹配在一行中多次出现，每一个都单独显示一次（与-c配合可以输出某个串一共出现了多少次）</strong><br><strong>-q, –quiet, –silent     不显示任何东西，但可以用于检查grep的退出状态（0为匹配成功）</strong><br> –binary-files=TYPE   assume that binary files are TYPE TYPE is ‘binary’, ‘text’, or ‘without-match’<br> -a, –text                匹配二进制的东西<br> -I                        不匹配二进制的东西<br> -d, –directories=ACTION  目录操作，读取，递归，跳过<br> ACTION is ‘read’, ‘recurse’, or ‘skip’<br> -D, –devices=ACTION      设置对设备，FIFO,管道的操作，读取，跳过<br>      ACTION is ‘read’ or ‘skip’<br><strong>-R, -r, –recursive       递归调用</strong><br>其中-R会递归符号链接目录，-r只递归当前真实目录，而忽略链接目录<br> –include=PATTERN     files that match PATTERN will be examined<br> –exclude=PATTERN     files that match PATTERN will be skipped.<br> –exclude-from=FILE   files that match PATTERN in FILE will be skipped.<br> -L, –files-without-match 匹配多个文件时，显示不匹配的文件名<br><strong>-l, –files-with-matches  匹配多个文件时，显示匹配的文件名</strong><br><strong>-c, –count               显示匹配了多少次</strong><br> -Z, –null                print 0 byte after FILE name  </p>
+<p>文件控制:<br> -B, –before-context=NUM  打印匹配本身以及前面的几个行由NUM控制<br> -A, –after-context=NUM   打印匹配本身以及随后的几个行由NUM控制<br><strong>-C, –context=NUM         打印匹配本身以及随后，前面的几个行由NUM控制</strong><br><strong>-NUM                      根-C的用法一样的</strong><br> –color[=WHEN],<br> –colour[=WHEN]       use markers to distinguish the matching string<br> WHEN may be <code>always</code>, <code>never</code> or <code>auto</code>.<br> -U, –binary              do not strip CR characters at EOL (MSDOS)<br> -u, –unix-byte-offsets   report offsets as if CRs were not there (MSDOS) </p>
+<h2 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h2><p>1.查看grep的man手册中-A参数的作用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">man grep | grep '^\s*\-A' -A 3</span><br></pre></td></tr></table></figure>
+<p>首先man手册，然后通过管道使用grep查询以-A开头的行，并通过-A参数，指定输出匹配行及其后3行。结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-A NUM, --after-context&#x3D;NUM</span><br><span class="line">      Print NUM lines of trailing context after matching lines.  Places a line containing</span><br><span class="line">      a group separator (--) between contiguous  groups  of  matches.   With  the  -o  or</span><br><span class="line">      --only-matching option, this has no effect and a warning is given.</span><br></pre></td></tr></table></figure>
+
+<p>2.查看系统头文件中固定大小的整型是不是通过typedef进行定义的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -ni 'typedef\s\+.*\s\+uint[[:digit:]]*_t' /usr/include/*.h</span><br></pre></td></tr></table></figure>
+<p>使用-n参数显示行号，-i参数忽略大小写，注意正则表达式中匹配一个或多个的+号在这里需要进行转义，否则表示正常匹配+号。\d不能用于匹配数字，需要使用posix的正则表示法，而且方括号还必须是双方括号。最后的文件名，可以使用通配符。<br>注意上述语句等价于使用-P参数指定为Perl正则语法的语句：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -niP 'typedef\s+.*\s+uint\d*_t' /usr/include/*.h</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/usr/include/stdint.h:<span class="number">48</span>:<span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span>      <span class="keyword">uint8_t</span>;</span><br><span class="line">/usr/include/stdint.h:<span class="number">49</span>:<span class="keyword">typedef</span> <span class="keyword">unsigned</span> short <span class="keyword">int</span> <span class="keyword">uint16_t</span>;</span><br><span class="line">/usr/include/stdint.h:<span class="number">51</span>:<span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span>       <span class="keyword">uint32_t</span>;</span><br><span class="line">/usr/include/stdint.h:<span class="number">55</span>:<span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span>  <span class="keyword">uint64_t</span>;</span><br><span class="line">/usr/include/stdint.h:<span class="number">58</span>:<span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">uint64_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>3.递归匹配头文件中含有单个字符串grep的文件，并显示文件名和行号：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -rniw 'grep' /usr/include/</span><br></pre></td></tr></table></figure>
+<p>使用-r参数，递归匹配，-w进行整词匹配</p>
+<p>更多内容可以参见man手册<br><strong>GNU的grep手册：</strong> <a href="https://www.gnu.org/software/grep/manual/grep.html" target="_blank" rel="noopener">https://www.gnu.org/software/grep/manual/grep.html</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/grep/" rel="tag"># grep</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/02/19/linux-command-tools-sed/" rel="prev" title="Linux实用工具总结之sed">
+      <i class="fa fa-chevron-left"></i> Linux实用工具总结之sed
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/02/24/linux-command-tools-awk/" rel="next" title="Linux实用工具总结之awk">
+      Linux实用工具总结之awk <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于"><span class="nav-number">1.</span> <span class="nav-text">关于</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匹配模式选择"><span class="nav-number">2.</span> <span class="nav-text">匹配模式选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出控制"><span class="nav-number">3.</span> <span class="nav-text">输出控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实例分析"><span class="nav-number">4.</span> <span class="nav-text">实例分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/02/22/linux-command-tools-grep/";
+    this.page.identifier = "2016/02/22/linux-command-tools-grep/";
+    this.page.title = "Linux实用工具总结之grep";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

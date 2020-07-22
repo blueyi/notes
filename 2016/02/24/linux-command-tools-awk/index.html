@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里正则表达式学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux实用工具总结之awk">
+<meta property="og:url" content="http://notes.maxwi.com/2016/02/24/linux-command-tools-awk/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里正则表达式学习笔记">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-02-24T01:34:02.000Z">
+<meta property="article:modified_time" content="2017-12-26T14:44:15.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="awk">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/02/24/linux-command-tools-awk/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux实用工具总结之awk | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/02/24/linux-command-tools-awk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux实用工具总结之awk
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-02-24 09:34:02" itemprop="dateCreated datePublished" datetime="2016-02-24T09:34:02+08:00">2016-02-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-26 22:44:15" itemprop="dateModified" datetime="2017-12-26T22:44:15+08:00">2017-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/02/24/linux-command-tools-awk/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/24/linux-command-tools-awk/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里<a href="http://notes.maxwi.com/2015/10/04/Regular-Expression-Study-Note/">正则表达式学习笔记</a>   </p>
+<a id="more"></a>
+
+<h2 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h2><p>awk其实并不算一个工具，相当于是一个脚本语言，awk就是这个脚本语言的解释器，这是GNU手册中的定义：<code>pattern scanning and processing language</code>。本文就把它当成一个简单的文本流处理工具来用，虽然我们有了sed，但sed在处理一行中的各列（某种分隔符进行分隔的字符串）时远没有awk功能强大。awk也是以某种模式一行行地处理各列，但对于各列中的内容可以非常精确化地处理。awk会将所处理行中的各列分别赋给$1..$n，$0表示当前一整行。<br>awk的用法为：<code>awk [可选项] &#39;脚本&#39; [INPUTFILES]</code>，或者处理awk脚本文件：<code>awk [可选项] -f SCRIPTFILE [INPUTFILES]</code>，当然awk也可以直接用于处理管道传递来的文本流<br>下面分别说一下这几部分：</p>
+<h2 id="可选项"><a href="#可选项" class="headerlink" title="可选项"></a>可选项</h2><p>awk的可选项非常多，这里只说几个常用的</p>
+<ul>
+<li>-F[fs] 指定列项分隔符fs，fs可以是一个字符串或者表达式，如-F:表示以:分隔的各列，默认情况下分隔符是空格或tab</li>
+<li>-f SCRIPTFILE  从脚本文件中读取awk命令</li>
+<li>-v var=value 自定义一个变量并赋值</li>
+</ul>
+<h2 id="脚本语句"><a href="#脚本语句" class="headerlink" title="脚本语句"></a>脚本语句</h2><p>awk的脚本语句格式通常为：<code>&#39;[条件判断1][命令1] [条件判断2][命令2]...&#39;</code><br>脚本需要被放在单引号中，条件类型和命令都是可选的，当只有条件判断而没有命令时，则会输出符合条件的整行。当然如果只有命令而没有条件判断时，则对每一行按命令处理。命令及命令参数需要使用一对大括号括起来，最常用的命令就是print和printf，这两个命令其实都是linux内建的命令，prinf用于输出变量，类似与echo，默认在结尾输出换行。printf类似于C语言中的格式化输出函数printf，可以根据格式化输出参数来格式化输出，默认没有换行，所以如果需要换行就需要使用\n，不需要使用小括号，直接将需要。<br>先来举几个个简单的例子：<br>此处都是/etc/passwd文件为例<br><em>输出/etc/passwd中的第三列小于10的行：</em><br><code>awk -F: &#39;$3&lt;10&#39; /etc/passwd</code><br>这里我们通过-F指定分隔符为:，因为/etc/passwd中的各行包含的内容都以:分隔，然后使用$3取第3列与数字10进行比较</p>
+<p><em>输出passwd中各行第1列与第3列的内容：</em><br><code>awk -F: &#39;{print $1,$3}&#39; /etc/passwd</code><br>这里print后面跟的变量以逗号（,）分隔，默认输出结果以空格分隔，如果想要以其他方式分隔中间直接插入双引号引入的字符串即可，例如输出结果以-&gt;分隔：<code>print $1&quot;-&gt;&quot;$3</code>，不分隔：<code>print $1$3</code></p>
+<p><em>将第一列与第3列使用-&gt;连接并将第3列以16进制输出：</em><br><code>awk -F: &#39;{printf &quot;%s-&gt;%x\n&quot;, $1,$3}&#39; /etc/passwd</code></p>
+<h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><p>awk通过条件判断部分的语句来过滤需要对哪些行应用后面紧跟着的命令。由于awk是编程语言，自然会包含很多运行算及逻辑运算符，这里一一列出，常用的其实也就进行比较的关系运行符及逻辑判断运算符，当然awk中也支持if..else..if及for循环。下面列出运行算符：</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>= += -= <em>= /= %= ^= *</em>=</td>
+<td>赋值</td>
+</tr>
+<tr>
+<td>?:</td>
+<td>C条件表达式</td>
+</tr>
+<tr>
+<td>两个竖扛</td>
+<td>逻辑或</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>逻辑与</td>
+</tr>
+<tr>
+<td>~ ~!</td>
+<td>匹配正则表达式和不匹配正则表达式</td>
+</tr>
+<tr>
+<td>&lt; &lt;= &gt; &gt;= != ==</td>
+<td>关系运算符</td>
+</tr>
+<tr>
+<td>空格</td>
+<td>连接</td>
+</tr>
+<tr>
+<td>+ -</td>
+<td>加，减</td>
+</tr>
+<tr>
+<td>* / &amp;</td>
+<td>乘，除与求余</td>
+</tr>
+<tr>
+<td>+ - !</td>
+<td>一元加，减和逻辑非</td>
+</tr>
+<tr>
+<td>^ ***</td>
+<td>求幂</td>
+</tr>
+<tr>
+<td>++ –</td>
+<td>增加或减少，作为前缀或后缀</td>
+</tr>
+<tr>
+<td>$</td>
+<td>字段引用</td>
+</tr>
+<tr>
+<td>in</td>
+<td>数组成员</td>
+</tr>
+</tbody></table>
+<p>条件判断需要放在执行语句之前<br>下面举几个例子说明：<br><em>打印出第3列小于10的行中的第1列跟第3列，并用tab分隔：</em><br><code>awk -F: &#39;$3&lt;10{print $1&quot;\t&quot;$3}&#39; /etc/passwd</code></p>
+<p><em>打印出第1列不是root，并且第3列小于10的行中的第1列跟第3列：</em><br><code>awk -F: &#39;$3&lt;10 &amp;&amp; $1!=&quot;root&quot; {print $1&quot;\t&quot;$3}&#39; /etc/passwd</code></p>
+<p><em>类似上面的打印，但每行后面紧接着打印该行的第1跟第6列：</em><br><code>awk -F: &#39;$3&lt;10 &amp;&amp; $1!=&quot;root&quot; {print $1&quot;\t&quot;$3} {print $1,$6}&#39; /etc/passwd</code></p>
+<p>条件判断与内建变量配合使用才能更加灵活</p>
+<h3 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h3><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$n</td>
+<td>当前记录的第n个字段，字段间由FS分隔</td>
+</tr>
+<tr>
+<td>$0</td>
+<td>完整的输入记录</td>
+</tr>
+<tr>
+<td>ARGC</td>
+<td>命令行参数的数目</td>
+</tr>
+<tr>
+<td>ARGIND</td>
+<td>命令行中当前文件的位置(从0开始算)</td>
+</tr>
+<tr>
+<td>ARGV</td>
+<td>包含命令行参数的数组</td>
+</tr>
+<tr>
+<td>CONVFMT</td>
+<td>数字转换格式(默认值为%.6g)ENVIRON环境变量关联数组</td>
+</tr>
+<tr>
+<td>ERRNO</td>
+<td>最后一个系统错误的描述</td>
+</tr>
+<tr>
+<td>FIELDWIDTHS</td>
+<td>字段宽度列表(用空格键分隔)</td>
+</tr>
+<tr>
+<td>FILENAME</td>
+<td>当前文件名</td>
+</tr>
+<tr>
+<td>FNR</td>
+<td>同NR，但相对于当前文件</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>字段分隔符(默认是任何空格)</td>
+</tr>
+<tr>
+<td>IGNORECASE</td>
+<td>如果为真，则进行忽略大小写的匹配</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>当前记录中的字段数</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>当前记录数</td>
+</tr>
+<tr>
+<td>OFMT</td>
+<td>数字的输出格式(默认值是%.6g)</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>输出字段分隔符(默认值是一个空格)</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>输出记录分隔符(默认值是一个换行符)</td>
+</tr>
+<tr>
+<td>RLENGTH</td>
+<td>由match函数所匹配的字符串的长度</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>记录分隔符(默认是一个换行符)</td>
+</tr>
+<tr>
+<td>RSTART</td>
+<td>由match函数所匹配的字符串的第一个位置</td>
+</tr>
+<tr>
+<td>SUBSEP</td>
+<td>数组下标分隔符(默认值是/034)</td>
+</tr>
+</tbody></table>
+<p>其实常用的也就NF、NR、FS、FNR、OFS</p>
+<p>这里顺便加两个awk中非常常用的两个关键字BEGIN和END：</p>
+<ul>
+<li>BEGIN{ 这里面放的是执行前的语句 }</li>
+<li>END {这里面放的是处理完所有的行后要执行的语句 }</li>
+</ul>
+<p>下面举例说明：<br><em>输出从第二行开始的第1列及对应的行号，以及每行所具有的总列数：</em><br><code>awk -F: &#39;NR&gt;2 {print $1 &quot;\tline:&quot; NR&quot;\t&quot;NF}&#39; /etc/passwd</code><br>这句等价于：<br><code>awk &#39;BEGIN{FS=&quot;:&quot;} NR&gt;2 {print $1 &quot;\tline:&quot; NR&quot;\t&quot;NF}&#39; /etc/passwd</code><br>注意那里需要有个BEGIN，如果没有这句而是直接使用FS=”:”，输出结果中会有很多句都不正常，因为相当于在运行awk解析时，还没有设置分隔符，awk会直接采用默认的分隔符，显然会出错，加入BEGIN就是告诉awk这里面的语句需要在任何语句执行前先执行。<br>但使用-F可以与[]配合来指定多个分隔符，例如一行中即有以空格又有以:分隔，又有以,分隔，则可以使用-F’[ :,]’</p>
+<p><em>输出各行中第3列小于10的行中第1列跟第3列，并将第3列中的数字增加3倍：</em><br><code>k -v times=3 &#39;BEGIN{FS=&quot;:&quot;} $3&lt;10 {printf &quot;%-8s %d\n&quot;,$1,$3*times}&#39; /etc/passwd</code><br>等价于：<br><code>k &#39;BEGIN{FS=&quot;:&quot;; times=3} $3&lt;10 {printf &quot;%-8s %d\n&quot;,$1,$3*times}&#39; /etc/passwd</code></p>
+<p><em>输出$1,$2,$3并以-&gt;分隔：</em><br><code>awk &#39;BEGIN{FS=&quot;:&quot;} {print $1,$2,$3}&#39; OFS=&quot;-&gt;&quot; /etc/passwd</code><br>注意OFS在’’号的外面</p>
+<h3 id="使用正则"><a href="#使用正则" class="headerlink" title="使用正则"></a>使用正则</h3><p>awk中通过<code>~</code>表示模式开始，后面跟//包围的正则表达式：<br><em>输出第7列中含有usr并且第3列大于10的行的第1，3，7列：</em><br><code>awk -F: &#39;$7 ~/usr/ &amp;&amp; $3&gt;10 {print $1,$3,$7}&#39; OFS=&quot;\t&quot; /etc/passwd</code></p>
+<h3 id="awk脚本"><a href="#awk脚本" class="headerlink" title="awk脚本"></a>awk脚本</h3><p>awk脚本通常由以下3部分构成：</p>
+<ul>
+<li>BEGIN{ 这里面放的是执行前的语句 }</li>
+<li>END {这里面放的是处理完所有的行后要执行的语句 }</li>
+<li>{这里面放的是处理每一行时要执行的语句}</li>
+</ul>
+<p>下面这个例子来自于网上：<br>假如有以下表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat score.txt</span><br><span class="line">Marry   2143 78 84 77</span><br><span class="line">Jack    2321 66 78 45</span><br><span class="line">Tom     2122 48 77 71</span><br><span class="line">Mike    2537 87 97 95</span><br><span class="line">Bob     2415 40 57 62</span><br></pre></td></tr></table></figure>
+<p>统计所有人有总钱数，及平均情况的awk脚本：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/awk -f</span></span><br><span class="line"><span class="comment">#运行前</span></span><br><span class="line"><span class="keyword">BEGIN</span> &#123;</span><br><span class="line">    math = <span class="number">0</span></span><br><span class="line">    english = <span class="number">0</span></span><br><span class="line">    computer = <span class="number">0</span></span><br><span class="line"> </span><br><span class="line">    printf <span class="string">"NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL\n"</span></span><br><span class="line">    printf <span class="string">"---------------------------------------------\n"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#运行中</span></span><br><span class="line">&#123;</span><br><span class="line">    math+=<span class="variable">$3</span></span><br><span class="line">    english+=<span class="variable">$4</span></span><br><span class="line">    computer+=<span class="variable">$5</span></span><br><span class="line">    printf <span class="string">"%-6s %-6s %4d %8d %8d %8d\n"</span>, <span class="variable">$1</span>, <span class="variable">$2</span>, <span class="variable">$3</span>,<span class="variable">$4</span>,<span class="variable">$5</span>, <span class="variable">$3</span>+<span class="variable">$4</span>+<span class="variable">$5</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#运行后</span></span><br><span class="line"><span class="keyword">END</span> &#123;</span><br><span class="line">    printf <span class="string">"---------------------------------------------\n"</span></span><br><span class="line">    printf <span class="string">"  TOTAL:%10d %8d %8d \n"</span>, math, english, computer</span><br><span class="line">    printf <span class="string">"AVERAGE:%10.2f %8.2f %8.2f\n"</span>, math<span class="regexp">/NR, english/</span>NR, computer<span class="regexp">/NR</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">NAME    NO.   MATH  ENGLISH  COMPUTER   TOTAL</span><br><span class="line">---------------------------------------------</span><br><span class="line">Marry  2143     78       84       77      239</span><br><span class="line">Jack   2321     66       78       45      189</span><br><span class="line">Tom    2122     48       77       71      196</span><br><span class="line">Mike   2537     87       97       95      279</span><br><span class="line">Bob    2415     40       57       62      159</span><br><span class="line">---------------------------------------------</span><br><span class="line">  TOTAL:       319      393      350</span><br><span class="line">AVERAGE:     63.80    78.60    70.00</span><br></pre></td></tr></table></figure>
+
+<p>一个打印九九税法表的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">seq 9 | sed &#39;H;g&#39; | awk -v RS&#x3D;&#39;&#39; &#39;&#123;for(i&#x3D;1;i&lt;&#x3D;NF;i++)printf(&quot;%dx%d&#x3D;%d%s&quot;, i, NR, i*NR, i&#x3D;&#x3D;NR?&quot;\n&quot;:&quot;\t&quot;)&#125;&#39;</span><br></pre></td></tr></table></figure>
+
+<p>说实话，假如所处平台上有python，哪怕有C++可能我都会优先选择这些编程语言来处理那些非常复杂的处理，当然对于一些比较简单的情形，这些工具还是非常好用的。<br>awk的官方手册：<a href="http://www.gnu.org/software/gawk/manual/gawk.html" target="_blank" rel="noopener">http://www.gnu.org/software/gawk/manual/gawk.html</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/awk/" rel="tag"># awk</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/02/22/linux-command-tools-grep/" rel="prev" title="Linux实用工具总结之grep">
+      <i class="fa fa-chevron-left"></i> Linux实用工具总结之grep
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/02/26/linux-command-tools-cron/" rel="next" title="Linux实用工具总结之cron">
+      Linux实用工具总结之cron <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于"><span class="nav-number">1.</span> <span class="nav-text">关于</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可选项"><span class="nav-number">2.</span> <span class="nav-text">可选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本语句"><span class="nav-number">3.</span> <span class="nav-text">脚本语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件判断"><span class="nav-number">3.1.</span> <span class="nav-text">条件判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内建变量"><span class="nav-number">3.2.</span> <span class="nav-text">内建变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用正则"><span class="nav-number">3.3.</span> <span class="nav-text">使用正则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk脚本"><span class="nav-number">3.4.</span> <span class="nav-text">awk脚本</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/02/24/linux-command-tools-awk/";
+    this.page.identifier = "2016/02/24/linux-command-tools-awk/";
+    this.page.title = "Linux实用工具总结之awk";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

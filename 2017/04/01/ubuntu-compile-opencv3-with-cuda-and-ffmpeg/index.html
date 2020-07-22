@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Ubuntu 16.04下手动编译OpenCV 3.2.0，并提供对FFmpeg以及CUDA 8的支持来使用GPU加速视频图像处理。考虑到大数据处理系统spark的需要，这里也同时加入opencv对java的支持。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04下编译OpenCV 3.2.0支持Java、FFmpeg以及CUDA8">
+<meta property="og:url" content="http://notes.maxwi.com/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="Ubuntu 16.04下手动编译OpenCV 3.2.0，并提供对FFmpeg以及CUDA 8的支持来使用GPU加速视频图像处理。考虑到大数据处理系统spark的需要，这里也同时加入opencv对java的支持。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-04-01T00:41:59.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.391Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ffmpeg">
+<meta property="article:tag" content="OpenCV">
+<meta property="article:tag" content="Ubuntu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Ubuntu 16.04下编译OpenCV 3.2.0支持Java、FFmpeg以及CUDA8 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 16.04下编译OpenCV 3.2.0支持Java、FFmpeg以及CUDA8
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-04-01 08:41:59" itemprop="dateCreated datePublished" datetime="2017-04-01T08:41:59+08:00">2017-04-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenCV/" itemprop="url" rel="index"><span itemprop="name">OpenCV</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Ubuntu 16.04下手动编译OpenCV 3.2.0，并提供对FFmpeg以及CUDA 8的支持来使用GPU加速视频图像处理。<br>考虑到大数据处理系统spark的需要，这里也同时加入opencv对java的支持。</p>
+<a id="more"></a>
+<p>系统为ubuntu 16.04.1 x64服务器版的最小化系统，具体参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DISTRIB_ID&#x3D;Ubuntu</span><br><span class="line">DISTRIB_RELEASE&#x3D;16.04</span><br><span class="line">DISTRIB_CODENAME&#x3D;xenial</span><br><span class="line">DISTRIB_DESCRIPTION&#x3D;&quot;Ubuntu 16.04.1 LTS&quot;</span><br></pre></td></tr></table></figure>
+<p>假定已经安装好了CUDA 8，如果还没有安装CUDA 8环境可以参考这里安装<a href="/2017/02/26/ubuntu-cuda8-env-set/" title="Ubuntu 16.04下CUDA8环境配置的2种方法">Ubuntu 16.04下CUDA8环境配置的2种方法</a><br>也需要提前安装好FFmpeg并将其二进制放到环境变量中，如果还没有编译安装好FFmpeg对GPU解码的支持，可以参考这里<a href="/2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/" title="Ubuntu 16.04下编译ffmpeg支持CUDA下的cuvid vnenc和NPP">Ubuntu 16.04下编译ffmpeg支持CUDA下的cuvid vnenc和NPP</a> </p>
+<p>还有Java环境也需要提前安装好，如果还没有安装，可以参考<a href="/2016/10/01/java-env-set/" title="ubuntu下2种配置oracle jdk的方法">ubuntu下2种配置oracle jdk的方法</a></p>
+<h1 id="安装OpenCV依赖包"><a href="#安装OpenCV依赖包" class="headerlink" title="安装OpenCV依赖包"></a>安装OpenCV依赖包</h1><p>官方要求的必装包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev</span><br></pre></td></tr></table></figure>
+<p>上面的git如果采用zip方式安装可以不需要，但如果是通过zip方式安装则需要安装上unzip用于解压</p>
+<p>官方推荐的可选包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install  python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev</span><br></pre></td></tr></table></figure>
+<p>添加对OpenGL的支持所需要的包：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install freeglut3-dev mesa-common-dev  libgtkglext1 libgtkglext1-dev</span><br></pre></td></tr></table></figure>
+
+<p>添加对Java的支持需要ant：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ant</span><br></pre></td></tr></table></figure>
+
+<p>其他一些推荐包，包括视频编解码所需要的开发包等：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install checkinstall yasm libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libv4l-dev libtbb-dev libqt4-dev libgtk2.0-dev libmp3lame-dev libtheora-dev libvorbis-dev libxvidcore-dev x264 v4l-utils</span><br></pre></td></tr></table></figure>
+<p>我这里把这些包全部安装上</p>
+<h1 id="验证OpenGL的配置"><a href="#验证OpenGL的配置" class="headerlink" title="验证OpenGL的配置"></a>验证OpenGL的配置</h1><p>如果不需要OpenGL可以跳过此步<br>保存如下代码，并命名为testgl.c：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;GL/glut.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Drawing funciton</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//Background color</span></span><br><span class="line">  glClearColor(<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>);</span><br><span class="line">  glClear(GL_COLOR_BUFFER_BIT );</span><br><span class="line">  <span class="comment">//Draw order</span></span><br><span class="line">  glFlush();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Main program</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  glutInit(&amp;argc, argv);</span><br><span class="line">  <span class="comment">//Simple buffer</span></span><br><span class="line">  glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB );</span><br><span class="line">  glutInitWindowPosition(<span class="number">50</span>,<span class="number">25</span>);</span><br><span class="line">  glutInitWindowSize(<span class="number">500</span>,<span class="number">250</span>);</span><br><span class="line">  glutCreateWindow(<span class="string">"Green window"</span>);</span><br><span class="line">  <span class="comment">//Call to the drawing function</span></span><br><span class="line">  glutDisplayFunc(draw);</span><br><span class="line">  glutMainLoop();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc testgl.c -o testgl -lGL -lGLU -lglut</span><br></pre></td></tr></table></figure>
+<p>如果编译通过，则表示OpenGl安装成功，运行的话需要有桌面环境，可以通过如下代码为服务器系统安装桌面环境用于测试：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install ubuntu-desktop</span><br></pre></td></tr></table></figure>
+<p>如果需要远程通过VNC在windows上连接ubuntu，可以打开ubuntu上的vino，也就是那个desktop sharing，设置允许远程连接，再在命令行中执行以下语句即可（这些操作要求ubuntu有桌面环境）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gsettings set org.gnome.Vino require-encryption false</span><br></pre></td></tr></table></figure>
+
+<p><strong>实际测试代码性能时，为了避免由于桌面占用GPU/CPU影响系统性能，可能使用以下命令禁用桌面</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl disable lightdm</span><br><span class="line">sudo systemctl stop lightdm</span><br></pre></td></tr></table></figure>
+<p>第一条命令会让你重启后依然无法进入桌面</p>
+<p>需要启用桌面时使用以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable lightdm</span><br><span class="line">sudo systemctl start lightdm</span><br></pre></td></tr></table></figure>
+
+<h1 id="编译OpenCV"><a href="#编译OpenCV" class="headerlink" title="编译OpenCV"></a>编译OpenCV</h1><p>下载OpenCV，可以通过git获取官方最新的版本，然后切换到自己所需要的3.2.0进行编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/opencv/opencv.git </span><br><span class="line">cd opencv</span><br><span class="line">git checkout 3.2.0</span><br></pre></td></tr></table></figure>
+
+<p>这里同时安装<code>OpenCV&#39;s extra modules</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/opencv/opencv_contrib.git</span><br><span class="line">cd opencv_contrib</span><br><span class="line">git checkout 3.2.0</span><br></pre></td></tr></table></figure>
+
+<p>为了方便后面验证时的测试，安装OpenCV官方提供的附加测试代码（<code>extra data for the OpenCV library</code>）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/opencv/opencv_extra.git</span><br><span class="line">cd opencv_extra</span><br><span class="line">git checkout 3.2.0</span><br></pre></td></tr></table></figure>
+
+<p>进入opencv根目录，创建一个build文件夹，然后进入build文件后执行以下编译代码，注意编译选项上包含了CUDA的支持，NVCUVID的支持，OpenGL的支持，以及对ffmpeg和java的支持，这些内容都需要提前配置好。</p>
+<p><strong>由于编译时的第三方库需要在线下载，而且服务器貌似是AWS，所以如果不配置代理，可能会cmake失败。设置代理可以参见：<a href="http://notes.maxwi.com/2017/04/01/linux-proxy-ss">http://notes.maxwi.com/2017/04/01/linux-proxy-ss</a></strong></p>
+<p>cmake选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">cmake \</span><br><span class="line">    -D CMAKE_BUILD_TYPE&#x3D;RELEASE \</span><br><span class="line">    -D CMAKE_INSTALL_PREFIX&#x3D;&#x2F;usr&#x2F;local \</span><br><span class="line">    -D OPENCV_EXTRA_MODULES_PATH&#x3D;..&#x2F;..&#x2F;opencv_contrib&#x2F;modules \</span><br><span class="line">    -D OPENCV_TEST_DATA_PATH&#x3D;..&#x2F;..&#x2F;opencv_extra \</span><br><span class="line">    -D WITH_CUDA&#x3D;ON \</span><br><span class="line">    -D WITH_CUBLAS&#x3D;ON \</span><br><span class="line">    -D CUDA_FAST_MATH&#x3D;ON \</span><br><span class="line">    -D WITH_CUFFT&#x3D;ON \</span><br><span class="line">    -D WITH_NVCUVID&#x3D;ON \</span><br><span class="line">    -D WITH_V4L&#x3D;ON \</span><br><span class="line">    -D WITH_LIBV4L&#x3D;ON \</span><br><span class="line">    -D WITH_OPENGL&#x3D;ON \</span><br><span class="line">    -D WITH_FFMPEG&#x3D;ON \</span><br><span class="line">    -D INSTALL_C_EXAMPLES&#x3D;ON \</span><br><span class="line">    -D BUILD_EXAMPLES&#x3D;ON \</span><br><span class="line">    -D BUILD_SHARED_LIBS&#x3D;OFF \</span><br><span class="line">    ..</span><br></pre></td></tr></table></figure>
+<p>更多cmake选项可以查看OpenCV源码目录下的CMakeLists.txt文件内容。<br>默认你的opencv_contrib目录与opencv根目录同级，指定的OpenCV安装路径为<code>/usr/local/share/OpenCV/</code><br>如果你之前的CUDA、支持CUDA, NVCUVID, NVENC的FFmpeg、JAVA以及opengl编译安装的都没有问题的话，cmake输出的最后一部分内容应该如下，<em>注意java显示在OpenCV modules中</em>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">--   OpenCV modules:</span><br><span class="line">--     To be built:                 cudev core cudaarithm flann imgproc ml reg surface_matching video cudabgsegm cudafilters cudaimgproc cudawarping dnn freetype fuzzy imgcodecs photo shape videoio cudacodec highgui objdetect plot ts xobjdetect xphoto bgsegm bioinspired dpm face features2d line_descriptor saliency text calib3d ccalib cudafeatures2d cudalegacy cudaobjdetect cudaoptflow cudastereo datasets rgbd stereo superres tracking videostab xfeatures2d ximgproc aruco optflow phase_unwrapping stitching structured_light java python2</span><br><span class="line">--     Disabled:                    world contrib_world</span><br><span class="line">--     Disabled by dependency:      -</span><br><span class="line">--     Unavailable:                 python3 viz cnn_3dobj cvv hdf matlab sfm</span><br><span class="line">-- </span><br><span class="line">--   GUI: </span><br><span class="line">--     QT:                          NO</span><br><span class="line">--     GTK+ 2.x:                    YES (ver 2.24.30)</span><br><span class="line">--     GThread :                    YES (ver 2.48.2)</span><br><span class="line">--     GtkGlExt:                    YES (ver 1.2.0)</span><br><span class="line">--     OpenGL support:              YES (/usr/lib/x86_64-linux-gnu/libGLU.so /usr/lib/x86_64-linux-gnu/libGL.so)</span><br><span class="line">--     VTK support:                 NO</span><br><span class="line">-- </span><br><span class="line">--   Media I/O: </span><br><span class="line">--     ZLib:                        /usr/lib/x86_64-linux-gnu/libz.so (ver 1.2.8)</span><br><span class="line">--     JPEG:                        /usr/lib/x86_64-linux-gnu/libjpeg.so (ver )</span><br><span class="line">--     WEBP:                        build (ver 0.3.1)</span><br><span class="line">--     PNG:                         /usr/lib/x86_64-linux-gnu/libpng.so (ver 1.2.54)</span><br><span class="line">--     TIFF:                        /usr/lib/x86_64-linux-gnu/libtiff.so (ver 42 - 4.0.6)</span><br><span class="line">--     JPEG 2000:                   /usr/lib/x86_64-linux-gnu/libjasper.so (ver 1.900.1)</span><br><span class="line">--     OpenEXR:                     build (ver 1.7.1)</span><br><span class="line">--     GDAL:                        NO</span><br><span class="line">--     GDCM:                        NO</span><br><span class="line">-- </span><br><span class="line">--   Video I/O:</span><br><span class="line">--     DC1394 1.x:                  NO</span><br><span class="line">--     DC1394 2.x:                  YES (ver 2.2.4)</span><br><span class="line">--     FFMPEG:                      YES</span><br><span class="line">--       avcodec:                   YES (ver 56.60.100)</span><br><span class="line">--       avformat:                  YES (ver 56.40.101)</span><br><span class="line">--       avutil:                    YES (ver 54.31.100)</span><br><span class="line">--       swscale:                   YES (ver 3.1.101)</span><br><span class="line">--       avresample:                NO</span><br><span class="line">--     GStreamer:                   </span><br><span class="line">--       base:                      YES (ver 0.10.36)</span><br><span class="line">--       video:                     YES (ver 0.10.36)</span><br><span class="line">--       app:                       YES (ver 0.10.36)</span><br><span class="line">--       riff:                      YES (ver 0.10.36)</span><br><span class="line">--       pbutils:                   YES (ver 0.10.36)</span><br><span class="line">--     OpenNI:                      NO</span><br><span class="line">--     OpenNI PrimeSensor Modules:  NO</span><br><span class="line">--     OpenNI2:                     NO</span><br><span class="line">--     PvAPI:                       NO</span><br><span class="line">--     GigEVisionSDK:               NO</span><br><span class="line">--     Aravis SDK:                  NO</span><br><span class="line">--     UniCap:                      NO</span><br><span class="line">--     UniCap ucil:                 NO</span><br><span class="line">--     V4L/V4L2:                    Using libv4l1 (ver 1.10.0) / libv4l2 (ver 1.10.0)</span><br><span class="line">--     XIMEA:                       NO</span><br><span class="line">--     Xine:                        NO</span><br><span class="line">--     gPhoto2:                     NO</span><br><span class="line">-- </span><br><span class="line">--   Parallel framework:            pthreads</span><br><span class="line">-- </span><br><span class="line">--   Other third-party libraries:</span><br><span class="line">--     Use IPP:                     9.0.1 [9.0.1]</span><br><span class="line">--          at:                     /home/dutoeserver/OpenCV/opencv/build/3rdparty/ippicv/ippicv_lnx</span><br><span class="line">--     Use IPP Async:               NO</span><br><span class="line">--     Use VA:                      NO</span><br><span class="line">--     Use Intel VA-API/OpenCL:     NO</span><br><span class="line">--     Use Lapack:                  NO</span><br><span class="line">--     Use Eigen:                   YES (ver 3.2.92)</span><br><span class="line">--     Use Cuda:                    YES (ver 8.0)</span><br><span class="line">--     Use OpenCL:                  YES</span><br><span class="line">--     Use OpenVX:                  NO</span><br><span class="line">--     Use custom HAL:              NO</span><br><span class="line">-- </span><br><span class="line">--   NVIDIA CUDA</span><br><span class="line">--     Use CUFFT:                   YES</span><br><span class="line">--     Use CUBLAS:                  YES</span><br><span class="line">--     USE NVCUVID:                 YES</span><br><span class="line">--     NVIDIA GPU arch:             20 30 35 37 50 52 60 61</span><br><span class="line">--     NVIDIA PTX archs:</span><br><span class="line">--     Use fast math:               YES</span><br><span class="line">-- </span><br><span class="line">--   OpenCL:                        &lt;Dynamic loading of OpenCL library&gt;</span><br><span class="line">--     Include path:                /home/dutoeserver/OpenCV/opencv/3rdparty/include/opencl/1.2</span><br><span class="line">--     Use AMDFFT:                  NO</span><br><span class="line">--     Use AMDBLAS:                 NO</span><br><span class="line">-- </span><br><span class="line">--   Python 2:</span><br><span class="line">--     Interpreter:                 /usr/bin/python2.7 (ver 2.7.12)</span><br><span class="line">--     Libraries:                   /usr/lib/x86_64-linux-gnu/libpython2.7.so (ver 2.7.12)</span><br><span class="line">--     numpy:                       /usr/lib/python2.7/dist-packages/numpy/core/include (ver 1.11.0)</span><br><span class="line">--     packages path:               lib/python2.7/dist-packages</span><br><span class="line">-- </span><br><span class="line">--   Python 3:</span><br><span class="line">--     Interpreter:                 /usr/bin/python3 (ver 3.5.2)</span><br><span class="line">-- </span><br><span class="line">--   Python (for build):            /usr/bin/python2.7</span><br><span class="line">-- </span><br><span class="line">--   Java:</span><br><span class="line">--     ant:                         /usr/bin/ant (ver 1.9.6)</span><br><span class="line">--     JNI:                         /usr/lib/jvm/java-8-oracle/include /usr/lib/jvm/java-8-oracle/include/linux /usr/lib/jvm/java-8-oracle/include</span><br><span class="line">--     Java wrappers:               YES</span><br><span class="line">--     Java tests:                  YES</span><br><span class="line">-- </span><br><span class="line">--   Matlab:                        Matlab not found or implicitly disabled</span><br><span class="line">-- </span><br><span class="line">--   Documentation:</span><br><span class="line">--     Doxygen:                     NO</span><br><span class="line">-- </span><br><span class="line">--   Tests and samples:</span><br><span class="line">--     Tests:                       YES</span><br><span class="line">--     Performance tests:           YES</span><br><span class="line">--     C/C++ Examples:              YES</span><br><span class="line">-- </span><br><span class="line">--   Install path:                  /usr/local</span><br><span class="line">-- </span><br><span class="line">--   cvconfig.h is in:              /home/dutoeserver/OpenCV/opencv/build</span><br><span class="line">-- -----------------------------------------------------------------</span><br><span class="line">-- </span><br><span class="line">-- Configuring done</span><br><span class="line">-- Generating done</span><br><span class="line">-- Build files have been written to: /home/dutoeserver/OpenCV/opencv/build</span><br></pre></td></tr></table></figure>
+<p>从中可以看到我们所添加的编译选项后面都有YES<br>下面使用make进行编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j $(($(nproc) + 1))</span><br></pre></td></tr></table></figure>
+
+<p>然后便是漫长的编译过程，具体时间根据你的电脑配置而不同，如果没有问题的话，编译会顺利进行。<br>然后使用make进行安装并配置环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo make -j $(($(nproc) + 1)) install</span><br><span class="line">sudo /bin/bash -c 'echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/opencv.conf'</span><br><span class="line">sudo ldconfig</span><br></pre></td></tr></table></figure>
+<p>建议上述安装完成之后重启一次系统</p>
+<p><strong>可以将上面<code>sudo make install</code>部分换成<code>sudo checkinstall</code>，这样安装完成之后checkinstall会在当前目录生成一个相应的deb，可以二次安装，也可以用sudo dpkg -r xx.deb来卸载</strong><br>更多checkinstall的用法可以参见IBM的一篇文章：<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-checkinstall/" target="_blank" rel="noopener">http://www.ibm.com/developerworks/cn/linux/l-cn-checkinstall/</a></p>
+<h1 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h1><p>编译完成之后，会在<code>build/bin</code>目录下创建很多例子的二进制文件，可以进行测试。如果该文件夹下没有任何文件，检查你的编译选项是否选择了例子，以及上面的编译是否都已经正确完成。<br>这里我测试一个gpu性能的例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/performance_gpu</span><br></pre></td></tr></table></figure>
+<p>执行之后首先它会显示出来你的GPU信息，然后会经过一段时间的测试，如果你没有提前把<code>opencv_extra</code>下面的测试视频拷贝过来，还会提示一个文件丢失的错误，不过不影响测试。输出内容的最后部分如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">average GPU speedup: x33.717</span><br></pre></td></tr></table></figure>
+
+<p>下面手动编译一个例子<br>找到OpenCV源代码文件夹下的<code>samples/gpu</code><br>里面有很多gpu的示例代码，这里以其中的hog.cpp为例，它的功能就是利用方向梯度直方图（Histogram of oriented gradient）进行目标检测<br>将该代码单独拷贝到一个文件中，并在该文件夹下创建<code>CMakeLists.txt</code>，内容如下：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">2.8</span>)</span><br><span class="line"><span class="keyword">project</span>(HOG)</span><br><span class="line"><span class="keyword">find_package</span>(OpenCV REQUIRED)</span><br><span class="line"><span class="keyword">find_package</span>(CUDA  REQUIRED)</span><br><span class="line"><span class="keyword">include_directories</span>(<span class="string">"$&#123;CUDA_INCLUDE_DIRS&#125;"</span>)</span><br><span class="line"><span class="keyword">add_executable</span>(hog hog.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(hog <span class="variable">$&#123;OpenCV_LIBS&#125;</span>)</span><br></pre></td></tr></table></figure>
+<p>然后执行编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake -D CUDA_USE_STATIC_CUDA_RUNTIME=OFF ..</span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<p>如果环境配置没有问题的话，build文件下就会生成可执行的程序hog，可以通过<code>hog --help</code>查看帮助，下面使用hog来播放视频，或者也可以直接接摄像头：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./hog --video ~/input.mp4</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Device 0:  &quot;GeForce GTX 1080&quot;  8112Mb, sm_61, Driver&#x2F;Runtime ver.8.0&#x2F;8.0</span><br><span class="line"></span><br><span class="line">Controls:</span><br><span class="line">	ESC - exit</span><br><span class="line">	m - change mode GPU &lt;-&gt; CPU</span><br><span class="line">	g - convert image to gray or not</span><br><span class="line">	1&#x2F;q - increase&#x2F;decrease HOG scale</span><br><span class="line">	2&#x2F;w - increase&#x2F;decrease levels count</span><br><span class="line">	3&#x2F;e - increase&#x2F;decrease HOG group threshold</span><br><span class="line">	4&#x2F;r - increase&#x2F;decrease hit threshold</span><br><span class="line"></span><br><span class="line">Scale: 1.05</span><br><span class="line">Group threshold: 8</span><br><span class="line">Levels number: 13</span><br><span class="line">Win width: 48</span><br><span class="line">Win stride: (8, 8)</span><br><span class="line">Hit threshold: 1.4</span><br><span class="line">Gamma correction: 1</span><br></pre></td></tr></table></figure>
+<p>可以通过m键来切换使用CPU mode或者CUDA mode。<br>可以打开nvidia-setting来查看CUDA mode下GPU的占用情况</p>
+<h1 id="可能出现的错误"><a href="#可能出现的错误" class="headerlink" title="可能出现的错误"></a>可能出现的错误</h1><h2 id="如果出现NVCUVID后面是NO，而CUDA后面是YES"><a href="#如果出现NVCUVID后面是NO，而CUDA后面是YES" class="headerlink" title="如果出现NVCUVID后面是NO，而CUDA后面是YES"></a>如果出现NVCUVID后面是NO，而CUDA后面是YES</h2><p>这种情况下将无法使用CUDA编解码功能，这是由于cmake在查找库的时候采用的路径是<code>/usr/lib</code>以及<code>/usr/lib/nvidia-current</code>路径，而实际上我的nvidia显卡驱动安装路径为<code>/usr/lib/nvidia-378</code>，所以导致无法找到这个路径。<br>PS：为了解决这个问题，查看了opencv的cmake中的相关代码后才发现，但在些之前搜索了很久，也乱试了很久都无果，所以一定要有根据的解决问题，还不是盲目地去试。<br>解决：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /usr/lib/nvidia-378/libnvcuvid.so /usr/lib/libnvcuvid.so</span><br><span class="line">sudo ln -s /usr/lib/nvidia-378/libnvcuvid.so.1 /usr/lib/libnvcuvid.so.1</span><br></pre></td></tr></table></figure>
+<p><strong>记得修改成你自己的nvidia驱动安装路径</strong></p>
+<h2 id="如果FFmpeg没有YES"><a href="#如果FFmpeg没有YES" class="headerlink" title="如果FFmpeg没有YES"></a>如果FFmpeg没有YES</h2><p>可能是你的FFmpeg编译后没有将其添加到环境变量中。</p>
+<h2 id="编译OpenCV程序出现cannot-find-lopencv-dep-cudart"><a href="#编译OpenCV程序出现cannot-find-lopencv-dep-cudart" class="headerlink" title="编译OpenCV程序出现cannot find -lopencv_dep_cudart"></a>编译OpenCV程序出现cannot find -lopencv_dep_cudart</h2><p>错误详情：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ld: cannot find -lopencv_dep_cudart</span><br><span class="line">collect2: error: ld returned 1 exit status</span><br><span class="line">CMakeFiles/hog.dir/build.make:120: recipe for target 'hog' failed</span><br><span class="line">make[2]: *** [hog] Error 1</span><br><span class="line">CMakeFiles/Makefile2:67: recipe for target 'CMakeFiles/hog.dir/all' failed</span><br><span class="line">make[1]: *** [CMakeFiles/hog.dir/all] Error 2</span><br><span class="line">Makefile:83: recipe for target 'all' failed</span><br><span class="line">make: *** [all] Error 2</span><br></pre></td></tr></table></figure>
+<p>添加cmake编译选项来解决：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -D CUDA_USE_STATIC_CUDA_RUNTIME=OFF ..</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译java版本的OpenCV程序出现NoClassDefFoundError"><a href="#编译java版本的OpenCV程序出现NoClassDefFoundError" class="headerlink" title="编译java版本的OpenCV程序出现NoClassDefFoundError"></a>编译java版本的OpenCV程序出现NoClassDefFoundError</h2><p><strong>Exception in thread “main” java.lang.NoClassDefFoundError: org/opencv/core/Core</strong><br>如果需要配置java调用opencv，需要修改如下配置文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:/usr/local/share/OpenCV/java/opencv-2413.jar</span><br><span class="line">export LD_LIBRARY_PATH=/usr/local/lib/:/usr/lib/:/usr/local/share/OpenCV/java:$LD_LIBRARY_PATH</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译选项后面显示Unavaialbe里面有Java"><a href="#编译选项后面显示Unavaialbe里面有Java" class="headerlink" title="编译选项后面显示Unavaialbe里面有Java"></a>编译选项后面显示Unavaialbe里面有Java</h2><p>需要安装包ant</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CUDA/" rel="tag"># CUDA</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+              <a href="/tags/OpenCV/" rel="tag"># OpenCV</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/20/python-UnicodeEncodError/" rel="prev" title="python 2.7 UnicodeEncodError">
+      <i class="fa fa-chevron-left"></i> python 2.7 UnicodeEncodError
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/01/linux-proxy-ss/" rel="next" title="Linux设置命令行代理">
+      Linux设置命令行代理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装OpenCV依赖包"><span class="nav-number">1.</span> <span class="nav-text">安装OpenCV依赖包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#验证OpenGL的配置"><span class="nav-number">2.</span> <span class="nav-text">验证OpenGL的配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译OpenCV"><span class="nav-number">3.</span> <span class="nav-text">编译OpenCV</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#验证"><span class="nav-number">4.</span> <span class="nav-text">验证</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可能出现的错误"><span class="nav-number">5.</span> <span class="nav-text">可能出现的错误</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如果出现NVCUVID后面是NO，而CUDA后面是YES"><span class="nav-number">5.1.</span> <span class="nav-text">如果出现NVCUVID后面是NO，而CUDA后面是YES</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如果FFmpeg没有YES"><span class="nav-number">5.2.</span> <span class="nav-text">如果FFmpeg没有YES</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译OpenCV程序出现cannot-find-lopencv-dep-cudart"><span class="nav-number">5.3.</span> <span class="nav-text">编译OpenCV程序出现cannot find -lopencv_dep_cudart</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译java版本的OpenCV程序出现NoClassDefFoundError"><span class="nav-number">5.4.</span> <span class="nav-text">编译java版本的OpenCV程序出现NoClassDefFoundError</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译选项后面显示Unavaialbe里面有Java"><span class="nav-number">5.5.</span> <span class="nav-text">编译选项后面显示Unavaialbe里面有Java</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/";
+    this.page.identifier = "2017/04/01/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/";
+    this.page.title = "Ubuntu 16.04下编译OpenCV 3.2.0支持Java、FFmpeg以及CUDA8";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

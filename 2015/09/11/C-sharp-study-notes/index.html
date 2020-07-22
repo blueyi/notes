@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="参考资源 msdn上的C#语言规范中文版   C#中的所有关键字    .NET Framework类库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C-sharp-study-notes">
+<meta property="og:url" content="http://notes.maxwi.com/2015/09/11/C-sharp-study-notes/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="参考资源 msdn上的C#语言规范中文版   C#中的所有关键字    .NET Framework类库">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-09-11T07:43:58.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.359Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Csharp">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2015/09/11/C-sharp-study-notes/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>C-sharp-study-notes | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/09/11/C-sharp-study-notes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C-sharp-study-notes
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-09-11 15:43:58" itemprop="dateCreated datePublished" datetime="2015-09-11T15:43:58+08:00">2015-09-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Csharp/" itemprop="url" rel="index"><span itemprop="name">Csharp</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2015/09/11/C-sharp-study-notes/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/09/11/C-sharp-study-notes/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>25k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>23 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ol>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/aa664628%28v=vs.71%29.aspx" target="_blank" rel="noopener">msdn上的C#语言规范中文版</a>  </li>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/x53a06bb.aspx" target="_blank" rel="noopener">C#中的所有关键字</a>   </li>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/gg145045%28v=vs.110%29.aspx" target="_blank" rel="noopener">.NET Framework类库</a>     <a id="more"></a>
+
+</li>
+</ol>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><ol>
+<li>C#与C/C++很多地方都很类似，对于Hello World程序来说，程序入口是<code>Main()</code>函数，注意首字母是大写。C#的编译环境在VS中附带的有，编译器名称为<code>csc</code>，C#的源程序后缀通常为<code>.cs</code>。例如以下程序名为hello.cs，则最简单的编译方法为<code>csc hello.cs</code>，会在同目录中生成<code>hello.exe</code>的可执行程序。  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//引用一个名为System的命名空间，它由Microsoft.NET.Frameworld类库定义。该命名空间下包含`Main`方法引用的`Console`类。</span></span><br><span class="line"><span class="keyword">using</span> System;  </span><br><span class="line"><span class="keyword">class</span> <span class="title">Hello</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">/*程序的入口点总是名为Main的静态方法，Main方法是Hello类的成员，它是相对于类Hello本身而不是相对于此类的实例*/</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      Console.WriteLine(<span class="string">"Hello World!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>C#中的注释方法与C++一样。  </li>
+<li>C#中的基本输入输出<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line">Console.Read(); <span class="comment">// 读一个字符</span></span><br><span class="line">Console.ReadLine(); <span class="comment">// 读一行</span></span><br><span class="line">Console.Write(); <span class="comment">// 不换行写</span></span><br><span class="line">Console.WriteLine(); <span class="comment">// 写并换行</span></span><br></pre></td></tr></table></figure>
+C#中不使用<code>%</code>号作为输出变量，而是使用类似<code>python</code>中的占位符<code>{}</code>,eg: <code>System.Console.Write(&quot;{0}&quot;, a);</code><br><code>@</code>相当于<code>python</code>中的<code>r</code>，即按原始文本输出。eg: <code>System.Console.WriteLine(@&quot;hello\tworld&quot;);</code>输出结果为<code>hello\tworld</code>。   </li>
+</ol>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><ol>
+<li><p>C#中的数据类型分为值类型和引用类型。<br>值类型包括：简单类型(bool、char、int、float、double)，枚举类型()，结构体类型()，有符号整型，无符号整型  等。<br>引用类型包括：字符串类型(string)，object类型，类类型(Class)，数组类型，委托类型()，接口类型等。<br>值类型即每个变量都有其自己的数据副本，引用类型则可能多个变量共用同一个对象。  </p>
+</li>
+<li><p>C#提供了一组预定义类型<br>预定义的类型中，属于引用类型的有 object 和 string 两类。object 类型是所有其他类型的最终基类型。string 类型用于表示 Unicode 字符串值。string 类型的值是不可变的。<br>预定义的值类型包括有符号整型、无符号整型、浮点型以及 bool、char 和 decimal 等类型。属有符号整型的有 sbyte、short、int 和 long；属无符号整型的有 byte、ushort、uint 和 ulong；属浮点型的有 float 和 double。<br>bool 类型用于表示布尔值，即仅有真、假两个值。且bool类型无法与int类型进行类型转换。<br>其中C/C++中没有类型为<code>sbyte</code>表示8位有符号整型，ushort、uint、ulong分别对应于相应的无符号型，decimal表示精确的小数类型，具有28个有效数字。<br>每个预定义类型都是一个在System命名空间下的类型的简写形式。例如关键字int所指的实际上是结构类型<code>System.Int32</code>。</p>
+</li>
+<li><p>C#中的类型转换同样分为强制转换与隐式转换。隐式转换只用于那些不需要仔细检查就可以安全地实现转换的类型，如从int到long,eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> intVal = <span class="number">123</span>;</span><br><span class="line"><span class="keyword">long</span> longVal = intVal;</span><br></pre></td></tr></table></figure>
+<p>与C++类似通过使用(type)来强制类型转换，eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> longVal = Int64.MaxValue;</span><br><span class="line"><span class="keyword">int</span> intVal = (<span class="keyword">int</span>) longVal;</span><br></pre></td></tr></table></figure></li>
+<li><p>数组：<br>C#中的数组类型是用一个非数组类型名称后跟一个或多个秩说明符来表示的。eg: int[]表示整型类型的数组，short[]表示短整型，其他类似。<br>C#数组根据形状可分为矩形数组和交错数组。数组的元素类型和数组的形状是数组类型定义的组成部分，但数组的大小却不是数组类型定义的组成部分。C#的语法明确地规定数组的每个维的长度需要在数组创建表达式中指定。数组类型为引用类型，所以数组变量的声明只是为数组引用留出空间。数组实例是通过数组初始值设定项和数组创建表达式创建的。eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] a; <span class="comment">//声明一个一维的整型数组a，但并未创建数组</span></span><br><span class="line"><span class="keyword">int</span>[] b = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">5</span>]; <span class="comment">//声明并创建含有5个元素的一维数组b</span></span><br><span class="line"><span class="keyword">int</span>[] c = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;; <span class="comment">//声明、创建并初始化一维整型数组c</span></span><br><span class="line"><span class="keyword">int</span>[] d = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;  <span class="comment">//等价于c，对于局部变量和字段的声明，允许使用简写形式</span></span><br></pre></td></tr></table></figure></li>
+<li><p>多维数组<br>注意C#的多维数组就是多维数组，而不是像C/C++中的多维数组就是数组的数组。而交错数组也就是数组的数组。eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">int</span>[] a1;         <span class="comment">// single-dimensional array of int</span></span><br><span class="line">      <span class="keyword">int</span>[,] a2;         <span class="comment">// 2-dimensional array of int</span></span><br><span class="line">      <span class="keyword">int</span>[,,] a3;         <span class="comment">// 3-dimensional array of int</span></span><br><span class="line">      <span class="keyword">int</span>[][] j2;         <span class="comment">// "jagged" array: array of (array of int)</span></span><br><span class="line">      <span class="keyword">int</span>[][][] j3;      <span class="comment">// array of (array of (array of int))</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">//下面为对应的初始化</span></span><br><span class="line">      <span class="keyword">int</span>[] a1 = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">      <span class="keyword">int</span>[,] a2 = <span class="keyword">new</span> <span class="keyword">int</span>[,] &#123;&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;, &#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;&#125;;  <span class="comment">//a2的大小为3x3</span></span><br><span class="line">      <span class="keyword">int</span>[,,] a3 = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>];  <span class="comment">//a3的三维大小分别是10，20，30</span></span><br><span class="line">      <span class="keyword">int</span>[][] j2 = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">3</span>][];  <span class="comment">//j2中含有3个int[]类型的数组，数组长度在下面声明，分别为3,6,9</span></span><br><span class="line">      j2[<span class="number">0</span>] = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">      j2[<span class="number">1</span>] = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;;</span><br><span class="line">      j2[<span class="number">2</span>] = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>&#125;;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>数组在声明并创建后如果不手动初始化，各元素会被自动初始化为0。但变量必须先赋值，然后才能使用。</p>
+</li>
+<li><p>类型系统统一化<br>C# 提供了一个“统一类型系统”。所有类型（包括值类型）都是从 object 类型派生的。这样，类型 Object 中定义的方法就可以在任何值类型的值（甚至是像 int 这样的“基元”类型的值）上调用。eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Console.WriteLine(<span class="number">3.</span>ToString());</span><br><span class="line">      <span class="keyword">int</span> i = <span class="number">123</span>;</span><br><span class="line">      <span class="keyword">object</span> o = i;      <span class="comment">// boxing</span></span><br><span class="line">      <span class="keyword">int</span> j = (<span class="keyword">int</span>) o;   <span class="comment">// unboxing</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一个 int 值可以转换为 object，并可再次转换回 int。此示例同时显示了“装箱”和“取消装箱”。当值类型的变量需要转换为引用类型时，执行“装箱”，即设置一个对象箱来保存值这个值（该值被复制到箱中）。“取消装箱”则正好相反。当对象箱被强制转换回其原来的值类型时，该值就从箱中取出并复制到适当的存储位置。  </p>
+</li>
+</ol>
+<p>此类型系统统一化为值类型提供了对象性的优点，并且不会带来不必要的系统开销。对于不需要 int 值的行为与对象一样的程序，int 值只是 32 位值。对于需要 int 值的行为与对象一样的程序，可以根据需要使用此功能。这种将值类型作为对象处理的能力弥补了大多数语言中存在的值类型与引用类型之间的差距。例如，Stack 类可以提供 Push 和 Pop 方法，这些方法获得并返回一个 object 值。  </p>
+<ol start="7">
+<li>委托：委托类型使用<code>delegate</code>进行声明，有一个返回值和任意数目任意类型的参数。委托是一种可用于封装命名或匿名方法的引用类型。 委托类似于 C++ 中的函数指针；但是，委托是类型安全和可靠的。 委托是事件的基础。 通过将委托与命名方法或匿名方法关联，可以实例化委托。必须使用具有兼容返回类型和输入参数的方法或 lambda 表达式实例化委托。  eg:<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="comment">// Declare delegate -- defines required signature:</span></span><br><span class="line"><span class="function"><span class="keyword">delegate</span> <span class="keyword">double</span> <span class="title">MathAction</span>(<span class="params"><span class="keyword">double</span> num</span>)</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title">DelegateTest</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Regular method that matches signature:</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">double</span> <span class="title">Double</span>(<span class="params"><span class="keyword">double</span> input</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">return</span> input * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">// Instantiate delegate with named method:</span></span><br><span class="line">        MathAction ma = Double;</span><br><span class="line">        <span class="comment">// Invoke delegate ma:</span></span><br><span class="line">        <span class="keyword">double</span> multByTwo = ma(<span class="number">4.5</span>);</span><br><span class="line">        Console.WriteLine(<span class="string">"multByTwo: &#123;0&#125;"</span>, multByTwo);</span><br><span class="line">        <span class="comment">// Instantiate delegate with anonymous method:</span></span><br><span class="line">        MathAction ma2 = <span class="keyword">delegate</span>(<span class="keyword">double</span> input)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> input * input;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">double</span> square = ma2(<span class="number">5</span>);</span><br><span class="line">        Console.WriteLine(<span class="string">"square: &#123;0&#125;"</span>, square);</span><br><span class="line">        <span class="comment">// Instantiate delegate with lambda expression</span></span><br><span class="line">        MathAction ma3 = s =&gt; s * s * s;</span><br><span class="line">        <span class="keyword">double</span> cube = ma3(<span class="number">4.375</span>);</span><br><span class="line">        Console.WriteLine(<span class="string">"cube: &#123;0&#125;"</span>, cube);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Output:</span></span><br><span class="line">    <span class="comment">// multByTwo: 9</span></span><br><span class="line">    <span class="comment">// square: 25</span></span><br><span class="line">    <span class="comment">// cube: 83.740234375</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="变量和参数"><a href="#变量和参数" class="headerlink" title="变量和参数"></a>变量和参数</h3><ol>
+<li>变量必须先赋值，然后才能使用它的值。<br>字段（第 10.4 节）是与类或结构或与类或结构的实例关联的变量。用 static 修饰符声明的字段定义静态变量，不用此修饰符声明的字段则定义实例变量。静态字段与类型关联，而实例变量与实例关联。  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//具有一个私有静态变量和两个公共实例变量的 Employee 类</span></span><br><span class="line"><span class="keyword">using</span> Personnel.Data;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Employee</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> DataSet ds;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">string</span> Name;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">decimal</span> Salary;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>C#有四种类型的参数：值参数，引用参数，输出参数和参数数组  <ul>
+<li>值参数：即通过传值来传递参数，即传入的变量的副本。  </li>
+<li>引用参数：通过关键字<code>ref</code> 来声明和调用引用参数，即传递的是变量本身</li>
+<li>输出参数：通过关键字<code>out</code>来声明输出参数，即一个函数可以有多个输出值</li>
+<li>参数数组：即通过关键字<code>params</code>将一维数组作为参数传递给函数，这样可以实现可变长的参数列表   </li>
+</ul>
+</li>
+</ol>
+<p>eg:<br>值参数：   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"><span class="keyword">int</span> p</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">"p = &#123;0&#125;"</span>, p);</span><br><span class="line">        p++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">        Console.WriteLine(<span class="string">"Pre: a = &#123;0&#125;"</span>, a);</span><br><span class="line">        F(a);</span><br><span class="line">        Console.WriteLine(<span class="string">"New: a = &#123;0&#125;"</span>, a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为全为0<br>引用参数：   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"><span class="keyword">ref</span> <span class="keyword">int</span> p</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">"p = &#123;0&#125;"</span>, p);</span><br><span class="line">        p++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">        Console.WriteLine(<span class="string">"Pre: a = &#123;0&#125;"</span>, a);</span><br><span class="line">        F(<span class="keyword">ref</span> a);</span><br><span class="line">        Console.WriteLine(<span class="string">"New: a = &#123;0&#125;"</span>, a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果后面的a变成了0。   </p>
+<p>输出参数：   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"><span class="keyword">ref</span> <span class="keyword">int</span> p, <span class="keyword">out</span> <span class="keyword">int</span> result</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">"p = &#123;0&#125;"</span>, p);</span><br><span class="line">        p++;</span><br><span class="line">        result = p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> res;</span><br><span class="line">        Console.WriteLine(<span class="string">"Pre: a = &#123;0&#125;"</span>, a);</span><br><span class="line">        F(<span class="keyword">ref</span> a, <span class="keyword">out</span> res);</span><br><span class="line">        Console.WriteLine(<span class="string">"New: a = &#123;0&#125;, res = &#123;1&#125;"</span>, a, res);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>显然输出参数关键字<code>out</code>与引用参数<code>ref</code>的功能非常像，其实也基本上确实是一要的。但不同的是引用参数在使用前必须初始化，而输出参数不需要，也就是在调用函数之前并没有给输出参数分配空间。就像上例中如果将<code>int res;</code>改为<code>int res = 0;</code>,则将所有的<code>out</code>替换为<code>ref</code>之后结果也完成正确。  </p>
+<p>数组参数：参数数组用 params 修饰符声明。一个给定的方法只能有一个参数数组，而且它必须始终是最后一个指定的参数。参数数组的类型总是一维数组类型。调用方可以传递一个属同一类型的数组变量，或任意多个与该数组的元素属同一类型的自变量。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"><span class="keyword">params</span> <span class="keyword">int</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">"arguments:&#123;0&#125; "</span>, args.Length);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; args.Length; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">"\targs[&#123;0&#125;]=&#123;1&#125; "</span>, i, args[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        F();</span><br><span class="line">        F(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">        F(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">        F(<span class="keyword">new</span> <span class="keyword">int</span> []&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>C#中的常量关键字有两个：<code>const</code>和<code>readonly</code>。 使用 const 关键字来声明某个常量字段或常量局部变量。 常量字段和常量局部变量不是变量并且不能修改， 常量可以为数字、布尔值、字符串或 null 引用。 <code>readonly</code>关键字是可以在字段上使用的修饰符。 当字段声明包括 <code>readonly</code>修饰符时，该声明引入的字段赋值只能作为声明的一部分出现，或者出现在同一类的构造函数中。<br>它们的不同之处： const 字段只能在该字段的声明中初始化，且编译时确定。 readonly 字段可以在声明或构造函数中初始化。 因此，根据所使用的构造函数，readonly 字段可能具有不同的值。即<code>readonly</code>声明的变量可以在声明之后赋值但在运行时是确定的。</p>
+</li>
+<li><p>C#的命令行参数与C/C++不同，它的第一个参数不是程序名，而是你输入的第一个参数。</p>
+</li>
+</ol>
+<h3 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h3><p>C#中除了C/C++常见的表达式外，增加了<code>checked</code>, <code>unchecked</code>, <code>(T)x</code>, <code>is</code>, <code>as</code>等。  </p>
+<ol>
+<li><p><code>checked</code>, <code>unchecked</code>: checked 和 unchecked关键字用来限定检查或者不检查数学运算溢出的；如果使用了checked发生数学运算溢出时会抛出OverflowException；如果使用了unchecked则不会检查溢出，算错了也不会报错。eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="keyword">int</span>.MaxValue * <span class="number">2</span>;  <span class="comment">//编译报错</span></span><br><span class="line"><span class="keyword">int</span> temp = <span class="keyword">int</span>.MaxValue;</span><br><span class="line"><span class="keyword">int</span> a = temp * <span class="number">2</span>;  <span class="comment">//编译通过，显然结果不正确，因为编译时的溢出检查仅限于使用常量的表达式。</span></span><br><span class="line"><span class="comment">//使用checked溢出检查</span></span><br><span class="line"><span class="keyword">int</span> temp = <span class="keyword">int</span>.MaxValue;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">   <span class="keyword">int</span> a = <span class="keyword">checked</span>(temp * <span class="number">2</span>); <span class="comment">//checked也可以用于代码块</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (OverflowException) &#123;</span><br><span class="line">   Console.WriteLine(<span class="string">"OverFlow"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用unchecked不检查溢出</span></span><br><span class="line"><span class="keyword">int</span> a = <span class="keyword">unchecked</span>(<span class="keyword">int</span>.MaxValue * <span class="number">2</span>);  <span class="comment">//这种不检查的可以用于不需要正确结果的计算，比如hasecode</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>(T)x</code>: </p>
+</li>
+<li><p><code>is</code> : is检查一个对象是否兼容于指定的类型，即提供类型检查功能。如果所提供的表达式非空，并且所提供的对象可以强制转换为所提供的类型而不会导致引发异常，则 is 表达式的计算结果将是 true。注意，is操作符永远不会抛出异常，且如果对象引用是null时，is操作符总是返回false  eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Object a = <span class="keyword">new</span> Object();</span><br><span class="line">Boolean b = (a <span class="keyword">is</span> Object); <span class="comment">// b is true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>as</code>: 提供检查并转换为可兼容的类型，如果类型相同，就返回一个非空的引用，否则就返回一个空引用。以下<code>is</code>和<code>as</code>实现的功能相同，但使用as的性能更好。eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//此处需要首先检查一次，然后在强制转换时CLR会再次进行检查类型是否兼容</span></span><br><span class="line"><span class="keyword">if</span> (o <span class="keyword">is</span> Employee) &#123;</span><br><span class="line">   Employee e = (Employee) o;</span><br><span class="line">   <span class="comment">//对e进行操作</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//此处只需要一次类型检查并转换</span></span><br><span class="line">Employee e = o <span class="keyword">as</span> Employee;</span><br><span class="line"><span class="keyword">if</span> (e != <span class="literal">null</span>) &#123;</span><br><span class="line">   <span class="comment">//对e进行操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="语句"><a href="#语句" class="headerlink" title="语句"></a>语句</h3><p>C#中增加的语句有：  </p>
+</li>
+<li><p><code>foreach, in</code>语句：功能是遍历array或者object collection中的元素，使用方法为<code>foreach (type identifier in expression) statement;</code>，该语句在使用时应只读数据，避免在遍历过程中对数据进行修改，以免出现不可预测的结果。 eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">string</span> s <span class="keyword">in</span> args)</span><br><span class="line">        Console.WriteLine(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>checked</code> 和 <code>unchecked</code> 语句 eg:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">int</span> x = Int32.MaxValue;</span><br><span class="line"></span><br><span class="line">    Console.WriteLine(x + <span class="number">1</span>);      <span class="comment">// Overflow</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">checked</span> &#123;</span><br><span class="line">        Console.WriteLine(x + <span class="number">1</span>);  <span class="comment">// Exception</span></span><br><span class="line">    &#125;     </span><br><span class="line"></span><br><span class="line">    <span class="keyword">unchecked</span> &#123;</span><br><span class="line">        Console.WriteLine(x + <span class="number">1</span>);  <span class="comment">// Overflow</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>lock</code>语句：关键字将语句块标记为临界区，方法是获取给定对象的互斥锁，执行语句，然后释放该锁。 lock 关键字可确保当一个线程位于代码的临界区时，另一个线程不会进入该临界区。 如果其他线程尝试进入锁定的代码，则它将一直等待（即被阻止），直到该对象被释放。官方示例  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//只要lock语句存在，语句块就是临界区并且balance永远不会是负数</span></span><br><span class="line">    <span class="comment">// using System.Threading;</span></span><br><span class="line">    <span class="keyword">class</span> <span class="title">Account</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> Object thisLock = <span class="keyword">new</span> Object();</span><br><span class="line">        <span class="keyword">int</span> balance;</span><br><span class="line"></span><br><span class="line">        Random r = <span class="keyword">new</span> Random();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Account</span>(<span class="params"><span class="keyword">int</span> initial</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            balance = initial;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">Withdraw</span>(<span class="params"><span class="keyword">int</span> amount</span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="comment">// This condition never is true unless the lock statement</span></span><br><span class="line">            <span class="comment">// is commented out.</span></span><br><span class="line">            <span class="keyword">if</span> (balance &lt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"Negative Balance"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Comment out the next line to see the effect of leaving out </span></span><br><span class="line">            <span class="comment">// the lock keyword.</span></span><br><span class="line">            <span class="keyword">lock</span> (thisLock)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (balance &gt;= amount)</span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">"Balance before Withdrawal :  "</span> + balance);</span><br><span class="line">                    Console.WriteLine(<span class="string">"Amount to Withdraw        : -"</span> + amount);</span><br><span class="line">                    balance = balance - amount;</span><br><span class="line">                    Console.WriteLine(<span class="string">"Balance after Withdrawal  :  "</span> + balance);</span><br><span class="line">                    <span class="keyword">return</span> amount;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// transaction rejected</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">DoTransactions</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                Withdraw(r.Next(<span class="number">1</span>, <span class="number">100</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        &#123;</span><br><span class="line">            Thread[] threads = <span class="keyword">new</span> Thread[<span class="number">10</span>];</span><br><span class="line">            Account acc = <span class="keyword">new</span> Account(<span class="number">1000</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                Thread t = <span class="keyword">new</span> Thread(<span class="keyword">new</span> ThreadStart(acc.DoTransactions));</span><br><span class="line">                threads[i] = t;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                threads[i].Start();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><code>using</code>语句：<br>using 关键字有两个主要用途：<br> 作为指令，用于为命名空间创建别名或导入其他命名空间中定义的类型。<br>   using 指令有三种用途：</p>
+<pre><code>允许在命名空间中使用类型，这样无需在该命名空间中限定某个类型的使用：  
+`using System.Text;`
+允许访问类型的静态成员，而无需限定使用类型名称进行访问：  
+`using static System.Math;`
+为命名空间或类型创建别名。 这称为 using 别名指令。  
+`using Project = PC.MyCompany.Project;`</code></pre><p> 作为语句，用于定义一个范围，在此范围的末尾将释放对象。提供能确保正确使用 IDisposable 对象的方便语法。    </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> (Font font1 = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, <span class="number">10.0f</span>)) </span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">byte</span> charset = font1.GdiCharSet;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="自动内存管理"><a href="#自动内存管理" class="headerlink" title="自动内存管理"></a>自动内存管理</h2><p>C#提供自动内存管理，也就是说当某些变量或者对象不再需要时，会被垃圾回收器自动回收。当需要精确的内存控制时则需要使用关键字<code>unsafe</code>来创建不安全代码快，从而可以在其中编写直接操纵内存的代码。例如直接处理指针类型和对象地址。eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">WriteLocations</span>(<span class="params"><span class="keyword">byte</span>[] arr</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">unsafe</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">fixed</span> (<span class="keyword">byte</span>* pArray = arr)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">byte</span>* pElem = pArray;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.Length; i++)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">byte</span> <span class="keyword">value</span> = *pElem;</span><br><span class="line">                    Console.WriteLine(<span class="string">"arr[&#123;0&#125;] at 0x&#123;1:X&#125; is &#123;2&#125;"</span>,</span><br><span class="line">                       i, (<span class="keyword">uint</span>)pElem, <span class="keyword">value</span>);</span><br><span class="line">                    pElem++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] arr = <span class="keyword">new</span> <span class="keyword">byte</span>[] &#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span> &#125;;</span><br><span class="line">        WriteLocations(arr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译时记得添加<code>/unsafe</code>参数。VS则需要在项目属性中勾选“允许不安全代码”。<br>fixed 语句禁止垃圾回收器重定位可移动的变量。 fixed 语句只在不安全的上下文中是允许的。 Fixed 还可用于创建固定大小缓冲区。 fixed 语句设置指向托管变量的指针，并在执行该语句期间“固定”此变量。 如果没有 fixed 语句，则指向可移动托管变量的指针的作用很小，因为垃圾回收可能不可预知地重定位变量。 C# 编译器只允许在 fixed 语句中分配指向托管变量的指针。    </p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ol>
+<li>类成员可以包括：常数、字段、方法、属性、事件、索引器、运算符、实例构造函数、析构函数、静态构造函数和嵌套类型声明。每个成员都有关联的可访问性，一共有5种可访问性，分别为：  </li>
+</ol>
+<ul>
+<li>public 不限制访问。  </li>
+<li>protected 访问限于该成员所属的类或从该类派生来的类型。  </li>
+<li>internal 访问限于此程序。  </li>
+<li>protected internal 访问限于此程序或从该成员所属的类派生的类型。  </li>
+<li>private 访问限于该成员所属的类型。  </li>
+<li><code>partial</code> 分部类型定义允许将类、结构或接口的定义拆分到多个文件中。  </li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">MyClass</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">MyClass</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Console.WriteLine(<span class="string">"Instance constructor"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">MyClass</span>(<span class="params"><span class="keyword">int</span> <span class="keyword">value</span></span>)</span> &#123;</span><br><span class="line">      MyField = <span class="keyword">value</span>;</span><br><span class="line">      Console.WriteLine(<span class="string">"Instance constructor"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   ~MyClass() &#123;</span><br><span class="line">      Console.WriteLine(<span class="string">"Destructor"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">const</span> <span class="keyword">int</span> MyConst = <span class="number">12</span>; <span class="comment">//常数成员，即可以在编译时确定的值</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> MyField = <span class="number">34</span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MyMethod</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">      Console.WriteLine(<span class="string">"MyClass.MyMethod"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> MyProperty &#123;</span><br><span class="line">      <span class="keyword">get</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> MyField;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">set</span> &#123;</span><br><span class="line">         MyField = <span class="keyword">value</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> <span class="keyword">this</span>[<span class="keyword">int</span> index] &#123;</span><br><span class="line">      <span class="keyword">get</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">set</span> &#123;</span><br><span class="line">         Console.WriteLine(<span class="string">"this[&#123;0&#125;] = &#123;1&#125;"</span>, index, <span class="keyword">value</span>);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">event</span> EventHandler MyEvent;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> MyClass <span class="keyword">operator</span>+(MyClass a, MyClass b) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> MyClass(a.MyField + b.MyField);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">MyNestedClass</span></span><br><span class="line">   &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="comment">// Instance constructor usage</span></span><br><span class="line">      MyClass a = <span class="keyword">new</span> MyClass();</span><br><span class="line">      MyClass b = <span class="keyword">new</span> MyClass(<span class="number">123</span>);</span><br><span class="line">      <span class="comment">// Constant usage</span></span><br><span class="line">      Console.WriteLine(<span class="string">"MyConst = &#123;0&#125;"</span>, MyClass.MyConst);</span><br><span class="line">      <span class="comment">// Field usage</span></span><br><span class="line">      a.MyField++;</span><br><span class="line">      Console.WriteLine(<span class="string">"a.MyField = &#123;0&#125;"</span>, a.MyField);</span><br><span class="line">      <span class="comment">// Method usage</span></span><br><span class="line">      a.MyMethod();</span><br><span class="line">      <span class="comment">// Property usage</span></span><br><span class="line">      a.MyProperty++;</span><br><span class="line">      Console.WriteLine(<span class="string">"a.MyProperty = &#123;0&#125;"</span>, a.MyProperty);</span><br><span class="line">      <span class="comment">// Indexer usage</span></span><br><span class="line">      a[<span class="number">3</span>] = a[<span class="number">1</span>] = a[<span class="number">2</span>];</span><br><span class="line">      Console.WriteLine(<span class="string">"a[3] = &#123;0&#125;"</span>, a[<span class="number">3</span>]);</span><br><span class="line">      <span class="comment">// Event usage</span></span><br><span class="line">      a.MyEvent += <span class="keyword">new</span> EventHandler(MyHandler);</span><br><span class="line">      <span class="comment">// Overloaded operator usage</span></span><br><span class="line">      MyClass c = a + b;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">MyHandler</span>(<span class="params"><span class="keyword">object</span> sender, EventArgs e</span>)</span> &#123;</span><br><span class="line">      Console.WriteLine(<span class="string">"Test.MyHandler"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">MyNestedClass</span></span><br><span class="line">   &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>字段：  字段是一种成员，它表示与对象或类相关联的一个变量。 readonly 关键字是可以在字段上使用的修饰符。 当字段声明包括 readonly 修饰符时，该声明引入的字段赋值只能作为声明的一部分出现，或者出现在同一类的构造函数中。静态 readonly 字段可以在静态构造函数中赋值，而非静态 readonly 字段可以在实例构造函数中赋值。    <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">Color</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//4个实例字段</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Color Red = <span class="keyword">new</span> Color(<span class="number">0xFF</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Color Blue = <span class="keyword">new</span> Color(<span class="number">0</span>, <span class="number">0xFF</span>, <span class="number">0</span>);</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Color Green = <span class="keyword">new</span> Color(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0xFF</span>);</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">readonly</span> Color White = <span class="keyword">new</span> Color(<span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>);</span><br><span class="line">   <span class="comment">//声明3个内部实例字段</span></span><br><span class="line">   <span class="keyword">internal</span> <span class="keyword">ushort</span> redPart;</span><br><span class="line">   <span class="keyword">internal</span> <span class="keyword">ushort</span> bluePart;</span><br><span class="line">   <span class="keyword">internal</span> <span class="keyword">ushort</span> greenPart;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Color</span>(<span class="params"><span class="keyword">ushort</span> red, <span class="keyword">ushort</span> blue, <span class="keyword">ushort</span> green</span>)</span> &#123;</span><br><span class="line">      redPart = red;</span><br><span class="line">      bluePart = blue;</span><br><span class="line">      greenPart = green;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+字段可以直接在声明类的时候初始化。eg:  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Color newCol = <span class="keyword">new</span> Color() &#123;redPart = red, bluePart = blue&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="3">
+<li><p>方法：方法是一种成员，它用于实现可由对象或类执行的计算或操作。方法有一个形参表（可能是空的）、一个返回值（除非方法的返回类型为 void），它不是静态的，就是非静态的。通过类访问静态方法。通过类的实例访问非静态方法（也称为实例方法）。  要扩展或修改继承的方法、属性、索引器或事件的抽象实现或虚实现，必须使用 override 修饰符。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Stack</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">//只有静态方法才可以直接通过类访问，非静态方法必须首先创建实例，然后通过实例调用。</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Stack <span class="title">Clone</span>(<span class="params">Stack s</span>)</span> &#123;...&#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Stack <span class="title">Flip</span>(<span class="params">Stack s</span>)</span> &#123;...&#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">object</span> <span class="title">Pop</span>(<span class="params"></span>)</span> &#123;...&#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Push</span>(<span class="params"><span class="keyword">object</span> o</span>)</span> &#123;...&#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span> &#123;...&#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Stack s = <span class="keyword">new</span> Stack();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">         s.Push(i);</span><br><span class="line">      Stack flipped = Stack.Flip(s);</span><br><span class="line">      Stack cloned = Stack.Clone(s);</span><br><span class="line">      Console.WriteLine(<span class="string">"Original stack: "</span> + s.ToString());</span><br><span class="line">      Console.WriteLine(<span class="string">"Flipped stack: "</span> + flipped.ToString());</span><br><span class="line">      Console.WriteLine(<span class="string">"Cloned stack: "</span> + cloned.ToString());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>属性： 属性是一种成员，可用它来访问对象或类的某个特性。属性的示例包括字符串的长度、字体的大小、窗口的标题、客户的名称，等等。属性是字段的自然扩展。属性和字段都是命名的成员，都具有相关的类型，且用于访问字段和属性的语法也相同。属性用属性声明定义。属性声明的第一部分看上去与字段声明非常相似。第二部分包含一个 get 访问器和/或一个 set 访问器。可读取并写入的属性同时包含 get 和 set 访问器。当读取属性值时调用 get 访问器；当写入属性值时则调用 set 访问器。在 set 访问器中，属性的新值是通过一个名为 value 的隐式参数来赋值的。 属性声明相对直接一些，但是属性的实际值在它们被使用时才可见。在下面的示例中，Button 类定义一个 Caption 属性。 读取和写入 Caption 属性的方式可以与读取和写入字段相同：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Button</span> </span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">string</span> caption;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">string</span> Caption &#123;</span><br><span class="line">      <span class="keyword">get</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> caption;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">set</span> &#123;</span><br><span class="line">         caption = <span class="keyword">value</span>;</span><br><span class="line">         Repaint();</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line">Button b = <span class="keyword">new</span> Button();</span><br><span class="line">b.Caption = <span class="string">"ABC"</span>;      <span class="comment">// set; causes repaint</span></span><br><span class="line"><span class="keyword">string</span> s = b.Caption;   <span class="comment">// get</span></span><br><span class="line">b.Caption += <span class="string">"DEF"</span>;      <span class="comment">// get &amp; set; causes repaint</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>事件： 事件是一种成员，对象或类能够通过它发送通知。类通过提供事件声明来定义事件。事件声明类似于字段声明，但它增加了 event 关键字和一组可选的事件访问器。用于声明事件的类型必须是某种委托类型。<br>一个委托类型的实例封装了一个或多个“可调用实体”。对于实例方法，可调用实体由一个实例和该实例的方法组成。对于静态方法，可调用实体仅由一个方法组成。当用一组合适的参数调用某个委托实例时，该委托实例所封装的每个可调用实体都会被逐个调用，且都使用给定的同一组参数。如下实例中， Button 类定义一个 EventHandler 类型的 Click 事件。在 Button 类的内部，Click 成员如同一个 EventHandler 类型的私有字段。而在 Button 类的外部，Click 成员只能用在 += 和 -= 运算符的左侧。+= 运算符为 Click 事件添加一个事件处理程序，而 -= 运算符则为它移除一个事件处理程序。   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">EventHandler</span>(<span class="params"><span class="keyword">object</span> sender, System.EventArgs e</span>)</span>;  <span class="comment">//delegate 用户定义委托</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Button</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">event</span> EventHandler Click;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Reset</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Click = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Form1</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Form1</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="comment">// Add Button1_Click as an event handler for Button1's Click event</span></span><br><span class="line">        Button1.Click += <span class="keyword">new</span> EventHandler(Button1_Click);</span><br><span class="line">    &#125;</span><br><span class="line">    Button Button1 = <span class="keyword">new</span> Button();</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Button1_Click</span>(<span class="params"><span class="keyword">object</span> sender, EventArgs e</span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Console.WriteLine(<span class="string">"Button1 was clicked!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Disconnect</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Button1.Click -= <span class="keyword">new</span> EventHandler(Button1_Click);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        Form1 f = <span class="keyword">new</span> Form1();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>运算符：运算符是一种成员，它用来定义表达式运算符的含义，使其能应用于属于类的实例。可以定义三种运算符：一元运算符、二元运算符和转换运算符。所有运算符都必须声明为公共的和静态的。<br>下面的示例定义一个表示十进制数字（介于 0 和 9 之间的整数值）的 Digit 类型。<br>此 Digit 类型定义下列运算符：  </p>
+<ul>
+<li>从 Digit 到 byte 的隐式转换运算符。  </li>
+<li>从 byte 到 Digit 的显式转换运算符。  </li>
+<li>将两个 Digit 值相加并返回一个 Digit 值的加法运算符。  </li>
+<li>从一个 Digit 值中减去另一个 Digit 值并返回一个 Digit 值的减法运算符。  </li>
+<li>相等 (==) 和不相等 (!=) 运算符，它们对两个 Digit 值进行比较。  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">struct</span> Digit</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">byte</span> <span class="keyword">value</span>;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Digit</span>(<span class="params"><span class="keyword">byte</span> <span class="keyword">value</span></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">value</span> &lt; <span class="number">0</span> || <span class="keyword">value</span> &gt; <span class="number">9</span>) <span class="keyword">throw</span> <span class="keyword">new</span> ArgumentException();</span><br><span class="line">      <span class="keyword">this</span>.<span class="keyword">value</span> = <span class="keyword">value</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Digit</span>(<span class="params"><span class="keyword">int</span> <span class="keyword">value</span></span>): <span class="title">this</span>(<span class="params">(<span class="keyword">byte</span></span>) <span class="keyword">value</span>)</span> &#123;&#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">implicit</span> <span class="keyword">operator</span> <span class="title">byte</span>(<span class="params">Digit d</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> d.<span class="keyword">value</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">explicit</span> <span class="keyword">operator</span> <span class="title">Digit</span>(<span class="params"><span class="keyword">byte</span> b</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Digit(b);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> Digit <span class="keyword">operator</span>+(Digit a, Digit b) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Digit(a.<span class="keyword">value</span> + b.<span class="keyword">value</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> Digit <span class="keyword">operator</span>-(Digit a, Digit b) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> Digit(a.<span class="keyword">value</span> - b.<span class="keyword">value</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> <span class="keyword">operator</span>==(Digit a, Digit b) &#123;</span><br><span class="line">      <span class="keyword">return</span> a.<span class="keyword">value</span> == b.<span class="keyword">value</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> <span class="keyword">operator</span>!=(Digit a, Digit b) &#123;</span><br><span class="line">      <span class="keyword">return</span> a.<span class="keyword">value</span> != b.<span class="keyword">value</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">bool</span> <span class="title">Equals</span>(<span class="params"><span class="keyword">object</span> <span class="keyword">value</span></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">value</span> == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">if</span> (GetType() == <span class="keyword">value</span>.GetType()) <span class="keyword">return</span> <span class="keyword">this</span> == (Digit)<span class="keyword">value</span>;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">int</span> <span class="title">GetHashCode</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">value</span>.GetHashCode();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">value</span>.ToString();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Digit a = (Digit) <span class="number">5</span>;</span><br><span class="line">      Digit b = (Digit) <span class="number">3</span>;</span><br><span class="line">      Digit plus = a + b;</span><br><span class="line">      Digit minus = a - b;</span><br><span class="line">      <span class="keyword">bool</span> <span class="keyword">equals</span> = (a == b);</span><br><span class="line">      Console.WriteLine(<span class="string">"&#123;0&#125; + &#123;1&#125; = &#123;2&#125;"</span>, a, b, plus);</span><br><span class="line">      Console.WriteLine(<span class="string">"&#123;0&#125; - &#123;1&#125; = &#123;2&#125;"</span>, a, b, minus);</span><br><span class="line">      Console.WriteLine(<span class="string">"&#123;0&#125; == &#123;1&#125; = &#123;2&#125;"</span>, a, b, <span class="keyword">equals</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<code>operator</code>关键字：使用 operator 关键字来重载内置运算符，或提供类或结构声明中的用户定义转换。  </li>
+</ul>
+</li>
+<li><p>索引器：索引器是一种成员，它使对象能够用与数组相同的方式进行索引。属性启用类似字段的访问，而索引器启用类似数组的访问。<br>例如，请看一下前面研究过的 Stack 类。该类的设计者可能想提供类似数组的访问，以便不必执行 Push 和 Pop 操作，就可以检查或改变堆栈上的各个项。也就是说，使 Stack 类既是链接表，又可像数组一样方便地对它进行访问。<br>索引器声明类似于属性声明，主要区别是索引器是无名称的（由于 this 被索引，因此在声明中使用的“名称”为 this），而且索引器包含索引参数。索引参数在方括号中提供。示例 </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Stack</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">private</span> Node <span class="title">GetNode</span>(<span class="params"><span class="keyword">int</span> index</span>)</span> &#123;</span><br><span class="line">      Node temp = first; </span><br><span class="line">      <span class="keyword">while</span> (index &gt; <span class="number">0</span> &amp;&amp; temp != <span class="literal">null</span>) &#123;</span><br><span class="line">         temp = temp.Next;</span><br><span class="line">         index--;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (index &lt; <span class="number">0</span> || temp == <span class="literal">null</span>)</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"Index out of range."</span>);      <span class="keyword">return</span> temp;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">object</span> <span class="keyword">this</span>[<span class="keyword">int</span> index] &#123;</span><br><span class="line">      <span class="keyword">get</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> GetNode(index).Value;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">set</span> &#123;</span><br><span class="line">         GetNode(index).Value = <span class="keyword">value</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Stack s = <span class="keyword">new</span> Stack();</span><br><span class="line">      s.Push(<span class="number">1</span>);</span><br><span class="line">      s.Push(<span class="number">2</span>);</span><br><span class="line">      s.Push(<span class="number">3</span>);</span><br><span class="line">      s[<span class="number">0</span>] = <span class="number">33</span>;   <span class="comment">// Changes the top item from 3 to 33</span></span><br><span class="line">      s[<span class="number">1</span>] = <span class="number">22</span>;   <span class="comment">// Changes the middle item from 2 to 22</span></span><br><span class="line">      s[<span class="number">2</span>] = <span class="number">11</span>;   <span class="comment">// Changes the bottom item from 1 to 11</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>实例构造函数是一种成员，用来实现初始化一个类的实例时所需的操作。如果没有为某个类提供任何实例构造函数，则将自动提供一个不带参数的空实例构造函数。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Point</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">double</span> x, y;</span><br><span class="line">   <span class="comment">//无参数的构造函数</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.x = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">this</span>.y = <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//带参数的构造函数</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span>(<span class="params"><span class="keyword">double</span> x, <span class="keyword">double</span> y</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.x = x;</span><br><span class="line">      <span class="keyword">this</span>.y = y;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">Distance</span>(<span class="params">Point a, Point b</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">double</span> xdiff = a.x + b.x;</span><br><span class="line">      <span class="keyword">double</span> ydiff = a.y + b.y;</span><br><span class="line">      <span class="keyword">return</span> Math.Sqrt(xdiff * xdiff + ydiff * ydiff);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">string</span>.Format(<span class="string">"(&#123;0&#125;, &#123;1&#125;)"</span>, x, y);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Point a = <span class="keyword">new</span> Point();</span><br><span class="line">      Point b = <span class="keyword">new</span> Point(<span class="number">3</span>, <span class="number">4</span>);</span><br><span class="line">      <span class="keyword">double</span> d = Point.Distance(a, b);</span><br><span class="line">      Console.WriteLine(<span class="string">"Distance from &#123;0&#125; to &#123;1&#125; is &#123;2&#125;"</span>, a, b, d);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>析构函数是一种成员，用来实现析构一个类实例所需的操作。析构函数不能带参数，不能具有可访问性修饰符，也不能被显式调用。垃圾回收期间会自动调用所涉及实例的析构函数。 </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Point</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">double</span> x, y;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span>(<span class="params"><span class="keyword">double</span> x, <span class="keyword">double</span> y</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.x = x;</span><br><span class="line">      <span class="keyword">this</span>.y = y;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//析构函数</span></span><br><span class="line">   ~Point() &#123;</span><br><span class="line">      Console.WriteLine(<span class="string">"Destructed &#123;0&#125;"</span>, <span class="keyword">this</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">string</span> <span class="title">ToString</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">string</span>.Format(<span class="string">"(&#123;0&#125;, &#123;1&#125;)"</span>, x, y);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>静态构造函数是一种成员，用来实现初始化一个类所需的操作。静态构造函数不能带参数，不能具有可访问性修饰符，也不能被显式调用。类的静态构造函数是自动地被调用的。   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Personnel.Data;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Employee</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> DataSet ds;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="title">Employee</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      ds = <span class="keyword">new</span> DataSet(...);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">string</span> Name;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">decimal</span> Salary;</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承：类支持单一继承，而类型 object 是所有类的最终基类。 也就是说只要你声明了一个新类，默认地他继承于<code>object</code>类。eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="comment">//类A隐式地从object派生的类A。</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"></span>)</span> &#123; Console.WriteLine(<span class="string">"A.F"</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//类B显式地继承于A，即从A派生的类B，B也继承了A的F方法，并添加了方法G</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">B</span>: <span class="title">A</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">G</span>(<span class="params"></span>)</span> &#123; Console.WriteLine(<span class="string">"B.G"</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      B b = <span class="keyword">new</span> B();</span><br><span class="line">      b.F();         <span class="comment">// Inherited from A</span></span><br><span class="line">      b.G();         <span class="comment">// Introduced in B</span></span><br><span class="line">      A a = b;         <span class="comment">// Treat a B as an A</span></span><br><span class="line">      a.F();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//显示了一个包含虚方法 F 的类 A 和一个类 B（它重写了 F）。B 中的重写方法包含一个调用 base.F()，它调用 A 中被重写的方法。 一个类可以使用 abstract 修饰符来指示它自己是不完整的，只打算用作其他类的基类。这样的类称为抽象类。抽象类可以指定抽象成员，即非抽象派生类必须实现的成员。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//在抽象类 A 中引入了抽象方法 F。非抽象类 B 提供此方法的实现。</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">B</span>: <span class="title">A</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"></span>)</span> &#123; Console.WriteLine(<span class="string">"B.F"</span>); &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      B b = <span class="keyword">new</span> B();</span><br><span class="line">      b.F();</span><br><span class="line">      A a = b;</span><br><span class="line">      a.F();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要扩展或修改继承的方法、属性、索引器或事件的抽象实现或虚实现，必须使用<code>override</code>修饰符。   </p>
+</li>
+<li><p>函数的默认可见必为<code>private</code>，<code>internal</code>为命名空间内可见。</p>
+</li>
+</ol>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构　"></a>结构　</h2><p>类与结构有很多相似之处：结构可以实现接口，并且可以具有与类相同的成员类型。然而，结构在几个重要方面不同于类：结构为值类型而不是引用类型，并且结构不支持继承。结构的值存储在“在堆栈上”或“内联”。细心的程序员有时可以通过聪明地使用结构来增强性能。    eg:   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过类实现的Point</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">Point</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> x, y;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span>(<span class="params"><span class="keyword">int</span> x, <span class="keyword">int</span> y</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.x = x;</span><br><span class="line">      <span class="keyword">this</span>.y = y;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      Point[] points = <span class="keyword">new</span> Point[<span class="number">100</span>];</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++)</span><br><span class="line">         points[i] = <span class="keyword">new</span> Point(i, i*i);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过结构实现的Point</span></span><br><span class="line"><span class="comment">//如果将其应用于上述Test,则只出现一个实例对象（用于数组的对象）。Point 实例在数组中内联分配。此优化可能会被误用。使用结构而不是类还会使应用程序运行得更慢或占用更多的内存，因为将结构实例作为值参数传递会导致创建结构的副本。  </span></span><br><span class="line"><span class="keyword">struct</span> Point</span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> x, y;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">Point</span>(<span class="params"><span class="keyword">int</span> x, <span class="keyword">int</span> y</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.x = x;</span><br><span class="line">      <span class="keyword">this</span>.y = y;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>接口使用关键字<code>interface</code>定义，一个接口定义一个协定。实现接口的类或结构必须遵守其协定。接口可以包含方法、属性、索引器和事件作为成员。   实现接口的类或结构必须实现接口定义中指定的接口成员。  接口可以使用多重继承。类和结构可以实现多个接口。    </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//声明了一个包含索引器、事件E、方法F和属性P的接口</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title">IExample</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">string</span> <span class="keyword">this</span>[<span class="keyword">int</span> index] &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">   <span class="keyword">event</span> EventHandler E;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">F</span>(<span class="params"><span class="keyword">int</span> <span class="keyword">value</span></span>)</span>;</span><br><span class="line">   <span class="keyword">string</span> P &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">EventHandler</span>(<span class="params"><span class="keyword">object</span> sender, EventArgs e</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接口实现的多重继承，接口 IComboBox 同时从 ITextBox 和 IListBox 继承。</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title">IControl</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">Paint</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> <span class="title">ITextBox</span>: <span class="title">IControl</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">SetText</span>(<span class="params"><span class="keyword">string</span> text</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> <span class="title">IListBox</span>: <span class="title">IControl</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">SetItems</span>(<span class="params"><span class="keyword">string</span>[] items</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">interface</span> <span class="title">IComboBox</span>: <span class="title">ITextBox</span>, <span class="title">IListBox</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//类实现的多个接口，类 EditBox 从类 Control 派生，并且同时实现 IControl 和 IDataBound。 </span></span><br><span class="line"><span class="keyword">interface</span> <span class="title">IDataBound</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">Bind</span>(<span class="params">Binder b</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EditBox</span>: <span class="title">Control</span>, <span class="title">IControl</span>, <span class="title">IDataBound</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Paint</span>(<span class="params"></span>)</span> &#123;...&#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Bind</span>(<span class="params">Binder b</span>)</span> &#123;...&#125;</span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">在前面的示例中，IControl 接口中的 Paint 方法和 IDataBound 接口中的 Bind 方法是使用 EditBox 类的公共成员实现的。</span></span><br><span class="line"><span class="comment">C# 提供了另一种方式来实现这些方法，使得实现类避免将这些成员设置成公共的。</span></span><br><span class="line"><span class="comment">这就是：接口成员可以用限定名来实现。例如，在 EditBox 类中将 Paint 方法命名为</span></span><br><span class="line"><span class="comment">IControl.Paint，将 Bind 方法命名为 IDataBound.Bind 方法。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EditBox</span>: <span class="title">IControl</span>, <span class="title">IDataBound</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">void</span> IControl.Paint() &#123;...&#125;</span><br><span class="line">   <span class="keyword">void</span> IDataBound.Bind(Binder b) &#123;...&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">用这种方式实现的接口成员称为显式接口成员，这是因为每个成员都显式地指定要实现的接口成员。</span></span><br><span class="line"><span class="comment">显式接口成员只能通过接口来调用。例如，在 EditBox 中实现的 Paint </span></span><br><span class="line"><span class="comment">方法只能通过强制转换为 IControl 接口来调用。测试如下</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      EditBox editbox = <span class="keyword">new</span> EditBox();</span><br><span class="line">      editbox.Paint();   <span class="comment">// error: no such method</span></span><br><span class="line">      IControl control = editbox;</span><br><span class="line">      control.Paint();   <span class="comment">// calls EditBox's Paint implementation</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="委托"><a href="#委托" class="headerlink" title="委托"></a>委托</h2><p>委托使用关键字<code>delegate</code>声明。委托适用于那种在某些其他语言中需用函数指针来解决的情况（场合）。但是，与函数指针不同，委托是面向对象和类型安全的。 委托声明定义一个类，它是从 System.Delegate 类派生的类。委托实例封装了一个调用列表，该列表列出了一个或多个方法，每个方法称为一个可调用实体。对于实例方法，可调用实体由一个实例和该实例的方法组成。对于静态方法，可调用实体仅由一个方法组成。如果用一组合适的参数来调用一个委托实例，则该委托实例所封装的每个可调用实体都会被调用，并且用的都是上述的同一组参数。<br>委托实例的一个有趣且有用的属性是：它既不知道也不关心有关它所封装的方法所属的类的种种详情；对它来说最重要的是这些方法与该委托的类型兼容。   </p>
+<p>定义和使用委托分三个步骤：声明、实例化和调用。  eg:  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//声明一个名为SimpleDelegate的委托</span></span><br><span class="line"><span class="function"><span class="keyword">delegate</span> <span class="keyword">void</span> <span class="title">SimpleDelegate</span>(<span class="params"></span>)</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      System.Console.WriteLine(<span class="string">"Test.F"</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">   <span class="comment">//创建一个委托实例并调用</span></span><br><span class="line">      SimpleDelegate d = <span class="keyword">new</span> SimpleDelegate(F);</span><br><span class="line">      d();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//重复调用委托委托的方法</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultiCall</span>(<span class="params">SimpleDelegate d, <span class="keyword">int</span> count</span>)</span> &#123;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">      d();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><p>与C/C++中一样，没什么可说的。枚举类型声明为一组相关的符号常数定义了一个类型名称。枚举用于“多项选择”场合，就是程序运行时从编译时已经设定的固定数目的“选择”中做出决定。使用枚举的好处使用枚举胜过使用整数常数（在没有枚举的语言中很常见），这是因为使用枚举使代码更具可读性和自归档。注意枚举其实就是多选一。  </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> Color </span><br><span class="line">&#123;</span><br><span class="line">   Red,</span><br><span class="line">   Blue,</span><br><span class="line">   Green</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title">Shape</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Fill</span>(<span class="params">Color color</span>)</span> &#123;</span><br><span class="line">      <span class="keyword">switch</span>(color) &#123;</span><br><span class="line">         <span class="keyword">case</span> Color.Red:</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> Color.Blue:</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> Color.Green:</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="命名空间和程序集"><a href="#命名空间和程序集" class="headerlink" title="命名空间和程序集"></a>命名空间和程序集</h2><p>命名空间和程序集有助于开发基于组件的系统。命名空间提供一个逻辑组织体系。命名空间既用作程序的“内部”组织体系，也用作“外部”组织体系（一种表示向其他程序公开程序元素的途径）。</p>
+<p>程序集用于物理打包和部署。程序集可以包含类型、用于实现这些类型的可执行代码以及对其他程序集的引用。</p>
+<p>有两种主要的程序集：应用程序和库。应用程序有一个主入口点，通常具有 .exe 文件扩展名；而库没有主入口点，通常具有 .dll 文件扩展名。将hello world程序分成dll和exe的实例主要分成两步：编写dll组件和编写调用dll组件的应用程序。  </p>
+<ol>
+<li><code>HelloLibrary.dll的源程序：</code>   <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HelloLibrary.cs</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Microsoft.CSharp.Introduction</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">HelloMessage</span></span><br><span class="line">   &#123;</span><br><span class="line">      <span class="keyword">public</span> <span class="keyword">string</span> Message &#123;</span><br><span class="line">         <span class="keyword">get</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"hello, world"</span>;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>将其编译为<code>.dll</code>的方法为<code>csc /target:library HelloLibrary.cs</code>，会生成一个名为<code>HelloLibrary.dll</code>的文件。<br>关于命名空间的组织方式中   </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">Microsoft.CSharp.Introduction</span></span><br><span class="line">&#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>等价于：    </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> <span class="title">Microsoft</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">namespace</span> <span class="title">CSharp</span></span><br><span class="line">   &#123;</span><br><span class="line">      <span class="keyword">namespace</span> <span class="title">Introduction</span></span><br><span class="line">      &#123;...&#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>将“hello, world”组件化的下一个步骤是编写使用 HelloMessage 类的控制台应用程序。可以使用此类的完全限定名 Microsoft.CSharp.Introduction.HelloMessage，但该名称太长，使用起来不方便。一种更方便的方法是使用“using 命名空间指令”，这样，使用相应的命名空间中的所有类型时就不必加限定名称。  <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HelloApp.cs</span></span><br><span class="line"><span class="keyword">using</span> Microsoft.CSharp.Introduction;</span><br><span class="line"><span class="keyword">class</span> <span class="title">HelloApp</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">      HelloMessage m = <span class="keyword">new</span> HelloMessage();</span><br><span class="line">      System.Console.WriteLine(m.Message);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+调用<code>.dll</code>的编译方法为<code>csc /reference:HelloLibrary.dll HelloApp.cs</code>，编译后会生成一个<code>HelloApp.exe</code>的可执行文件。  </li>
+</ol>
+<p>C# 还允许定义和使用别名。using 别名指令定义类型的别名。当两个类库之间发生名称冲突时，或者当使用大得多的命名空间中的少数类型时，这类别名很有用。<code>using MessageSource = Microsoft.CSharp.Introduction.HelloMessage;</code>  </p>
+<p>这样就可以将<code>Hello World</code>程序组件化，只有将相应的<code>.dll</code>文件和<code>.exe</code>放入同一文件夹下才能正常运行。    </p>
+<h2 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h2><p>版本控制是一个过程，它以兼容的方式对组件进行不断的改进。如果依赖于早期版本的代码重新编译后可以适用于新版本，则组件的新版本与早期版本源代码兼容。相反，如果依赖于早期版本的应用程序不用重新编译即可适用于新版本，则组件的新版本为二进制兼容。<br>使用<code>new</code>关键字和<code>override</code>关键字来明确对父类方法的隐藏或者重写。eg: </p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">   System.Console.WriteLine(<span class="string">"Derived.F"</span>); </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">F</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">   <span class="keyword">base</span>.F();</span><br><span class="line">   System.Console.WriteLine(<span class="string">"Derived.F"</span>); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><h2 id="其他总结"><a href="#其他总结" class="headerlink" title="其他总结"></a>其他总结</h2><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><ol>
+<li>所有<code>String</code>类方法官方链接：<a href="https://msdn.microsoft.com/zh-cn/library/system.string.aspx" target="_blank" rel="noopener">https://msdn.microsoft.com/zh-cn/library/system.string.aspx</a>  </li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Csharp/" rel="tag"># Csharp</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/08/12/Determine-block-size/" rel="prev" title="Streaming MultiProcessor、Register、Shared-Memory对线程块尺寸的影响">
+      <i class="fa fa-chevron-left"></i> Streaming MultiProcessor、Register、Shared-Memory对线程块尺寸的影响
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/10/04/Regular-Expression-Study-Note/" rel="next" title="正则表达式学习笔记">
+      正则表达式学习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资源"><span class="nav-number">1.</span> <span class="nav-text">参考资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">2.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本语法"><span class="nav-number">3.</span> <span class="nav-text">基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型"><span class="nav-number">3.1.</span> <span class="nav-text">类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量和参数"><span class="nav-number">3.2.</span> <span class="nav-text">变量和参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表达式"><span class="nav-number">3.3.</span> <span class="nav-text">表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语句"><span class="nav-number">3.4.</span> <span class="nav-text">语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动内存管理"><span class="nav-number">4.</span> <span class="nav-text">自动内存管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类"><span class="nav-number">5.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构"><span class="nav-number">6.</span> <span class="nav-text">结构　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口"><span class="nav-number">7.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#委托"><span class="nav-number">8.</span> <span class="nav-text">委托</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#枚举"><span class="nav-number">9.</span> <span class="nav-text">枚举</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命名空间和程序集"><span class="nav-number">10.</span> <span class="nav-text">命名空间和程序集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本控制"><span class="nav-number">11.</span> <span class="nav-text">版本控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性"><span class="nav-number">12.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他总结"><span class="nav-number">13.</span> <span class="nav-text">其他总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">14.</span> <span class="nav-text">字符串</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2015/09/11/C-sharp-study-notes/";
+    this.page.identifier = "2015/09/11/C-sharp-study-notes/";
+    this.page.title = "C-sharp-study-notes";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

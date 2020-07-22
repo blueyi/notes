@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="forkLinux多进程编程中的可以使用fork函数来创建子进程。fork函数定义在头文件unistd.h中（uni表示unix，std当然是标准库，所以很好记），该函数的声明为pid_t fork(void)其中函数的返回值类型为pid_t，可以理解为一个整型，返回值具体为：  在父进程中，fork返回新创建的子进程的进程ID； 在子进程中，fork返回0； 如果创建子进程失败，则返回一个负值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux下fork函数及pthread函数的总结">
+<meta property="og:url" content="http://notes.maxwi.com/2016/08/17/linux-fork/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="forkLinux多进程编程中的可以使用fork函数来创建子进程。fork函数定义在头文件unistd.h中（uni表示unix，std当然是标准库，所以很好记），该函数的声明为pid_t fork(void)其中函数的返回值类型为pid_t，可以理解为一个整型，返回值具体为：  在父进程中，fork返回新创建的子进程的进程ID； 在子进程中，fork返回0； 如果创建子进程失败，则返回一个负值">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://notes.maxwi.com/2016/08/17/linux-fork/fork-1.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/2016/08/17/linux-fork/fork-2.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/2016/08/17/linux-fork/fork-4.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/2016/08/17/linux-fork/fork-5.jpg">
+<meta property="article:published_time" content="2016-08-17T04:49:27.000Z">
+<meta property="article:modified_time" content="2017-12-19T16:24:08.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="fork">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://notes.maxwi.com/2016/08/17/linux-fork/fork-1.jpg">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/08/17/linux-fork/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux下fork函数及pthread函数的总结 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/08/17/linux-fork/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux下fork函数及pthread函数的总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-08-17 12:49:27" itemprop="dateCreated datePublished" datetime="2016-08-17T12:49:27+08:00">2016-08-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-20 00:24:08" itemprop="dateModified" datetime="2017-12-20T00:24:08+08:00">2017-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/08/17/linux-fork/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/08/17/linux-fork/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>7.4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>7 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h1><p>Linux多进程编程中的可以使用fork函数来创建子进程。fork函数定义在头文件unistd.h中（uni表示unix，std当然是标准库，所以很好记），该函数的声明为<code>pid_t fork(void)</code>其中函数的返回值类型为pid_t，可以理解为一个整型，返回值具体为：</p>
+<ul>
+<li>在父进程中，fork返回新创建的子进程的进程ID；</li>
+<li>在子进程中，fork返回0；</li>
+<li>如果创建子进程失败，则返回一个负值</li>
+</ul>
+<p>具体创建的子进程与父进程的关系，很显示fork函数不能接受任何参数，它只简单地将父进程的几乎所有资源全部复制给子进程，然后就相当于父进程的一个副本运行，且无法与父进行共享数据。<br>具体 来说使用fork函数得到的子进程从父进程继承了整个进程的地址空间，包括：进程上下文、进程堆栈、内存信息、打开的文件描述符、信号控制设置、进程优先级、进程组号、当前工作目录、根目录、资源限制、控制终端等。<br><strong>子进程与父进程的区别在于：</strong></p>
+<ul>
+<li>父进程设置的锁，子进程不继承（因为如果是排它锁，被继承的话，矛盾了） </li>
+<li>各自的进程ID和父进程ID不同 </li>
+<li>子进程的未决告警被清除； </li>
+<li>子进程的未决信号集设置为空集。</li>
+</ul>
+<a id="more"></a>
+<p>当然linux下的头文件sched.h中有一个fork升级版本的进程创建函数clone。clone是fork的升级版本，不仅可以创建进程或者线程，还可以指定创建新的命名空间（namespace）、有选择的继承父进程的内存、甚至可以将创建出来的进程变成父进程的兄弟进程等。clone() 函数则可以将部分父进程的资源通过参数设定有选择地复制给子进程，没有复制的资源可以通过指针共享给子进程<br>下面主要分析fork函数创建进程数及运行情况<br>获取进程ID的相关函数有：</p>
+<ul>
+<li>getppid()返回当前进程的父进程ID</li>
+<li>getpid()返回当前进程ID</li>
+</ul>
+<p>这两个函数都在头文件unistd.h中，不接受参数，返回值类型为pid_t<br>网上关于fork函数创建多少个子进程的分析有很多，这里说一个简单分析方法，其实fork就是为父进程创建子进程，也就是说一个进程，执行fork之后就会变成2个进程，仅此而已。当执行多次fork函数时与二叉树很像，从根结点往叶子节点，每次一个变2个，可以很好地用二叉树来分析创建的子进程树，以及涉及到循环时，循环执行的次数。首先说一下结论：假定根结点为二叉树的第0层（为了方便后面分析），每执行一次fork，就增加一层，如果使用循环执行n个fork，则共有n层，相应满二叉树的叶子结点数2^n即为总共创建的子进程数（根为第0层），满二叉树除了根结点之外的总结点数2^(n+1)-2就是循环执行的总次数。也就是说 <strong>执行n次fork函数，创建的子进程数为2^n个，用循环创建的fork时，循环执行的总次数为2^(n+1)-2次</strong><br>下面使用几个实例分析根据fork的原理和二叉树方法（其实也是根据原理）来分析：</p>
+<h2 id="fork-用法"><a href="#fork-用法" class="headerlink" title="fork()用法"></a><strong>fork()用法</strong></h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">pid_t</span> fpid; <span class="comment">//创建一个临时变量用于存放fork的返回值</span></span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    fpid = fork();  <span class="comment">//创建子进程，父进程与子进程将分别执行此后的代码</span></span><br><span class="line">    <span class="keyword">if</span> (fpid &lt; <span class="number">0</span>)   <span class="comment">//创建子进程失败时将返回负值</span></span><br><span class="line">    ¦   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Error in fork!"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (fpid == <span class="number">0</span>) &#123;  <span class="comment">//子进程中fork的返回值为0，所以将由子进程执行该分支</span></span><br><span class="line">    ¦   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Child: parent_pid:"</span> &lt;&lt; getppid() &lt;&lt; <span class="string">" pid:"</span> &lt;&lt; getpid() &lt;&lt; <span class="string">" child_pid:"</span> &lt;&lt; fpid &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    ¦   count++;  <span class="comment">//子进程复制来的count值为0，++之后将为1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;  <span class="comment">//父进程中fork的返回值为子进程的pid，所以将由父进程执行该分支</span></span><br><span class="line">    ¦   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Parent: parent_pid:"</span> &lt;&lt; getppid() &lt;&lt; <span class="string">" pid:"</span> &lt;&lt; getpid() &lt;&lt; <span class="string">" child_pid:"</span> &lt;&lt; fpid &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    ¦   count++;  <span class="comment">//父进程中count为0，父子进程中的变量等数据是完全独立的</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"count: "</span> &lt;&lt; count &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//最后输出count的当前值，显示该句父子进程都要执行</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Parent: parent_pid:<span class="number">3084</span> pid:<span class="number">3087</span> child_pid:<span class="number">3088</span></span><br><span class="line">count: <span class="number">1</span></span><br><span class="line">Child:  parent_pid:<span class="number">3087</span> pid:<span class="number">3088</span> child_pid:<span class="number">0</span></span><br><span class="line">count: <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>可以看到父进程的中创建的子进程的pid:3088刚好是子进程当前的pid，两个进程输出的count都是1，也就是只进行了一次累加<br>套用上面关于二叉树方法分析的情况，执行一次fork，即2^1=2两个进程</p>
+<h2 id="通过循环执行多个fork-1"><a href="#通过循环执行多个fork-1" class="headerlink" title="通过循环执行多个fork-1"></a><strong>通过循环执行多个fork-1</strong></h2><p>不看输出的话考虑输出结果是什么，会输出多少次</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">4</span>; ++i) &#123;  <span class="comment">//通过for循环执行3次fork</span></span><br><span class="line">    ¦   fork();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; ++count &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>执行第一个fork时，由原来的1个进程变成2个进程，第二次fork时，由2个变成4个，第三次fork时，由4个变成8个。所以最终共有8个进程。<br>二叉树法分析：<br>一共8个1，for循环中执行了3次fork，共创建了2^3=8个子进程，所以共有8个1输出。如下二叉树图中叶子结点所示：<br><img data-src="fork-1.jpg" alt=""><br>红色结点（即叶子结点）为创建的所有子进程<br>如图中标识，C1、P2、P3都是P1的子进程，只是它们创建于p1的不同时期，同样P4是P2的子进程，从C1创建的子进程有C2，C3。其中来自不同颜色的箭头表示不同的关系，箭头表示父进程-&gt;子进程，相同颜色的线表示来自同一个进程。<br>可以通过以下代码来验证：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">4</span>; ++i) &#123; </span><br><span class="line">    ¦   fork();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//分别输出各进程的父进程PID:当前进程PID:子进程PID</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; getppid() &lt;&lt; <span class="string">" : "</span> &lt;&lt; getpid() &lt;&lt; <span class="string">" : "</span> &lt;&lt; fpid &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>某一次的执行结果为（每次执行的结果都不一样，因为进程号肯定不同，当然有可能会出现进程号为1的情况，由于当获取父进程时，如果父进程此时已经执行完成并退出，那么系统中就不存在此进程，此时就返回其进程号为1）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">3628 : 3630 : 3633</span><br><span class="line">3630 : 3633 : 0</span><br><span class="line">3629 : 3634 : 0</span><br><span class="line">3628 : 3629 : 3634</span><br><span class="line">3625 : 3628 : 3632</span><br><span class="line">3628 : 3632 : 0</span><br><span class="line">3629 : 3631 : 3635</span><br><span class="line">3631 : 3635 : 0</span><br></pre></td></tr></table></figure>
+<p>可以根据类似链表的关系画出如下图：<br>!()[fork-1-1.jpg]<br>再根据上图的分析，很容易推断出各进程的ID在二叉树图上的对应关系</p>
+<h2 id="通过循环执行多个fork-2"><a href="#通过循环执行多个fork-2" class="headerlink" title="通过循环执行多个fork-2"></a><strong>通过循环执行多个fork-2</strong></h2><p>注意下面的代码与上面fork-1中的唯一区别是将输出放在了for循环里面<br>不看输出的话考虑输出结果是什么，会输出多少次</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; <span class="number">4</span>; ++i) &#123;  <span class="comment">//通过for循环执行3次fork</span></span><br><span class="line">    ¦   fork();</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; ++count &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p>创建的子进程数分析与fork-1中一样，都是8个子进程。关于for循环中的输出执行次数，当i=1时，执行一次fork，创建2个子进程，记为p1, c1（px表示父进程，cx表示子进程），进程p1,c1将分别从i=1执行到i=3，在for循环内部共执行2<em>3=6次，即这两个子进程会分别输出1，2，3各一次。由于这两个进程在执行for循环时还会继续创建进程，所以它们的2个1会首先输出在前面。当i=2时，执行第二次fork，之前的2个进程p1, c1将分别再创建一个进程，记为p2、c2（假设p2来自p1,c2来自c1），p2、c2将从i=2开始执行到i=3，这两个进程for循环内部共执行2</em>2=4次。当前执行到i=2时共有4个进程，分别为p1、c1、p2、c2，它们会分别输出一次2，共输出4个2。当i=3时，当前的4个进程将再分别创建一个进程，共创建4个进程，新创建的4个进程将各自执行一次for循环内部，for循环即结束了，共执行4次for循环内部。此时共有8个进程，每个进程都会输出一次3，共8个3。再综合各个进程中for循环执行的次数，可知6+4+4=14次，所以共有14个输出。</p>
+<p>二叉树分析如下图所示：<br><img data-src="fork-2.jpg" alt=""><br>从上图可以看出i的取值为1，2，3阶段，各阶段执行的进程数分别为2，4，8，虽然一共只有8个进程，但for循环各阶段的进程都会进行一次输出，所以共输出14次，即为二叉树除根节点的结点总数2^4-2=14。</p>
+<h2 id="fork-fork-进程数"><a href="#fork-fork-进程数" class="headerlink" title="fork()||fork()进程数"></a><strong>fork()||fork()进程数</strong></h2><p>分析如下代码创建的进程数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    fork() || fork();</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; count &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>由于fork函数在不同进程中的返回值不同，在子进程中返回为0，所以第一个fork执行完之后会有两个进程，父进程中fork返回值为真，||后面的代码不会执行，直接返回。子进程中fork()返回值为0，需要继续执行后面一个fork，再次为子进程创建一个子进程，所以共有3个子进程。<br>画二叉树分析：<br><img data-src="fork-4.jpg" alt=""><br>图中叶子节点数即为进程数。</p>
+<h2 id="fork-amp-amp-fork-fork"><a href="#fork-amp-amp-fork-fork" class="headerlink" title="fork()&amp;&amp;fork()||fork()"></a><strong>fork()&amp;&amp;fork()||fork()</strong></h2><p>分析以下代码创建的进程数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    (fork() &amp;&amp; fork()) || fork();</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; count &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>首先第一个fork执行完之后为父进程（记为p1）创建一个子进程，记为c1，由于子进程fork返回值为0，所以子进程中第一个括号&amp;&amp;后面的表达式不需要再执行。父进程p1需要继续执行第二个fork，再次创建一个子进程p2，父进程p1的fork返回为真，||后面的不需要再执行。第二个子进程p2需要继续执行第三个fork，再次为第二子进程创建一个子进程p3，同样由于c1进程fork返回值为0，所以也还需要执行第三个fork，为其创建一个子进程c2，所以一共会创建5个进程。<br>画二叉树分析，如下图：<br><img data-src="fork-5.jpg" alt=""></p>
+<p>对于以下代码创建的进程数为多少？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    fork();  <span class="comment">//执行完后将有2个进程</span></span><br><span class="line">    (fork() &amp;&amp; fork()) || fork();  <span class="comment">//根据上面分析，这部分会创建5个进程，执行完成会有2*5=10个进程</span></span><br><span class="line">    fork();  <span class="comment">//执行完这句进程数会再次翻倍</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; count &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果为2<em>5</em>2=20，自行分析，这类问题只需要分步分析即可，如果涉及到一些输出的情况，最好画图看看</p>
+<h2 id="循环fork，不刷新输出缓冲区的情况"><a href="#循环fork，不刷新输出缓冲区的情况" class="headerlink" title="循环fork，不刷新输出缓冲区的情况"></a><strong>循环fork，不刷新输出缓冲区的情况</strong></h2><p>考虑以下程序会输出多少个*：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123; </span><br><span class="line">        fork(); </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"*"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">************************</span><br></pre></td></tr></table></figure>
+<p>按照通常的的想法，比如我们之前的公式，应该输出2^4-2=14个<em>，实际上输出结果去是3</em>8=24个<em>。<br>因为std::cout后面没有输出\n或者std::endl，也就是说在输出时没有刷新输出缓冲区，会导致父进程中的输出缓冲区内容依然是上次的内容，子进程在复制时同样会复制输出缓冲区中的内容，导致子进程输出缓冲区的内容实际上与父进程是一样的。由于第一个父进程的for循环会执行3次，输出缓冲区中会有3个</em>，虽然有的子进程的循环只能执行2次或1次，但输出缓冲区中的内容并没有少，所以同样最终也都会输出3个<em>。一共有8个进程，所以共有3</em>8=24个*输出。</p>
+<h2 id="fork与虚拟地址空间"><a href="#fork与虚拟地址空间" class="headerlink" title="fork与虚拟地址空间"></a><strong>fork与虚拟地址空间</strong></h2><p>思考下面这段程序的输出中父进程与子进程中的num及num地址是否相同：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pid;</span><br><span class="line">    <span class="keyword">int</span> num=<span class="number">1</span>;</span><br><span class="line">    pid=fork();</span><br><span class="line">    <span class="keyword">if</span>(pid&gt;<span class="number">0</span>)&#123;</span><br><span class="line">    ¦   num++;</span><br><span class="line">    ¦   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"in parent:num:"</span> &lt;&lt; num &lt;&lt; <span class="string">" addr:"</span> &lt;&lt; &amp;num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid==<span class="number">0</span>)&#123;</span><br><span class="line">    ¦   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"in child:num:"</span> &lt;&lt; num &lt;&lt; <span class="string">" addr:"</span> &lt;&lt; &amp;num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in parent:num:<span class="number">2</span> addr:<span class="number">0x7fffed819768</span></span><br><span class="line">in child:num:<span class="number">1</span>  addr:<span class="number">0x7fffed819768</span></span><br></pre></td></tr></table></figure>
+<p>竟然num的地址为父进程与子进程中是一样的，但num的值却是不同的，之所以会出现这种情况是因为linu的虚拟地址空间策略下，所有进程都以为自己独享整个地址空间，所以每个进程都可以有0x01地址空间，但其实际映射到的真实地址空间并不相同。就像本文刚开始时说的一样，fork在复制时会继承父进程的整个地址空间，所以num的输出地址是一样的。</p>
+<h1 id="pthread"><a href="#pthread" class="headerlink" title="pthread"></a>pthread</h1><p>最后说一下Linux下的pthread函数，该函数属于POSIX线程（POSIX threads）标准，该标准定义了一套用于线程的API，pthread函数包含在头文件pthread.h中。</p>
+<h2 id="线程-VS-进程"><a href="#线程-VS-进程" class="headerlink" title="线程 VS 进程"></a>线程 VS 进程</h2><p>线程也称为轻量级的进程（lightweight process, LWP），在支持线程的系统中，线程是CPU调度和分派的基本单元；传统操作系统中CPU高度和分派的基本单位是进程，传统上的进程（相当于只含有一个线程的进程）也被称为重量级进程（heavyweight process, HWP）。当一个进程包含多个线程时，相当于将进程的任务划分成多个子任务，由线程同时执行多个任何。<br>进程中引入线程后，线程即作为CPU调度和分派的基本单位，而进程则作为资源拥有的基本单位，同一进程中的线程切换不会引起进程切换，可以避免昂贵的系统调用。<br>因为进程之间可以并发执行，而同一进程中的线程之间也可以并发执行，所以线程提高了操作系统的并发性，能更有效的使用系统资源和提高系统的吞吐量。<br>线程拥有自己独立的栈、调度优先级和策略、信号屏蔽字（创建时继承）、errno变量以及线程私有数据，这些资源相对于进程占用的资源来说很少。进程的其他地址空间（包含进程的代码段、数据段以及其他系统资源，如已打开的文件、IO设备等）均被所有线程所共享，因此线程可以访问进程的全局变量和堆中分配的数据，并通过同步机制保证对数据访问的一致性。这样多线程相对于进程可以降低系统开销。</p>
+<h2 id="pthread线程操作相关的函数或类型"><a href="#pthread线程操作相关的函数或类型" class="headerlink" title="pthread线程操作相关的函数或类型"></a>pthread线程操作相关的函数或类型</h2><ul>
+<li>pthread_t 是pthread的线程ID</li>
+<li>pthread_create()用于创建新的线程</li>
+<li>pthread_equal()用于比较两个线程id是否相等</li>
+<li>pthread_self() 用于获取当前线程的id</li>
+<li>pthread_exit() 线程调用该函数主动退出线程</li>
+<li>pthread_join() 用于线程同步，以阻塞的方式等待指定线程结束</li>
+</ul>
+<p>参考：</p>
+<ul>
+<li><a href="http://blog.csdn.net/jason314/article/details/5640969" target="_blank" rel="noopener">http://blog.csdn.net/jason314/article/details/5640969</a></li>
+<li>man fork</li>
+<li>man pthreads</li>
+<li>其他网络搜索</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/fork/" rel="tag"># fork</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/08/03/linux-soft-hard-link/" rel="prev" title="Linux下的软链接和硬链接">
+      <i class="fa fa-chevron-left"></i> Linux下的软链接和硬链接
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/09/22/big-number/" rel="next" title="超大整数实现及其四则运算">
+      超大整数实现及其四则运算 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#fork"><span class="nav-number">1.</span> <span class="nav-text">fork</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fork-用法"><span class="nav-number">1.1.</span> <span class="nav-text">fork()用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过循环执行多个fork-1"><span class="nav-number">1.2.</span> <span class="nav-text">通过循环执行多个fork-1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过循环执行多个fork-2"><span class="nav-number">1.3.</span> <span class="nav-text">通过循环执行多个fork-2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork-fork-进程数"><span class="nav-number">1.4.</span> <span class="nav-text">fork()||fork()进程数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork-amp-amp-fork-fork"><span class="nav-number">1.5.</span> <span class="nav-text">fork()&amp;&amp;fork()||fork()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环fork，不刷新输出缓冲区的情况"><span class="nav-number">1.6.</span> <span class="nav-text">循环fork，不刷新输出缓冲区的情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork与虚拟地址空间"><span class="nav-number">1.7.</span> <span class="nav-text">fork与虚拟地址空间</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pthread"><span class="nav-number">2.</span> <span class="nav-text">pthread</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程-VS-进程"><span class="nav-number">2.1.</span> <span class="nav-text">线程 VS 进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pthread线程操作相关的函数或类型"><span class="nav-number">2.2.</span> <span class="nav-text">pthread线程操作相关的函数或类型</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/08/17/linux-fork/";
+    this.page.identifier = "2016/08/17/linux-fork/";
+    this.page.title = "Linux下fork函数及pthread函数的总结";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

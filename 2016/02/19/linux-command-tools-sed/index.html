@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里正则表达式学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux实用工具总结之sed">
+<meta property="og:url" content="http://notes.maxwi.com/2016/02/19/linux-command-tools-sed/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里正则表达式学习笔记">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-02-19T01:34:02.000Z">
+<meta property="article:modified_time" content="2017-12-26T14:50:53.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="sed">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/02/19/linux-command-tools-sed/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux实用工具总结之sed | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/02/19/linux-command-tools-sed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux实用工具总结之sed
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-02-19 09:34:02" itemprop="dateCreated datePublished" datetime="2016-02-19T09:34:02+08:00">2016-02-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-26 22:50:53" itemprop="dateModified" datetime="2017-12-26T22:50:53+08:00">2017-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/02/19/linux-command-tools-sed/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/02/19/linux-command-tools-sed/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一些会比较经常用到的Linux下的工具，当然都是命令行。多数工具需要与正则表达式配合使用，所以可以很多工具使用前都需要先了解正则表达式，正则表达式可以参考这里<a href="http://notes.maxwi.com/2015/10/04/Regular-Expression-Study-Note/">正则表达式学习笔记</a>   </p>
+<a id="more"></a>
+
+<h2 id="关于"><a href="#关于" class="headerlink" title="关于"></a>关于</h2><p>sed是流编辑器，全称为stream editor，即sed可以直接处理管道传递来的命令，当然sed也支持直接处理文件。sed的处理单位为行，也就是说它会根据自己的参数对文件或流中的内容一行一行地进行处理，包含替换、删除、新增、获取特定行等。默认情况下sed处理的是文件的副本，如果要直接改写文件，需要使用选项参数-i。</p>
+<h2 id="sed的基本用法"><a href="#sed的基本用法" class="headerlink" title="sed的基本用法"></a>sed的基本用法</h2><p><strong>sed [可选项] [命令模式] [文件名]</strong> </p>
+<p>下面分别讲一下常用的可选项和常用的命令 </p>
+<h2 id="可选项"><a href="#可选项" class="headerlink" title="可选项"></a>可选项</h2><p><strong><code>-n</code>，<code>--quiet</code>, <code>--silent</code>静默输出</strong><br>默认情况下sed会输出所有行，并在处理完一行之后立即输出被处理过之后的结果行，这就导致输出之后会多出我们并不需要的未处理的行。例如<code>sed &#39;/abc/p&#39; ts.txt</code>，这里我们使用sed只是进行匹配，并调用命令p输出，这样会输出ts.txt中的所有行，并将含abc的行多输出一次，如果想只输出被命令p处理的行。则使用-n选项，表示不显示处理过程，只输出被sed处理过的行。<br><strong><code>-e</code>后跟需要执行的命令模式</strong><br>sed后面可以接多个-e指定的命令模式来进行连续处理。如：<br>将ts.txt中所有第5行到第7行中的第一个abc替换成cdf，并将所有行中的第一个love替换成LOVE，命令如下，暂时只需要知道命令s是替换的功能，跟vim中的s功能简直完全一样：<br><code>sed -e &#39;5,7s/abc/cdf/&#39; -e &#39;s/love/LOVE/&#39; ts.txt</code><br>更多内容参见下面的-f<br><strong><code>-f</code> 后跟一个含有命令模式的文件</strong><br>sed从该文件加载命令模式来处理各行。默认情况下当不提供-e，-f选项时，sed命令后面的第一个非可选项（即以-开头）将被当成模式被执行。所以当不是需要同时顺序执行多个命令时，可以不用-e选项。<br><strong><code>-r</code>,<code>--regexp-extended</code> 表示采用扩展正则表达式</strong><br><strong><code>-i</code> 表示直接在原文件中修改</strong> 这个应该是最重要的命令，因为默认情况下sed并不会修改原文件</p>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p>命令配合正则表达式组成的模式是sed的关键，命令模式的格式一般为<code>“[address1],[address2] [command] [arguments]”</code>。<br>命令格式即可以使用单引号包括，也可以使用双引号，单引号和双引号可以配合使用，例如要匹配双引号时，可以<code>&#39;/&quot;/&#39;</code>，当然也可以使用转义<code>\</code>。用address来表示想要处理的行范围，当然如果省略所有address表示处理所有行，如果只有一个address，则表示只处理匹配到的这一行。address即可以是行号，也可以是通过正则表达式匹配到的行（sed处理的单位永远是行），例如从第3行到第6行应用命令d（表示删除）：<code>sed &#39;3, 6d&#39;</code>，或者删除从第一个含有<code>abc</code>的行开始到第一个含有<code>xyz</code>之间的行：<code>sed &#39;/abc/,/xyz/d&#39;</code>。而且address还支持相对位置，例如从第一个匹配行开始的后面连接5行输出：<code>sed &#39;/abc/, +5p&#39;</code>。sed命令中所有需要正则匹配的地方都是放在斜扛<code>/</code>之间。`</p>
+<h3 id="行内匹配并替换命令s"><a href="#行内匹配并替换命令s" class="headerlink" title="行内匹配并替换命令s"></a><strong>行内匹配并替换命令<code>s</code></strong></h3><p><code>s</code>命令非常常用（substitute），跟vim中的s功能几乎完全一样，<br>使用格式为<code>sed &#39;[addr1][,addr2]s/exp1/exp2/flag&#39;</code><br>其中flag可以取<code>g</code>表示行内全局替换（即替换一行中的所有匹配的串）。或者接一个数字，表示替换一行中的第几个匹配到的串。或者接<br>字符<code>p</code>表示向标准输出打印结果（其实p也是一个单独的命令）<br><em><code>s</code>命令支持使用分号<code>;</code>进行多个匹配处理，使用<code>&amp;</code>表示匹配到的变量，$可以代表最后一行，正则表达式中圆括号匹配的内容可以被当成变量</em><br>下面举几个例子说明：<br><em>将所有行中的第一个abc替换为xyz：</em><br><code>sed &#39;s/abc/xyz/&#39; ts.txt</code></p>
+<p><em>将第3行到第6行中的第2开始的abc替换成xyz并输出处理之后的结果行：</em><br><code>sed -n &#39;3,6s/abc/xyz/p&#39; ts.txt</code></p>
+<p><em>在原文件中将从第一个含有ab1的行开始到第一个含有xy2的行中的所有my替换成MY：</em><br><code>sed -i &#39;/ab1/,/xy2/s/my/MY/g&#39; ts.txt</code></p>
+<p><em>将从第8行开始到第一个含有abc的行中的第2个开始的my全部替换为your：</em><br><code>sed &#39;8,/abc/s/my/your/2g&#39; ts.txt</code></p>
+<p><em>将1到3行中的abc替换成xyz，并去掉3行之后的所有abc：</em><br><code>sed &#39;s/abc/xyz/g; 3,$s/abc//g&#39; ts.txt</code><br>上述处理等价于两个<code>-e</code>的处理<code>sed -e &#39;s/abc/xyz/g&#39; -e &#39;3,$s/abc//g&#39; ts.txt</code></p>
+<p><em>将所有行中的abc使用圆括：</em><br><code>sed &#39;s/abc/(&amp;)/g&#39; ts.txt</code></p>
+<p><em>打印出html文件中所有除标签之外的行中内容：</em><br><code>sed -n &#39;s/&lt;[^&gt;]*&gt;//gp&#39; ts.html</code></p>
+<p><em>输出文件中所有含abc[n]和love[n]的行中的abc[n]和love[n]输出，并以:分隔：</em><br><code>sed -n &#39;s/.*\(abc\d*\).*\(love\d*\).*/\1:\2/gp&#39; ts.txt</code><br>注意匹配中的圆括号需要使用转义字符转义，表示其是正则表达式中的意义，后面使用\1,\2…来表示匹配到的变量</p>
+<p><strong>行替换命令<code>c</code></strong><br>用法与<code>s</code>类似，不过<code>c</code>命令是直接替换整行，而不是在行内进行替换，用法为：<br><code>sed &#39;[addr1][,addr2]c string&#39;</code>表示将addr1到addr2行内容替换为string，注意这里不是将两个地址之间的各行替换为string，而是指一起替换为一行，但当为单一的正则匹配时，匹配多少行就替换多少行。<br>下面举例说明：<br><em>将3到8行替换为一行love：</em><br><code>nl ts.txt | sed &#39;3,8c love&#39;</code><br>前面的nl命令是为了显示行号。</p>
+<p><em>将所有行替换为love：</em><br><code>sed &#39;c love&#39; ts.txt</code></p>
+<p><em>将所有含有abc的行替换为love：</em><br><code>sed &#39;/abc/c love&#39; ts.txt</code></p>
+<h3 id="行删除命令d"><a href="#行删除命令d" class="headerlink" title="行删除命令d"></a><strong>行删除命令<code>d</code></strong></h3><p><code>d</code>与c的用法一样，只是它表示删除。<br>举一个例子吧：<br><em>删除所有空行：</em><br><code>sed &#39;/^$/d&#39; ts.txt</code></p>
+<p><strong>行插入命令<code>a</code>和<code>i</code></strong><br>其中<code>a</code>表示在行后追加一行，<code>i</code>表示在行前追加一行。下面举例说明：<br><em>在第一行前插入hello，最后一行后插入world：</em><br><code>sed -e &#39;1i hello&#39; -e &#39;$a world&#39; ts.txt</code></p>
+<p><em>在从含有abc的行开始到含有xyz的行之间的各行后插入一行hello：</em><br><code>sed &#39;/abc/,/xyz/a hello&#39; ts.txt</code></p>
+<h3 id="将读或追加下一行到缓冲区命令n与N"><a href="#将读或追加下一行到缓冲区命令n与N" class="headerlink" title="将读或追加下一行到缓冲区命令n与N"></a><strong>将读或追加下一行到缓冲区命令n与N</strong></h3><p>这两个命令可以直接理解为可用于交替处理各行，其中n处理偶数行，N处理奇数行。例如：<br><em>将所有偶数中的love换成LOVE,但奇数行不变：</em><br><code>sed &#39;n; s/love/LOVE/g&#39; ts.txt</code></p>
+<p><em>将从第一行开始的两行合并为一行：</em><br><code>sed -i &#39;N; s/\n//&#39; ts.txt</code></p>
+<h3 id="打印命令p"><a href="#打印命令p" class="headerlink" title="打印命令p"></a><strong>打印命令<code>p</code></strong></h3><p>p命令已经在s命令中使用过多次，用于向标准输出中打印sed处理的行，由于sed默认会显示处理过程，所以通常p与-n一起使用。例如：<br><em>显示从abc到xyz的所有行：</em><br><code>sed -n &#39;/abc/,/xyz/p&#39; ts.txt</code></p>
+<p><em>输出从含有abc行开始的连续3行：</em><br><code>sed -n &#39;/abc/, +3p&#39; ts.txt</code></p>
+<h2 id="嵌套命令"><a href="#嵌套命令" class="headerlink" title="嵌套命令"></a>嵌套命令</h2><p>sed支持对命令组合及嵌套使用，通过分号（;）实现多个命令组合使用，通过大括号（{}）实现命令嵌套，举例说明：<br><em>对1到3行执行命令/abc/d：</em><br><code>sed &#39;1,3 {/abc/d}&#39; ts.txt</code></p>
+<p><em>对1到3行中含有abc且同时含有xyz的行删除：</em><br><code>sed &#39;1,3 {/abc/{/xyz/d}}&#39; ts.txt</code></p>
+<p><em>对所有行匹配到abc则删除，匹配到空行则替换为love：</em><br><code>sed &#39;/abc/d; s/^$/love/&#39; ts.txt</code></p>
+<p>sed的gnu官方手册：<a href="http://www.gnu.org/software/sed/manual/sed.html" target="_blank" rel="noopener">http://www.gnu.org/software/sed/manual/sed.html</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sed/" rel="tag"># sed</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/01/23/cpp-oop-template/" rel="prev" title="C++学习笔记之模板与泛型编程">
+      <i class="fa fa-chevron-left"></i> C++学习笔记之模板与泛型编程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/02/22/linux-command-tools-grep/" rel="next" title="Linux实用工具总结之grep">
+      Linux实用工具总结之grep <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于"><span class="nav-number">1.</span> <span class="nav-text">关于</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed的基本用法"><span class="nav-number">2.</span> <span class="nav-text">sed的基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可选项"><span class="nav-number">3.</span> <span class="nav-text">可选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">4.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行内匹配并替换命令s"><span class="nav-number">4.1.</span> <span class="nav-text">行内匹配并替换命令s</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行删除命令d"><span class="nav-number">4.2.</span> <span class="nav-text">行删除命令d</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将读或追加下一行到缓冲区命令n与N"><span class="nav-number">4.3.</span> <span class="nav-text">将读或追加下一行到缓冲区命令n与N</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打印命令p"><span class="nav-number">4.4.</span> <span class="nav-text">打印命令p</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#嵌套命令"><span class="nav-number">5.</span> <span class="nav-text">嵌套命令</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/02/19/linux-command-tools-sed/";
+    this.page.identifier = "2016/02/19/linux-command-tools-sed/";
+    this.page.title = "Linux实用工具总结之sed";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

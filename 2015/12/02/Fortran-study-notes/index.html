@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="仅仅实现能看懂Fortran代码，简单实现，所以主要是与C&#x2F;C++进行对比语法差异，基于Fortran95&#x2F;2003版本，Fortran的各版本保持着向下兼容。   Hello World12345678!后面的基本语法处一一解释其含义PROGRAM First_FortranIMPLICIT NONEWRITE(*,*), &amp;&#39;Hello World&#39;PAUSE !暂停程序，enter后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fortran 95快速学习笔记">
+<meta property="og:url" content="http://notes.maxwi.com/2015/12/02/Fortran-study-notes/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="仅仅实现能看懂Fortran代码，简单实现，所以主要是与C&#x2F;C++进行对比语法差异，基于Fortran95&#x2F;2003版本，Fortran的各版本保持着向下兼容。   Hello World12345678!后面的基本语法处一一解释其含义PROGRAM First_FortranIMPLICIT NONEWRITE(*,*), &amp;&#39;Hello World&#39;PAUSE !暂停程序，enter后">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-12-02T10:25:06.000Z">
+<meta property="article:modified_time" content="2020-07-19T15:47:33.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Notes">
+<meta property="article:tag" content="Fortran">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2015/12/02/Fortran-study-notes/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Fortran 95快速学习笔记 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/12/02/Fortran-study-notes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Fortran 95快速学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-12-02 18:25:06" itemprop="dateCreated datePublished" datetime="2015-12-02T18:25:06+08:00">2015-12-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 23:47:33" itemprop="dateModified" datetime="2020-07-19T23:47:33+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Fortran/" itemprop="url" rel="index"><span itemprop="name">Fortran</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2015/12/02/Fortran-study-notes/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/02/Fortran-study-notes/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>18k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>16 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>仅仅实现能看懂Fortran代码，简单实现，所以主要是与C/C++进行对比语法差异，基于Fortran95/2003版本，Fortran的各版本保持着向下兼容。  </p>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!后面的基本语法处一一解释其含义</span></span><br><span class="line"><span class="function"><span class="keyword">PROGRAM</span></span> First_Fortran</span><br><span class="line"><span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line"><span class="built_in">WRITE</span>(*,*), &amp;</span><br><span class="line"><span class="string">'Hello World'</span></span><br><span class="line"><span class="keyword">PAUSE</span> <span class="comment">!暂停程序，enter后继续</span></span><br><span class="line"><span class="keyword">STOP</span></span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">PROGRAM</span></span> First_Fortran</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><p>1.Fortran对大小写不敏感。使用语句行来表示语句的开始和结束而不是分号。<br>2.长语句需要分两行时需要在第一行的行尾使用&amp;来结束<br>3.可以使用1~99999之间的任意数字放在行Fortran语句行的行首作为该语句的语句标号，可以在程序的其他地方通过该数字引用这条语句，语句标号必须是惟一的。<br>4.感叹号!开始到行尾的字符为注释，将被编译忽略。注释可以放在程序的任何位置。<br>5.PROGRAM语句对编译器指定程序的名字，名字命名类似C，但必须以字母开头，该语句必须放在第一个语句行，相当于指定程序的执行入口。<br>6.WRITE表示向输出写入数据，两个参数与READ中的意思相同。eg： </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">WRITE</span> (*,*) output_list <span class="comment">!output_list是输出项列表，多个数据项应使用逗号隔开</span></span><br></pre></td></tr></table></figure>
+<p>WRITE的表控输出语句等价于<code>PRINT *, output_list</code><br>7.READ为从输入读取数据，其中的第一个参数指明从哪个输入/输出单元读入数据，星号表示标准输入，第二个参数指明读入数据的格式，星号表示使用表控输入，即意味着为变量列表中的变量类型决定输入数据需要的格式。eg：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">READ (*,*) input_list <span class="comment">!将数据读入的变量列表中</span></span><br></pre></td></tr></table></figure>
+<p>每一条READ将始终从一个新行开始读取，如果上一行输入有剩余则会自动被清除<br>8.STOP告诉计算机停止运行，END PROGRAM告诉编译器程序中不再有语句需要编译，当STOP紧挨着END PROGRAM语句时，它是可选的。<br>9.Fortran程序书写风格：  </p>
+<ul>
+<li>1.保留字都大写  </li>
+<li>2.程序的变量用小写字母表示    </li>
+<li>3.常量名最好也使用大写，如PI(3.14159)  </li>
+<li>4.名字中的下划线出现在两个字之间<br>10.Fortran的语句分为可执行语句（executable）和不可执行语句（unexecutable），声明即是不可执行语句，应放在程序的开头<br>11.IMPLICIT NONE语句表示使Fortran中默认提供输入值类型的功能失效，该语句应该出现在PROGRAM语句之后和类型声明语句之前。默认输入值类型是指在Fortran中，变量可以不经定义直接使用，而变量的类型是以变量名的第一个字母来区分的，例如<code>IMPLICIT real*8(A-H,O-Z)</code>即表壳A到H开头的变量类型都是浮点型。使用<code>IMPLICIT NONE</code>之后而所有变量必须在使用之前定义。     </li>
+</ul>
+<h2 id="基本数据类型及其运算"><a href="#基本数据类型及其运算" class="headerlink" title="基本数据类型及其运算"></a>基本数据类型及其运算</h2><p>1.Fortran有5个内置的数据类型，其中三个对数字有效(INTEGER, REAL, COMPLEX)，一个逻辑相关(LOGICAL)，另一个是字符串(CHARACTER)。<br>2.字符文本可以使用单引号’，也可以使用双引号”<br>3.有两种方式可以定义变量的类型：默认式和显式。如果在程序中没有明确指定变量类型，那么就是默认式定义变量类型，默认方式为：任何以字母I，J，K，L，M或N开头变量名都假定为INTEGER，其他字母开头的变量名假定为REAL，注意Fortran对大小写不敏感。例如默认情况inc的变量为整形，big为实型。<br>IMPLICIT NONE语句将使默认变量类型功能失效。<br>显式声明方式为<code>INTEGER :: var1 [, var2, var3, ...]</code>，其中[]表示其中的内容可选，只声明不初始化的话双冒号也是可选的。<br>4.字符串的声明方式：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CHARACTER(len=<span class="number">10</span>) :: first, last !声明两个长度为<span class="number">10</span>的字符变量</span><br><span class="line">CHARACTER :: initial !声明一个长度为<span class="number">1</span>的字符变量  </span><br><span class="line">CHARACTER(<span class="number">15</span>) :: id !id长度为<span class="number">15</span></span><br></pre></td></tr></table></figure>
+<p>5.使用PARAMETER属性创建常数类型，方式为<code>type, PARAMETER :: name=value [, name2=value2, ...]</code>其中type的类型可以是整形，实型，逻辑型或字符型。eg: </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REAL , PARAMETER :: PI = <span class="number">3.141593</span></span><br></pre></td></tr></table></figure>
+<p>6.**表示指数运算。<br>7.Fortran95/2003中含有5个强制类型转换函数：  </p>
+<ul>
+<li>INT(X) 将REAL类型的X转换其整数部分</li>
+<li>NINT(X) 返回REAL类型的X的四舍五入结果  </li>
+<li>CEILING(X) 大于或等于X的最小整数值，X为REAL</li>
+<li>FLOOR(X) 小于或等于X的最大整数值，X为REAL</li>
+<li>REAL(I) 将整数转换为实数<br>8.变量不会被默认初始化<br>9.逻辑数据类型只有两个可能的值：true和false，分别对应的内置逻辑常数是<code>.TRUE.</code>和<code>.FALSE.</code>(注意两连的句点)，逻辑变量声明方式<code>LOGICAL :: var1, [, var2, var3, ...]</code>，所有声明都应该放在第一条执行语句之前，PROGRAM语句之后。<br>10.关系运算符中<code>/=</code>表示不等于，对应的旧形式为<code>.NE.</code>，所有运算符：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">新形式：&#x3D;&#x3D;   &#x2F;&#x3D;	    &gt;    &gt;&#x3D;    &lt;    &lt;&#x3D; </span><br><span class="line">旧形式：EQ.  .NE.  .GT.  .GE. .LT. .LE.</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>11.组合逻辑运算符：  </p>
+<ul>
+<li><code>.AND.</code> 逻辑与  </li>
+<li><code>.OR.</code> 逻辑或  </li>
+<li><code>.NOT.</code> 逻辑非  </li>
+<li><code>.EQV.</code> 逻辑等值，相同为真  </li>
+<li><code>.NEQV.</code> 逻辑非等值，不相同为真  </li>
+</ul>
+<p>12.当逻辑变量出现在以READ开头的语句中时，相应的输入值必须以T或F开头的一个或一组字符，相应的值被设置为<code>.TRUE.</code>或<code>.FALSE</code>，输入其他字符开头将产生运行时错误。当逻辑变量或表达式出现在以WRITE开头的语句中时，相应输出将为单个字符T或F。<br>13.字符串声明与赋值：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CHARACTER</span>(len=<span class="number">3</span>) :: str</span><br><span class="line">str = <span class="string">'f'</span></span><br></pre></td></tr></table></figure>
+<p>当字符串长度小于变量长度时，默认使用空格填充<br>14.Fortran中的数组首元素是从1而不是0开始，子串抽取与python一样。例如若str=’12345’，则str(2:4)为<code>234</code>。<br>15.连接操作符<code>//</code>可以将两个子串连接成一个大串。<br>16.可以在定义类型里手动指定变量所占用的字节大小。方法如下：<code>TYPE(kind) :: var</code>，其中kind为正整数，表示该变量所占字节数，如果不指定默认为长整型4或浮点型的8。例如<code>INTEGER(4) :: var</code>，var为占用4个字节的整型。Fortran90之前的编译器声明方式为<code>INTEGER*4 var</code><br>16.<code>real(8) var</code> <code>var = 0.0_8</code>  表示为var初始化值为0.0，且占8个字节。  </p>
+<h2 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h2><p>1.IF语句与C中类似，形式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[名称: ]<span class="keyword">IF</span> (logical_expr) <span class="keyword">THEN</span></span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  statement <span class="number">2</span></span><br><span class="line"><span class="keyword">ELSE</span> <span class="keyword">IF</span> (logical_expr_2) <span class="keyword">THEN</span> [名称]</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  statement <span class="number">2</span></span><br><span class="line"><span class="keyword">ELSE</span> [名称]</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  statement <span class="number">2</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">IF</span> [名称]</span><br></pre></td></tr></table></figure>
+<p>其中IF THEN必须在同一行，且其下面一行必须紧跟可执行语句，ELSE，ELSE IF和END IF也必须独占一行，END IF前面面不能有行号<br>其中名称是可选的，但如果IF前面有名称那么END IF后面也必须有，且同名<br>当IF语句块中只有一行语句时，等价于<code>IF (logical_expr) expression</code><br>2.当嵌套使用IF语句时，最好为其命名<br>3.<code>SELECT CASE</code>语句类似于C中每个case都带有break语句的switch，用法如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">name</span>: ]<span class="keyword">SELECT</span> <span class="keyword">CASE</span> (case_expr)</span><br><span class="line"><span class="keyword">CASE</span> (case1) [<span class="keyword">name</span>]</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  statement <span class="number">2</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">CASE</span> (case2, case3, case4) [<span class="keyword">name</span>]</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  statement <span class="number">2</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">CASE</span> <span class="keyword">DEFAULT</span> [<span class="keyword">name</span>]</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  statement <span class="number">2</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">SELECT</span> [<span class="keyword">name</span>]</span><br></pre></td></tr></table></figure>
+<p>其中case_expr可以是任意的整数、字符或逻辑表达式。对应的每个子case必须是整数、字符或逻辑数值，或数值范围，所有子case必须相互独立。其中数值范围是指以冒号隔开的一个范围，与python中的范围表示方式一样，如(1:10)表示1~10。  </p>
+<p>4.DO循环： </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DO</span> </span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">IF</span> (logical_expr) <span class="keyword">EXIT</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">DO</span></span><br></pre></td></tr></table></figure>
+
+<p>5.DO WHILE循环：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DO</span> <span class="keyword">WHILE</span> (logical_expr)</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  ...</span><br><span class="line">  statement n</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">DO</span></span><br></pre></td></tr></table></figure>
+
+<p>6.迭代DO循环，类型C中的for循环：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DO</span> <span class="built_in">index</span>=istart,<span class="keyword">end</span>,incr</span><br><span class="line">  statement <span class="number">1</span></span><br><span class="line">  ...</span><br><span class="line">  statement n</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">DO</span></span><br></pre></td></tr></table></figure>
+<p>其中index是一个整数变量，作为循环计数器使用，整数istart，iend和incr分别表示计数起始值，结束值和步长，它们可以是常量、变量或表达式，当incr省略时，步长默认为1。如果<code>index*incr &lt;= iend*incr</code>。  </p>
+<p>7.控制语句中的CYCLE相当于C中的continue，EXIT相当于C中的break。<br>8.循环语句也可以被命名，规则与IF命名一样。  </p>
+<h2 id="IO操作"><a href="#IO操作" class="headerlink" title="IO操作"></a>IO操作</h2><p>1.格式化的WRITE输出：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">WRITE</span> (*,<span class="number">100</span>) i, result</span><br><span class="line"><span class="number">100</span> <span class="keyword">FORMAT</span> (<span class="string">' The result for iteration '</span>, I3, <span class="string">' is '</span>, F7<span class="number">.3</span>)</span><br></pre></td></tr></table></figure>
+<p>意思是输出i和result，使用100做为语句标号，相当于一个大的占位符，用于代替WRITE语句的第二个控制输出方式的参数，输出结果即是字符串正常输出，带有占位符的地方，使用对应值替换。例如I3表示以占用3个字符宽度的方式输出INTEGER类型的i，F7.3表示以占用7个字符宽度且保留小数点后3位方式输出REAL类型的result。  </p>
+<p>2.以下三个输出结果是等价：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">WRITE</span> (*, <span class="number">100</span>) i, x	    <span class="comment">!使用FORMAT控制格式</span></span><br><span class="line"><span class="number">100</span> <span class="keyword">FORMAT</span> (<span class="number">1</span>X, I6, F10<span class="number">.2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">CHARACTER</span> (len = <span class="number">20</span>) :: string <span class="comment">!使用字符变量控制格式</span></span><br><span class="line">string = <span class="string">'(1X, I6, F10.2)'</span></span><br><span class="line"><span class="built_in">WRITE</span> (*, string) i, x</span><br><span class="line"></span><br><span class="line"><span class="built_in">WRITE</span> (*, <span class="string">'(1X, I6, F10.2)'</span>) i, x  <span class="comment">!在字符常量中的格式</span></span><br></pre></td></tr></table></figure>
+
+<p>3.老式的Fortran编译器的格式控制字符中的第一个字符将起到控制输出格式的作用，所以上面1例中FORMAT的内容以空格开头，但在Fortran2003之后的版本中并没有这个限制。具体控制字符的作用如下：  </p>
+<ul>
+<li>1    跳转到新页  </li>
+<li>空格    单行间距   </li>
+<li>0     双行间距   </li>
+<li><ul>
+<li>没有间距（在前一行上打印）  </li>
+</ul>
+</li>
+</ul>
+<p>下面的两句是等价的，都表示在新的一页的开头打印输出 </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">WRITE</span> (*,<span class="string">"('1', 'Count = ', I3)"</span>) icount</span><br><span class="line"><span class="built_in">WRITE</span> (*,<span class="string">"('1Count = ', I3)"</span>) icount</span><br></pre></td></tr></table></figure>
+
+<p>4.控制格式描述的符号如下：  </p>
+<ul>
+<li>c 列号  </li>
+<li>d 实数输入或输出小数位右边的位数  </li>
+<li>m 要显示的最小位数  </li>
+<li>n 要跳过的空格数  </li>
+<li>r 重复计数——一个描述符或一组描述符的使用次数  </li>
+<li>w 域宽——输入或输出使用的字符数  </li>
+</ul>
+<p>5.常见的输出控制格式：  </p>
+<ul>
+<li>整数输入——I描述符的一般格式为<code>rIw</code>或<code>rIw.m</code>  </li>
+<li>实数输出——F描述符一般格式为<code>rFw.d</code>  </li>
+<li>实数输出——E描述符一般格式为<code>rEw.d</code>  </li>
+<li>真正的科学计数输出——ES描述符一般格式为<code>rESw.d</code>  </li>
+<li>逻辑输出——L描述符一般格式为<code>rLw</code>  </li>
+<li>字符输出——A描述符一般格式为<code>rA</code>或<code>rAw</code>  </li>
+<li>X描述符用于在缓冲区中插入间距，用法为<code>nX</code>  </li>
+<li>T描述符用于在缓冲区中跳过特定列，用法为<code>Tc</code>，其中c为要转到的列号  </li>
+<li>改变输出行——斜线（/）描述符，类似C中的<code>\n</code>，用于换行  </li>
+</ul>
+<p>举例，以下两条语句是等价的：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">320</span> <span class="keyword">FORMAT</span> ( <span class="number">1</span>X, I6, I6, F10<span class="number">.2</span>, F10<span class="number">.2</span>, I6, F10<span class="number">.2</span>, F10<span class="number">.2</span> )</span><br><span class="line"><span class="number">320</span> <span class="keyword">FORMAT</span> ( <span class="number">1</span>X, I6, <span class="number">2</span>(I6, <span class="number">2</span>F10<span class="number">.2</span>) )</span><br></pre></td></tr></table></figure>
+<p>当格式控制字符中的宽度无法表示所要输出的数字时，不像C中直接全部输出，Fortran会输出为星号<code>*</code>，例如格式控制字符<code>I1</code>,输出10的时候，会输出一个<code>*</code></p>
+<p>6.输出格式要与输出变量严格对应，否则会有运行时错误<br>7.READ的读取格式控制与WRITE一一对应<br>8.Fortran的I/O读写语句的第一个参数就是用于指定读写设备。该位置的星号即表示标准输出或输入，如果使用其他设备则需要指定I/O单元号，单元号必须为整数类型。<br>9.常用的I/O语句：  </p>
+<ul>
+<li>OPEN        将指定的文件与指定的I/O单元号关联  </li>
+<li>CLOSE       取消指定的文件与指定的I/O单元号的关联  </li>
+<li>READ        从指定的I/O单元读取数据  </li>
+<li>WRITE       向指定的I/O单元写入数据  </li>
+<li>REWIND      移动到文件的开头  </li>
+<li>BACKSPACE   在当前打开的文件中向后移动一个位置      </li>
+</ul>
+<p>10.OPEN用法为<code>OPEN (open_list)</code>，期中open_list包含一组子句，分别指定I/O单元代号、文件名和关于如何存取文件的信息，这些列表使用逗号隔开。<br>11.<code>open_list</code>中最重要的六项内容：  </p>
+<ul>
+<li><code>UNIT=int_expr</code>     指明与文件关联的I/O单元代号，int_expr可以是非负的整数值  </li>
+<li><code>FILE=char_expr</code>    指定要打开的文件名，char_expr是一个包含要打开文件的名称的字符值  </li>
+<li><code>STATUS=char_expr</code>  指定要打开的文件状态，char_expr为下列值中的一个：<code>&#39;OLD&#39;</code>，<code>&#39;NEW&#39;</code>，<code>&#39;REPLACE&#39;</code>，<code>&#39;SCRATCH&#39;</code>或<code>&#39;UNKNOW&#39;</code>。</li>
+<li><code>ACTION=char_expr</code>  指定一个文件是以只读、只写或读写方式打开。char_expr为下列值中的一个：<code>&#39;READ&#39;</code>，<code>&#39;WRITE&#39;</code>或<code>&#39;READWRITE&#39;</code>，如果没有指定任何操作，则默认以读写方式打开。  </li>
+<li><code>IOSTAT=int_var</code>  指定一个整数变量名，打开操作的状态可以返回到这个变量中。如果OPEN语句成功执行，则返回给这个整数变量的值为0。  </li>
+<li><code>IOMSG=chart_var</code> 指定一个字符变量名，如果发生错误，则该错误信息将返回给这个变量。如果OPEN语句成功执行，则该变量的内容不变。<br>示例：  <figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!打开一个名为EXAMPLE.DAT的文件，并将其连接到I/O单元8上</span></span><br><span class="line"><span class="keyword">INTEGER</span> :: ierror</span><br><span class="line">OPEN (<span class="keyword">UNIT</span>=<span class="number">8</span>, <span class="keyword">FILE</span>=<span class="string">'EXAMPLE.DAT'</span>, <span class="keyword">STATUS</span>=<span class="string">'OLD'</span>, <span class="keyword">ACTION</span>=<span class="string">'READ'</span>, &amp;<span class="keyword">IOSTAT</span>=ierror)  </span><br><span class="line"><span class="comment">!以自由格式从文件中读取值到x,y,z</span></span><br><span class="line">OPEN (<span class="keyword">UNIT</span>=<span class="number">8</span>, <span class="keyword">FILE</span>=<span class="string">'INPUT.DAT'</span>, <span class="keyword">STATUS</span>=<span class="string">'OLD'</span>, <span class="keyword">IOSTAT</span>=ierror)</span><br><span class="line">READ (<span class="number">8</span>,*)  x, y, z</span><br><span class="line"><span class="comment">!以特定的格式向文件OUTPUT.DAT中写入变量x,y,z的值</span></span><br><span class="line">OPEN (<span class="keyword">UNIT</span>=<span class="number">9</span>, <span class="keyword">FILE</span>=<span class="string">'OUTPUT.DAT'</span>, <span class="keyword">STATUS</span>=<span class="string">'REPLACE'</span>, <span class="keyword">IOSTAT</span>=ierror)</span><br><span class="line"><span class="built_in">WRITE</span> (<span class="number">9</span>,<span class="number">100</span>) x, y, z</span><br><span class="line"><span class="number">100</span> <span class="keyword">FORMAT</span> (<span class="string">' X = '</span>, F10<span class="number">.2</span>, <span class="string">' Y = '</span>, F10<span class="number">.2</span>, <span class="string">' Z = '</span>, F10<span class="number">.2</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>12.BACKSPACE和REWIND语句的功能相当于修改文件指针所指向的位置  </p>
+<p>13.READ在按行读取文件时会自动跳过空行  </p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>1.Fortran中的数组元素从下标1开始，通过小括号()访问<br>2.数组声明方式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!声明一个含有16个元素的实型数组voltage</span></span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">16</span>) :: voltage</span><br><span class="line"><span class="comment">!等价于</span></span><br><span class="line"><span class="keyword">REAL</span> :: voltage(<span class="number">16</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">!声明一个含有50个长度为20位字符的数组变量last_name</span></span><br><span class="line"><span class="keyword">CHARACTER</span> (len=<span class="number">20</span>), <span class="keyword">DIMENSION</span>(<span class="number">50</span>) :: last_name</span><br></pre></td></tr></table></figure>
+<p>DIMENSION属性说明被定义数组的大小<br>3.通过(/…/) 可以构建常量数组，如<code>(/ 1, 2, 3, 4, 5 /)</code>构建了一个含有5个整型元素的数组常量<br>4.数组的初始化可以先声明然后使用赋值的方式初始化，或者使用数组构建器初始化，也可以通过给数组名赋值将所有元素初始化同一个值，或者在声明时直接初始化。eg: </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">10</span>) :: array1</span><br><span class="line"><span class="keyword">DO</span> i = <span class="number">1</span>, <span class="number">10</span></span><br><span class="line">  array1(i) = <span class="keyword">REAL</span>(i)</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">DO</span></span><br><span class="line"><span class="comment">!等价于  </span></span><br><span class="line">array1 = (/<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, ..., <span class="number">10.</span>/)</span><br><span class="line"><span class="comment">!等价于</span></span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">10</span>) :: array1 = (/<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>, <span class="number">5.</span>, ..., <span class="number">10.</span>/)</span><br><span class="line"><span class="comment">!将所有的array1初始化为0</span></span><br><span class="line">array1 = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>5.可以使用隐式DO循环初始化数组，形式为<code>(arg1, arg2, ..., index = istart, iend, incr)</code>，其中arg1, arg2等是每次循环执行时估算的值，隐式DO循环支持嵌套。eg:  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!上面声明并初始化array1的等价形式</span></span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">10</span>) :: array1 = (/ (<span class="keyword">REAL</span>(i), i=<span class="number">1</span>, <span class="number">5</span>) /)</span><br></pre></td></tr></table></figure>
+<p>6.可以使用以下方式在声明时指定下标取舍范围：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!该数组的大小为upper_bound - lower_bound + 1</span></span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(lower_bound : upper_bound)  :: array</span><br></pre></td></tr></table></figure>
+<p>7.声明常量名来作为数组大小：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">PARAMETER</span> :: MAX_SIZE = <span class="number">1000</span></span><br><span class="line"><span class="keyword">REAL</span> :: array1(MAX_SIZE)</span><br></pre></td></tr></table></figure>
+<p>8.当两个数组元素类型和大小相同时，对数组名的运算相当于对数组的每个元素分别进行运算，如：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">10</span>) :: a, b, c</span><br><span class="line">c = a + b <span class="comment">!等价于c(i) = a(i) + b(i)</span></span><br></pre></td></tr></table></figure>
+<p>9.可以使用下标三元组或向量下标的形式来使用数组的部分变量，称为部分数组（section array），三元组的使用方式为<code>subscript_1 : subscript_2 : stride</code>，当stride省略时，表示默认步长为1，当subscript_1省略时默认表示从第一个元素开始，当subscript_2省略时默认到最后一个元素，与python的包前不包后不同，Fortran这种局部数组前后都包。<br>10.向量下标的使用方式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">DIMENSION</span>(<span class="number">5</span>) :: vec = (/<span class="number">1</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">9</span>/)</span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">10</span>)  :: a = (/<span class="number">1.</span>, -<span class="number">2.</span>, <span class="number">3.</span>, -<span class="number">4.</span>, <span class="number">5.</span>, -<span class="number">6.</span>, <span class="number">7.</span>, -<span class="number">8.</span>, <span class="number">9.</span>, -<span class="number">10.</span>/)</span><br><span class="line"><span class="comment">!a(vec)的内容是数组[1., -6., -4., 1., 9.]</span></span><br></pre></td></tr></table></figure>
+<p>11.读写数组时可以使用隐式DO循环，形式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">WRITE</span> (<span class="keyword">unit</span>, <span class="keyword">format</span>) ( arg1, arg2, ... , <span class="built_in">index</span> = istart, iend, incr)</span><br><span class="line">READ (<span class="keyword">unit</span>, <span class="keyword">format</span>) ( arg1, arg2, ... , <span class="built_in">index</span> = istart, iend, incr)</span><br><span class="line"><span class="comment">!以下打印前5个元素的方法等价</span></span><br><span class="line"><span class="built_in">WRITE</span> (*,<span class="number">100</span>) a(<span class="number">1</span>), a(<span class="number">2</span>), a(<span class="number">3</span>), a(<span class="number">4</span>), a(<span class="number">5</span>)</span><br><span class="line"><span class="number">100</span> <span class="keyword">FORMAT</span> (<span class="number">1</span>X, <span class="string">'a = '</span>, <span class="number">5</span>F10<span class="number">.2</span>)</span><br><span class="line"><span class="comment">!等价于</span></span><br><span class="line"><span class="built_in">WRITE</span> (*,<span class="number">100</span>), (a(i), i = <span class="number">1</span>, <span class="number">5</span>)</span><br><span class="line"><span class="number">100</span> <span class="keyword">FORMAT</span> (<span class="number">1</span>X, <span class="string">'a = '</span>, <span class="number">5</span>F10<span class="number">.2</span>)</span><br></pre></td></tr></table></figure>
+<p>12.隐式DO循环可以嵌套使用<br>13.</p>
+<h2 id="Fortran过程控制"><a href="#Fortran过程控制" class="headerlink" title="Fortran过程控制"></a>Fortran过程控制</h2><p>1.Fortran的有两种方式实现调用外部过程，分别是子程序(subroutine)和函数之程序(function subprogram)。子程序通过CALL语句调用，并且可以通过调用参数来返回多个结果。函数子程序则通过在表达式中引入函数名来进行调用，它的结果是单个数值，该值用来为表达式赋值，就像数学中的函数那样。  </p>
+<h3 id="子程序"><a href="#子程序" class="headerlink" title="子程序"></a>子程序</h3><p>2.子程序的声明格式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">SUBROUTINE</span></span> subtine_name(argument_list)</span><br><span class="line">  ...</span><br><span class="line">  (Declaration section)</span><br><span class="line">  ...</span><br><span class="line">  (Execution section)</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">RETURN</span></span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">SUBROUTINE</span></span> [<span class="keyword">name</span>]</span><br></pre></td></tr></table></figure>
+<p>其中argument_list中不能附带参数类型，但在子程序内容的声明部分必须要为相应的参数声明类型<br>子程序就相当于一个独立的程序，只是可以带参数，所以在声明部分的前面同样需要单独加上<code>IMPLICIT NONE</code><br>3.子程序的调用格式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CALL</span> subroutine_name(argument_list)</span><br></pre></td></tr></table></figure>
+<p>4.子程序的参数传递方式为传址传递，相当于C语言中传递指针，所以子程序会直接修改原变量的值，如果想在子程序内部不对传递进来的参数进行修改，可以在声明部分使用INTENT属性声明，相当于在子程序内容将相应参数修改为const类型，eg:  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!加法子程序，并改变传递进去的某个变量的值</span></span><br><span class="line"><span class="function"><span class="keyword">SUBROUTINE</span></span> add(a, b, c)</span><br><span class="line">  <span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line">  <span class="keyword">REAL</span> :: a</span><br><span class="line">  <span class="keyword">REAL</span>, <span class="keyword">INTENT</span>(<span class="keyword">IN</span>) :: b <span class="comment">!添加IN发生后b将不能作为左值，且不能被修改</span></span><br><span class="line">  <span class="keyword">REAL</span>, <span class="keyword">INTENT</span>(<span class="keyword">OUT</span>) :: c <span class="comment">!添加OUT属性后，c将可以作为左值，且可以被修改</span></span><br><span class="line">  c = a + b</span><br><span class="line">  a = <span class="number">5.0</span> <span class="comment">!调用后原程序对应的变量值将变成5.0，但不能以同样的方式修改b，否则会编译报错</span></span><br><span class="line">  <span class="keyword">RETURN</span></span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">SUBROUTINE</span></span> add</span><br></pre></td></tr></table></figure>
+<p>调用时参数类型必须一致<br>5.INTENT的所有属性：  </p>
+<ul>
+<li>INTENT(IN)    形参仅用于向子程序传递输入数据  </li>
+<li>INTENT(OUT)    形参仅用于将结果返回给调用程序</li>
+<li>INTENT(INOUT)/INTENT(IN OUT)    形参即用来向子程序输入数据，也用来将结果返回给调用程序</li>
+</ul>
+<p>6.与C中一样，为子程序传递数组时，需要传递数组的大小<br>7.传递字符变量给子程序时可以使用*声明字符变量的长度，当在子程序内容需要使用到字符串的长度时可以使用LEN()函数来获取字符串长度，声明方式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">SUBROUTINE</span></span> sample (string)</span><br><span class="line"><span class="keyword">CHARACTER</span> ( len=* ), <span class="keyword">INTENT</span>(<span class="keyword">IN</span>)  :: string</span><br></pre></td></tr></table></figure>
+
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>8.Fortran可以使用模块来在不同的程序之间共享数据，模块相当于C中的头文件，它可以用来共享数据，同样可以用于共享子程序，声明方式是使用MODULE，引用方法是使用USE module_name。下面例子说明使用其共享数据。eg: </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">MODULE</span> shared_data</span><br><span class="line"><span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line"><span class="keyword">SAVE</span></span><br><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">PARAMETER</span> :: num_vals = <span class="number">5</span> </span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(num_vals) :: values</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">MODULE</span> shared_data</span><br><span class="line"></span><br><span class="line"><span class="comment">!使用模块</span></span><br><span class="line"><span class="function"><span class="keyword">PROGRAM</span></span> test_module</span><br><span class="line"><span class="keyword">USE</span> shared_data</span><br><span class="line"><span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line">values = <span class="number">2</span></span><br><span class="line"><span class="keyword">CALL</span> sub</span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">PROGRAM</span></span> test_module</span><br><span class="line"></span><br><span class="line"><span class="comment">!SUBROUTINE</span></span><br><span class="line"><span class="function"><span class="keyword">SUBROUTINE</span></span> sub</span><br><span class="line"><span class="keyword">USE</span> shared_data</span><br><span class="line"><span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line"><span class="built_in">WRITE</span> (*,*) values</span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">SUBROUTINE</span></span> sub</span><br></pre></td></tr></table></figure>
+<p>SAVE语句能够保证在模块中声明的数据被保护在不同的过程间的引用中。<br>sub子程序中的values将全部为2，因为该变量是与主程序共享的<br>9.模块中需要定义子程序和函数时必须使用关键字CONTAINS，这些子程序和过程被称作模块过程。eg:  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">MODULE</span> my_subs</span><br><span class="line"><span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line">(Declare shared <span class="keyword">data</span> here)</span><br><span class="line"><span class="keyword">CONTAINS</span></span><br><span class="line">  <span class="function"><span class="keyword">SUBROUTINE</span></span> sub (a, b, c, k, error)</span><br><span class="line">  <span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line">  <span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">3</span>), <span class="keyword">INTENT</span>(<span class="keyword">IN</span>) :: a</span><br><span class="line">  <span class="keyword">REAL</span>, <span class="keyword">INTENT</span>(<span class="keyword">IN</span>) :: b, c</span><br><span class="line">  <span class="keyword">REAL</span>, <span class="keyword">INTENT</span>(<span class="keyword">OUT</span>) :: x</span><br><span class="line">  <span class="keyword">LOGICAL</span>, <span class="keyword">INTENT</span>(<span class="keyword">OUT</span>) :: error</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">END</span> <span class="function"><span class="keyword">SUBROUTINE</span></span> sub</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">MODULE</span> my_subs</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>1.Fortran函数是这样一个过程：它的结果只能是单个数值、逻辑值、字符串或数组之一。有两种不同类型的函数：内部函数（intrinsic function）和用户自定义的函数（user-defined function，或函数子程序function subprograms)。其中内部函数即是指Fortran自带的SIN(X)、LOG(X)等。<br>2.自定义Fortran函数的通用格式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">TYPE</span>] <span class="function"><span class="keyword">FUNCTION</span></span> <span class="keyword">name</span> (argument_list)</span><br><span class="line">  ...</span><br><span class="line">  (Declaration section must declare <span class="keyword">type</span> of <span class="keyword">name</span>)</span><br><span class="line">  ...</span><br><span class="line">  (Execution section)</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">name</span> = expr</span><br><span class="line">  <span class="keyword">RETURN</span></span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">FUNCTION</span></span> [<span class="keyword">name</span>]</span><br></pre></td></tr></table></figure>
+<p>其中，TYPE表示函数的返回值类型，使用IMPLICIT NONE语句时，必须要指名函数的返回类型，如果有使用IMPLICIT NONE语句，那么函数的返回类型将默认使用Fortran的内置规则。RETURN语句只是表示结束本函数，将执行权限归还给调用函数，所以RETURN并不是必须有。函数的返回值是通过给函数名赋值而实现，所以函数中必须至少有一次让函数名出现在赋值语句的左侧来指定函数的返回值。  </p>
+<p>2.函数的声明可以采用以下两种等价格式之一：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INTEGER</span> <span class="function"><span class="keyword">FUNCTION</span></span> my_function(i, j)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">FUNCTION</span></span> my_function(i,j)</span><br><span class="line"><span class="keyword">INTEGER</span> :: my_function</span><br></pre></td></tr></table></figure>
+<p>3.函数在被调用时，也必须在调用函数前面对其进行类型声明，声明方式如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">TYPE</span> :: function_name</span><br></pre></td></tr></table></figure>
+<p>4.使用函数计算两个实数之和的例子：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">PROGRAM</span></span> test_func</span><br><span class="line">    <span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line">    <span class="keyword">REAL</span> :: func</span><br><span class="line">    <span class="keyword">REAL</span> :: i = <span class="number">2</span>, j = <span class="number">5</span></span><br><span class="line">    <span class="built_in">WRITE</span>(*,*) func(i,j)</span><br><span class="line">    <span class="keyword">PAUSE</span></span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">PROGRAM</span></span> test_func</span><br><span class="line"></span><br><span class="line"><span class="keyword">REAL</span> <span class="function"><span class="keyword">FUNCTION</span></span> func(a,b)</span><br><span class="line">    <span class="keyword">IMPLICIT</span> <span class="keyword">NONE</span></span><br><span class="line">    <span class="keyword">REAL</span>, <span class="keyword">INTENT</span>(<span class="keyword">IN</span>) :: a, b</span><br><span class="line">    func = a + b</span><br><span class="line"><span class="keyword">END</span> <span class="function"><span class="keyword">FUNCTION</span></span> func</span><br></pre></td></tr></table></figure>
+<p>5.函数的参数传递过程也是传址传递。<br>6.过程名相当于也是个指针，包含子程序和函数。所以可以将过程作为参数传递给其他过程，类似C中的函数指针。<br>7.必须在被调用函数(或子程序)和主程序中使用EXTERNEL关键字来声明的用户自定义函数（或过程）才可以当作调用参数传递。EXTERNEL发生的使用方法与其他属性一样，但也有一个自己的专有格式，如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">REAL</span>, EXTERNEL :: func_1, func_2</span><br><span class="line"><span class="comment">!专有格式</span></span><br><span class="line">EXTERNEL func_1, func_2</span><br></pre></td></tr></table></figure>
+
+<h2 id="多维数组"><a href="#多维数组" class="headerlink" title="多维数组"></a>多维数组</h2><p>1.二维数组的声明方式举例：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!声明一个由3行6列构成的实数数组，总共有18个元素。第一个下标从1~3，第二个下标是1~6</span></span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">DIMENSION</span>(<span class="number">3</span>,<span class="number">6</span>) :: <span class="built_in">sum</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">!声明一个101行21列的整数数组，总共2121个元素，第一个下标有效值是0~100，第二个是0~20</span></span><br><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">DIMENSION</span>(<span class="number">0</span>:<span class="number">100</span>, <span class="number">0</span>:<span class="number">20</span>) :: hist</span><br><span class="line"></span><br><span class="line"><span class="comment">!声明一个7行10列的数组，总共70个元素。数组的类型是字符型，每个数组元素包含6个字符。第一个下标从-3到3，第二个1到10</span></span><br><span class="line"><span class="keyword">CHARACTER</span> (len=<span class="number">6</span>), <span class="keyword">DIMENSION</span>(-<span class="number">3</span>:<span class="number">3</span>, <span class="number">10</span>) :: counts</span><br></pre></td></tr></table></figure>
+<p>2.Fortran中的数组存储方式是列优先，与CUDA的网络线程分配是类似的，而C/C++则是以行优先。也就是说Fortran中二给数组的内存在分配时是先为第一列分配内存，然后是第二列…<br>3.二维数组初始化方式：赋值语句、类型声明语句或是Fortran的READ语句。<br>4.赋值语句初始化二维数组方式：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">DIMENSION</span>(<span class="number">4</span>,<span class="number">3</span>) :: istat</span><br><span class="line"><span class="keyword">DO</span> i=<span class="number">1</span>,<span class="number">4</span></span><br><span class="line">  <span class="keyword">DO</span> j=<span class="number">1</span>,<span class="number">3</span></span><br><span class="line">    istat(i,j) = j</span><br><span class="line">  <span class="keyword">END</span> <span class="keyword">DO</span></span><br><span class="line"><span class="keyword">END</span> <span class="keyword">DO</span></span><br><span class="line"><span class="comment">!等价于下面使用数组构造器生成赋值的数组</span></span><br><span class="line">istat = <span class="built_in">RESHAPE</span>((/<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>/), (/<span class="number">4</span>,<span class="number">3</span>/))</span><br></pre></td></tr></table></figure>
+<p>内置的RESHAPE函数的使用格式为<code>output = RESHAPE(array1, array2)</code>，它会改变一个数组的结构。其中array1包含了要被改变结构的数据，array2是一个描述新结构的一维数组。array2中元素的个数是输出数组的维数，其元素值是每个维度的宽度，且array1中元素个数必须与array2所描述的元素个数相同。<br>由于数组生成器只能产生一维数组，所以需要使用这种方式。上例中就是将一个一维数据，改变成一个4行3列的二维数组，注意数组存储是列优先。  </p>
+<p>5.声明时直接初始化数组时初始值必须按列序优先排列，即首先是第一列的4个元素，然后第二列。eg:  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">DIMENSION</span>(<span class="number">4</span>,<span class="number">3</span>) :: istat(<span class="number">4</span>,<span class="number">3</span>) = <span class="built_in">RESHAPE</span>((/<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>,<span class="number">3</span>/), (/<span class="number">4</span>,<span class="number">3</span>/))</span><br></pre></td></tr></table></figure>
+<p>6.用READ语句初始化二维数组。如果在一条READ语句的参数列表中出现了没有下标的数组名，那么程序将会按照数组元素在计算机内存中的逻辑顺序为数组的所有元素赋值。eg:  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!如果文件INITIAL.DAT中含有数据1 1 1 1 2 2 2 2 3 3 3 3</span></span><br><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">DIMENSION</span>(<span class="number">4</span>,<span class="number">3</span>) :: istat</span><br><span class="line">OPEN(<span class="number">7</span>, <span class="keyword">FILE</span>=<span class="string">'INITIAL.DAT'</span>, <span class="keyword">STATUS</span>=<span class="string">'OLD'</span>,<span class="keyword">ACTION</span>=<span class="string">'READ'</span>)</span><br><span class="line">READ(<span class="number">7</span>,*) istat</span><br><span class="line"></span><br><span class="line"><span class="comment">!等价于使用嵌套的隐式DO循环实现的例子</span></span><br><span class="line"><span class="comment">!假设INITIAL.DAT中含有数据1 2 3 1 2 3 1 2 3 1 2 3 </span></span><br><span class="line"><span class="keyword">INTEGER</span> :: i,j</span><br><span class="line"><span class="keyword">INTEGER</span>, <span class="keyword">DIMENSION</span>(<span class="number">4</span>,<span class="number">3</span>) :: istat</span><br><span class="line">OPEN(<span class="number">7</span>, <span class="keyword">FILE</span>=<span class="string">'INITIAL.DAT'</span>, <span class="keyword">STATUS</span>=<span class="string">'OLD'</span>,<span class="keyword">ACTION</span>=<span class="string">'READ'</span>)</span><br><span class="line">READ(<span class="number">7</span>,*) ((istat(i,j), j=<span class="number">1</span>,<span class="number">3</span>), i=<span class="number">1</span>,<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>7.二维数组也可以使用下标三元组或下标向量的方式使用部分数组元素。例如a(:,1)表示选用的是数组的第一列，a(1,:)选用数组的第一行，a(1:3, 1:3:5)选用数组的第一到第三行，和第一、三、五列。<br>8.Fortran最多可支持到7维数组。使用方式与二维一样，分配方式是按列优先。<br>9.很多函数都支持对整个数组操作，即将一个数组名传递给函数时，相当于对数组中的每一个元素都执行该函数。<br>10.加掩码的数组赋值：where结构使用方法如下：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">name</span>:] <span class="keyword">WHERE</span> (mask_expr1)</span><br><span class="line">  Array Assignment Statement(s) <span class="comment">!Block 1</span></span><br><span class="line"><span class="keyword">ELSEWHERE</span> (mask_expr2) [<span class="keyword">name</span>]</span><br><span class="line">  Array Assignment Statement(s) <span class="comment">!Block 2</span></span><br><span class="line"><span class="keyword">ELSEWHERE</span></span><br><span class="line">  Array Assignment Statement(s) <span class="comment">!Block 3</span></span><br><span class="line"><span class="keyword">END</span> <span class="keyword">WHERE</span> [<span class="keyword">name</span>]</span><br></pre></td></tr></table></figure>
+<p>这里的每个mask_expr是一个逻辑数组，它和数组执行语句中处理的数组具有同样的结构。该结构使得Block1中的操作或操作集用于mask_expr1为TRUE的所有数组元素上。当mask_expr1为FALSE而mask_expr2为TRUE时，Block2的操作将应用于所有数组元素上，同理操作Block3。Fortran90中不允许有ELSEWHERE子句。例如：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!对数组value中值大于0的元素求对数</span></span><br><span class="line"><span class="keyword">WHERE</span>(<span class="keyword">value</span> &gt; <span class="number">0.</span>)</span><br><span class="line">  logval = <span class="built_in">LOG</span>(<span class="keyword">value</span>)</span><br><span class="line"><span class="keyword">ELSEWHERE</span></span><br><span class="line">  logval = -<span class="number">99999.</span></span><br><span class="line"><span class="keyword">END</span> <span class="keyword">WHERE</span></span><br></pre></td></tr></table></figure>
+<p>11.也可以使用单行WHERE语句：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WHERE</span> (mask_expr) Array Assignment Statement</span><br></pre></td></tr></table></figure>
+<p>12.Fortran95/2003中FORALL的用法</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!求nxm数组work中所有元素的倒数  </span></span><br><span class="line"><span class="keyword">FORALL</span>(i=<span class="number">1</span>:n, j=<span class="number">1</span>:m, work(i,j)/=<span class="number">0.</span>)</span><br><span class="line">  work(i,j) = <span class="number">1.</span>/work(i,j)</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">FORALL</span></span><br></pre></td></tr></table></figure>
+<p>FORALL语句中的每个索引都是通过下标三元组的形式的来指定的：<code>subscript_1 : subscript_2 : stride</code>  </p>
+<h3 id="动态数组"><a href="#动态数组" class="headerlink" title="动态数组"></a>动态数组</h3><p>1.动态数组需要在定义是使用ALLOCATABLE属性来说明，然后使用ALLOCATE语句来实际分配内存，使用DEALLOCATE语句来释放分配的内存。例如：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!声明一个100x11的数组，其中第二维下标从0~10</span></span><br><span class="line"><span class="keyword">REAL</span>, <span class="keyword">ALLOCATABLE</span>, <span class="keyword">DIMENSION</span>(:, :) :: arr</span><br><span class="line"><span class="built_in">ALLOCATE</span>(arr(<span class="number">100</span>,<span class="number">0</span>:<span class="number">10</span>), STAT=<span class="keyword">status</span>)</span><br></pre></td></tr></table></figure>
+<p>其中STAT=子句是可选的，用于检查返回值状态，如果分配成功，状态为0，如果失败则返回一个基于编译器的正数。<br>2.可以使用内置函数ALLOCATED()在使用前测试数据是否已经成功分配空间，在没有分配空间之前，对其进行的任何操作都是非法的。用法：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">REAL</span>, <span class="keyword">ALLOCATABLE</span>, <span class="keyword">DIMENSION</span>(:)  :: input_data</span><br><span class="line">...</span><br><span class="line"><span class="keyword">IF</span>(<span class="built_in">ALLOCATED</span>(input_data)) <span class="keyword">THEN</span></span><br><span class="line">  READ(<span class="number">8</span>,*) input_data</span><br><span class="line"><span class="keyword">ELSE</span></span><br><span class="line">  <span class="built_in">WRITE</span>(*,*) <span class="string">'Warning:Array not allocated!'</span></span><br><span class="line"><span class="keyword">END</span> <span class="keyword">IF</span></span><br></pre></td></tr></table></figure>
+<p>3.DEALLOCATE用法：<code>DEALLOCATE(list of arrays to deallocate, STAT=status)</code>，例如：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DEALLOCATE</span>(arr1, STAT=<span class="keyword">status</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="派生数据类型-结构体"><a href="#派生数据类型-结构体" class="headerlink" title="派生数据类型-结构体"></a>派生数据类型-结构体</h2><p>1.<code>Fortran</code>中的派生数据类型相当于C/C++中的结构体变量，注意只是相当于，因为在其派生数据类型中，只能由基本的内置数据类型或者已定义的用户定义数据类型，但不能包含有函数或子程序，只能用于存放数据。<br>派生数据类型使用关键字<code>TYPE</code>来定义，定义方式为：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">TYPE</span> [::] type_name</span><br><span class="line">  component definitions</span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">TYPE</span> [type_name]</span><br></pre></td></tr></table></figure>
+
+<p>2.派生数据类型的类型成员通过百分号<code>%</code>来引用，其相当于C/C++中的间接引用运算符<code>-&gt;</code>，例如：  </p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">!定义派生数据类型person</span></span><br><span class="line"><span class="keyword">TYPE</span> :: person</span><br><span class="line">  <span class="keyword">CHARACTER</span>(len=<span class="number">14</span>) :: first_name</span><br><span class="line">  <span class="keyword">CHARACTER</span> :: middle_initial</span><br><span class="line">  <span class="keyword">CHARACTER</span>(len=<span class="number">14</span>) :: last_name</span><br><span class="line">  <span class="keyword">INTEGER</span> :: age</span><br><span class="line"><span class="keyword">END</span> <span class="keyword">TYPE</span> person</span><br><span class="line"><span class="comment">!声明类型为person的变量john</span></span><br><span class="line"><span class="keyword">TYPE</span> (person) :: john</span><br><span class="line"><span class="comment">!将john的age元素设置为28</span></span><br><span class="line">John%age = <span class="number">28</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="其他常见问题"><a href="#其他常见问题" class="headerlink" title="其他常见问题"></a>其他常见问题</h2><h3 id="date-and-time函数的使用"><a href="#date-and-time函数的使用" class="headerlink" title="date_and_time函数的使用"></a>date_and_time函数的使用</h3><p>DATE_AND_TIME(DATE, TIME, ZONE, VALUES) gets the corresponding date and time information from the real-time system clock. DATE is INTENT(OUT) and has form ccyymmdd. TIME is INTENT(OUT) and has form hhmmss.sss. ZONE is INTENT(OUT) and has form (+-)hhmm, representing the difference with respect to Coordinated Universal Time (UTC).<br>使用方法是直接使用CALL调用  </p>
+<h3 id="Fortran90中的内置子程序"><a href="#Fortran90中的内置子程序" class="headerlink" title="Fortran90中的内置子程序"></a>Fortran90中的内置子程序</h3><p>一共有5个内置子程序：DATE_AND_TIME, MVBITS,<br><code>RANDOM_NUMBER</code>, <code>RANDOM_SEED</code>, and <code>SYSTEM_ CLOCK</code>. These are referenced in the same way as any other subroutine.None of these intrinsic subroutines may be used as actual arguments  </p>
+<ul>
+<li><code>DATE_AND_TIME</code>： This subroutine returns date and time information in several INTENT (OUT) arguments.  </li>
+<li><code>MVBITS</code>： This subroutine copies a sequence of bits from one integer data object to another. It is the only elemental intrinsic subroutine.  </li>
+<li><code>RANDOM_NUMBER</code>： This subroutine returns a pseudorandom number or an array of pseudorandom numbers as the value of its argument. It is a subroutine rather than a function because its execution has the side effect of changing the value of the underlying random number generator seed; intrinsic functions have no side effects.产生一个0~1之间的REAL伪随机数，或者返回给一个数组，基本调用方式为<code>CALL RANDOM_NUMBER(pesounum)</code>，pesounu中即为其返回的伪随机数。  </li>
+<li><code>RANDOM_SEED</code>： This subroutine allows the value of the random number generator seed value to be initialized or retrieved。就是产生一个伪随机数给RANDOM_NUMBER使用，不带参数时的调用方式为<code>RANDOM_SEED()</code></li>
+<li><code>SYSTEM_CLOCK</code>： This subroutine returns data from the processor’s real-time system clock in various formats in several INTENT (OUT) arguments.  </li>
+</ul>
+<h2 id="Fortran常见函数"><a href="#Fortran常见函数" class="headerlink" title="Fortran常见函数"></a>Fortran常见函数</h2><p>Function  Value returned<br>ABS The absolute value of the argument<br>ACOS The arc cosine of the argument<br>ASIN The arc sine of the argument<br>ATAN The arc tangent of the argument<br>ATAN2 The angle in radians of a complex argument (X,Y)<br>CEILING The smallest integer greater than or equal to the argument value<br>COS The cosine of the argument<br>COSH The hyperbolic cosine of the argument<br>DIM The difference of two values, if positive, or zero otherwise<br>DOT_PRODUCT The dot product of two vectors<br>DPROD The double precision product of two single precision values<br>EXP The natural exponential function<br>FLOOR The greatest integer less than or equal to the argument value<br>LOG The natural logarithm function<br>LOG10 The logarithm to the base 10<br>MATMUL Matrix multiplication<br>MAX The maximum of a set of values<br>MIN The minimum of a set of values<br>MOD The remainder function, having the sign of the first argument<br>MODULO The remainder function, having the sign of the second argument<br>SIGN Apply a given sign to a given value<br>SIN The sine of the argument<br>SINH The hyperbolic sine of the argument<br>SQRT The square root of the argument<br>TAN The tangent of the argument<br>TANH The hyperbolic tangent of the argument<br>Function Value returned<br>ADJUSTL Remove leading blanks (and place them on the right)<br>ADJUSTR Remove trailing blanks (and place them on the left)<br>INDEX Find the location of a given substring in a character string<br>LEN_TRIM Length of a string after trailing blanks have been removed<br>LGE Greater than or equal to comparison based on ASCII<br>LGT Greater than comparison based on ASCII<br>LLE Less than or equal to comparison based on ASCII<br>LLT Less than comparison based on ASCII<br>REPEAT Concatenate several copies of a character string<br>SCAN Scan a string for any one of a given set of characters<br>TRIM The argument with trailing blank characters removed<br>VERIFY Location of a character in a string that is not one of a given set<br>BTEST The bit value of a specified position in an integer argument<br>IAND Logical AND of two integer arguments<br>IBCLR Clear a specified bit to zero in the integer argument<br>IBSET Set a specified bit to one in the integer argument<br>IEOR Logical exclusive-OR of two integer arguments<br>IOR Logical inclusive-OR of two integer arguments<br>ISHFT Logical end-off shift of the bits in the argument<br>ISHFTC Logical circular shift of the bits in the argument<br>NOT Logical complement of an integer argument</p>
+<p>All of these functions, in all three groups, are generic except for LGE, LGT, LLE, and LLT, and all are elemental except DOT_PRODUCT, MATMUL, REPEAT, and TRIM. Note that the bit computation function cannot produce portable results.</p>
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><p>1.Fortran_95_2003程序设计（第三版），电子版自行查找，注意是那个140多Mb的<br>2.强烈推荐这个，很好很强大，虽然没有书签，但可以通过搜索快速定位：<a href="http://micro.ustc.edu.cn/Fortran/Fortran%2090%20Handbook.pdf" target="_blank" rel="noopener">Fortran 90 Handbook.pdf</a>  </p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Notes/" rel="tag"># Notes</a>
+              <a href="/tags/Fortran/" rel="tag"># Fortran</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/11/21/winsock/" rel="prev" title="使用winsock2的sockets进行文件发送">
+      <i class="fa fa-chevron-left"></i> 使用winsock2的sockets进行文件发送
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/12/13/vim-tips/" rel="next" title="vim的一些实用技巧">
+      vim的一些实用技巧 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-World"><span class="nav-number">1.</span> <span class="nav-text">Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本语法"><span class="nav-number">2.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据类型及其运算"><span class="nav-number">3.</span> <span class="nav-text">基本数据类型及其运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制语句"><span class="nav-number">4.</span> <span class="nav-text">控制语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO操作"><span class="nav-number">5.</span> <span class="nav-text">IO操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组"><span class="nav-number">6.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fortran过程控制"><span class="nav-number">7.</span> <span class="nav-text">Fortran过程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#子程序"><span class="nav-number">7.1.</span> <span class="nav-text">子程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块"><span class="nav-number">7.2.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数"><span class="nav-number">7.3.</span> <span class="nav-text">函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多维数组"><span class="nav-number">8.</span> <span class="nav-text">多维数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态数组"><span class="nav-number">8.1.</span> <span class="nav-text">动态数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#派生数据类型-结构体"><span class="nav-number">9.</span> <span class="nav-text">派生数据类型-结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他常见问题"><span class="nav-number">10.</span> <span class="nav-text">其他常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#date-and-time函数的使用"><span class="nav-number">10.1.</span> <span class="nav-text">date_and_time函数的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fortran90中的内置子程序"><span class="nav-number">10.2.</span> <span class="nav-text">Fortran90中的内置子程序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fortran常见函数"><span class="nav-number">11.</span> <span class="nav-text">Fortran常见函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资源"><span class="nav-number">12.</span> <span class="nav-text">参考资源</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2015/12/02/Fortran-study-notes/";
+    this.page.identifier = "2015/12/02/Fortran-study-notes/";
+    this.page.title = "Fortran 95快速学习笔记";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

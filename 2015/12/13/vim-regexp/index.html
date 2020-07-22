@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="内容来源:help regexp实例场景为在写总结时，经常习惯于一条条的以序号开头列出。例如:     first second test 1.first third     由于坏习惯每次打完数字之后总是习惯给个空格，然后markdown渲染时就会出问题，会把这个前面内容序号当时所需渲染的序号，显然此处我们不需要渲染。那么就需要去掉这个多余的空格，假如刚好想到使用正则。正常情况下很简单嘛，使用零">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vim中的正则表达式匹配规则">
+<meta property="og:url" content="http://notes.maxwi.com/2015/12/13/vim-regexp/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="内容来源:help regexp实例场景为在写总结时，经常习惯于一条条的以序号开头列出。例如:     first second test 1.first third     由于坏习惯每次打完数字之后总是习惯给个空格，然后markdown渲染时就会出问题，会把这个前面内容序号当时所需渲染的序号，显然此处我们不需要渲染。那么就需要去掉这个多余的空格，假如刚好想到使用正则。正常情况下很简单嘛，使用零">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-12-13T07:28:37.000Z">
+<meta property="article:modified_time" content="2017-12-19T16:24:08.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Regex">
+<meta property="article:tag" content="vim">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2015/12/13/vim-regexp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>vim中的正则表达式匹配规则 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/12/13/vim-regexp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          vim中的正则表达式匹配规则
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-12-13 15:28:37" itemprop="dateCreated datePublished" datetime="2015-12-13T15:28:37+08:00">2015-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-20 00:24:08" itemprop="dateModified" datetime="2017-12-20T00:24:08+08:00">2017-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/vim/" itemprop="url" rel="index"><span itemprop="name">vim</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2015/12/13/vim-regexp/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/13/vim-regexp/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>内容来源<code>:help regexp</code><br>实例场景为在写总结时，经常习惯于一条条的以序号开头列出。例如:  </p>
+<blockquote>
+<ol>
+<li>first</li>
+<li>second test 1.first</li>
+<li>third  </li>
+</ol>
+</blockquote>
+<p>由于坏习惯每次打完数字之后总是习惯给个空格，然后markdown渲染时就会出问题，会把这个前面内容序号当时所需渲染的序号，显然此处我们不需要渲染。那么就需要去掉这个多余的空格，假如刚好想到使用正则。正常情况下很简单嘛，使用零宽断言匹配数字之后跟的点号和空白，然后替换为一个点号即可。正则为<code>(?&lt;=^\d+)\.\s+</code>，但在vim下无法使用，vim下的完整替换命令应该为<code>:%s /\(^\d\+\)\@&lt;=\.\s\+/\./g</code>。简单解释如下：<br>vim下面的<code>\+</code>与我们正常regex中的<code>+</code>含义一样，<code>\(\)</code>用于分组，<code>\@&lt;=</code>表示零宽正回顾后发断言。不像正常见到的那种<code>=</code>号后面表达想要匹配的表达式，VIM中<code>\@=</code>中的=号仅仅表示需要匹配前面括号中的内容。例如<code>foo\(bar\)\@=</code>会匹配foobar中的foo，而<code>foo\(bar\)\@!</code>中<code>\@!</code>表示foo后面不匹配bar的位置，即会匹配所有后面不跟bar的foo。<code>\@=</code>等价于<code>\&amp;</code>，使用<code>\&amp;</code>时不需要带括号，如<code>\(foo\)\@=</code>等价于<code>foo\&amp;</code></p>
+<a id="more"></a>
+<p>详情如下:  </p>
+<h1 id="vim中正则模式说明"><a href="#vim中正则模式说明" class="headerlink" title="vim中正则模式说明"></a>vim中正则模式说明</h1><p>Some characters in the pattern are taken literally.  They match with the same character in the text.  When preceded with a backslash however, these characters get a special meaning.<br>Other characters have a special meaning without a backslash.  They need to be preceded with a backslash to match literally.<br>If a character is taken literally or not depends on the ‘magic’ option and the items mentioned next.<br>Use of “\m” makes the pattern after it be interpreted as if ‘magic’ is set, ignoring the actual value of the ‘magic’ option.<br>Use of “\M” makes the pattern after it be interpreted as if ‘nomagic’ is used.<br>Use of “\v” means that in the pattern after it all ASCII characters except ‘0’-‘9’, ‘a’-‘z’, ‘A’-‘Z’ and ‘_’ have a special meaning.  “very magic”<br>Use of “\V” means that in the pattern after it only the backslash has a special meaning.  “very nomagic”  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">after:	  \v	   \m	    \M	     \V		matches ~</span><br><span class="line">		'magic' 'nomagic'</span><br><span class="line"><span class="meta">	  $</span><span class="bash">	   $	    $	     \$		matches end-of-line</span></span><br><span class="line">	  .	   .	    \.	     \.		matches any character</span><br><span class="line">	  *	   *	    \*	     \*		any number of the previous atom</span><br><span class="line">	  ()	   \(\)     \(\)     \(\)	grouping into an atom</span><br><span class="line">	  |	   \|	    \|	     \|		separating alternatives</span><br><span class="line">	  \a	   \a	    \a	     \a		alphabetic character</span><br><span class="line">	  \\	   \\	    \\	     \\		literal backslash</span><br><span class="line">	  \.	   \.	    .	     .		literal dot</span><br><span class="line">	  \&#123;	   &#123;	    &#123;	     &#123;		literal '&#123;'</span><br><span class="line">	  a	   a	    a	     a		literal 'a'</span><br></pre></td></tr></table></figure>
+<p>{only Vim supports \m, \M, \v and \V}<br>It is recommended to always keep the ‘magic’ option at the default setting, which is ‘magic’.  This avoids portability problems.  To make a pattern immune to the ‘magic’ option being set or not, put “\m” or “\M” at the start of the pattern.  </p>
+<h1 id="vim匹配规则概览"><a href="#vim匹配规则概览" class="headerlink" title="vim匹配规则概览"></a>vim匹配规则概览</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">       'magic' 'nomagic'	`matches of the preceding atom`</span><br><span class="line">|/star|	*	\*	0 or more	as many as possible</span><br><span class="line">|/\+|	\+	\+	1 or more	as many as possible (*)</span><br><span class="line">|/\=|	\=	\=	0 or 1		as many as possible (*)</span><br><span class="line">|/\?|	\?	\?	0 or 1		as many as possible (*)</span><br><span class="line">|/\&#123;|	\&#123;n,m&#125;	\&#123;n,m&#125;	n to m		as many as possible (*)</span><br><span class="line">	\&#123;n&#125;	\&#123;n&#125;	n		exactly (*)</span><br><span class="line">	\&#123;n,&#125;	\&#123;n,&#125;	at least n	as many as possible (*)</span><br><span class="line">	\&#123;,m&#125;	\&#123;,m&#125;	0 to m		as many as possible (*)</span><br><span class="line">	\&#123;&#125;	\&#123;&#125;	0 or more	as many as possible (same as *) (*)</span><br><span class="line"></span><br><span class="line">|/\&#123;-|	\&#123;-n,m&#125;	\&#123;-n,m&#125;	n to m		as few as possible (*)</span><br><span class="line">	\&#123;-n&#125;	\&#123;-n&#125;	n		exactly (*)</span><br><span class="line">	\&#123;-n,&#125;	\&#123;-n,&#125;	at least n	as few as possible (*)</span><br><span class="line">	\&#123;-,m&#125;	\&#123;-,m&#125;	0 to m		as few as possible (*)</span><br><span class="line">	\&#123;-&#125;	\&#123;-&#125;	0 or more	as few as possible (*)</span><br><span class="line"></span><br><span class="line">|/\@&gt;|	\@&gt;	\@&gt;	1, like matching a whole pattern (*)</span><br><span class="line">|/\@=|	\@=	\@=	nothing, requires a match |/zero-width| (*)</span><br><span class="line">|/\@!|	\@!	\@!	nothing, requires NO match |/zero-width| (*)</span><br><span class="line">|/\@&lt;=|	\@&lt;=	\@&lt;=	nothing, requires a match behind |/zero-width| (*)</span><br><span class="line">|/\@&lt;!|	\@&lt;!	\@&lt;!	nothing, requires NO match behind |/zero-width| (*)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Overview-of-ordinary-atoms"><a href="#Overview-of-ordinary-atoms" class="headerlink" title="Overview of ordinary atoms"></a>Overview of ordinary atoms</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">      'magic'   'nomagic'	'matches'</span><br><span class="line">|/^|	^	^	start-of-line (at start of pattern) |/zero-width|</span><br><span class="line">|/\^|	\^	\^	literal '^'</span><br><span class="line">|/\_^|	\_^	\_^	start-of-line (used anywhere) |/zero-width|</span><br><span class="line">|/$|	$	$	end-of-line (at end of pattern) |/zero-width|</span><br><span class="line">|/\$|	\$	\$	literal '$'</span><br><span class="line">|/\_$|	\_$	\_$	end-of-line (used anywhere) |/zero-width|</span><br><span class="line">|/.|	.	\.	any single character (not an end-of-line)</span><br><span class="line">|/\_.|	\_.	\_.	any single character or end-of-line</span><br><span class="line">|/\&lt;|	\&lt;	\&lt;	beginning of a word |/zero-width|</span><br><span class="line">|/\&gt;|	\&gt;	\&gt;	end of a word |/zero-width|</span><br><span class="line">|/\zs|	\zs	\zs	anything, sets start of match</span><br><span class="line">|/\ze|	\ze	\ze	anything, sets end of match</span><br><span class="line">|/\%^|	\%^	\%^	beginning of file |/zero-width|		</span><br><span class="line">|/\%$|	\%$	\%$	end of file |/zero-width|</span><br><span class="line">|/\%V|	\%V	\%V	inside Visual area |/zero-width|</span><br><span class="line">|/\%#|	\%#	\%#	cursor position |/zero-width|</span><br><span class="line">|/\%'m|	\%'m	\%'m	mark m position |/zero-width|</span><br><span class="line">|/\%l|	\%23l	\%23l	in line 23 |/zero-width|</span><br><span class="line">|/\%c|	\%23c	\%23c	in column 23 |/zero-width|</span><br><span class="line">|/\%v|	\%23v	\%23v	in virtual column 23 |/zero-width|</span><br></pre></td></tr></table></figure>
+<p>Character classes {not in Vi}:                <em>/character-classes</em></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">|/\i|	\i	\i	identifier character (see 'isident' option)</span><br><span class="line">|/\I|	\I	\I	like "\i", but excluding digits</span><br><span class="line">|/\k|	\k	\k	keyword character (see 'iskeyword' option)</span><br><span class="line">|/\K|	\K	\K	like "\k", but excluding digits</span><br><span class="line">|/\f|	\f	\f	file name character (see 'isfname' option)</span><br><span class="line">|/\F|	\F	\F	like "\f", but excluding digits</span><br><span class="line">|/\p|	\p	\p	printable character (see 'isprint' option)</span><br><span class="line">|/\P|	\P	\P	like "\p", but excluding digits</span><br><span class="line">|/\s|	\s	\s	whitespace character: &lt;Space&gt; and &lt;Tab&gt;</span><br><span class="line">|/\S|	\S	\S	non-whitespace character; opposite of \s</span><br><span class="line">|/\d|	\d	\d	digit:				[0-9]</span><br><span class="line">|/\D|	\D	\D	non-digit:			[^0-9]</span><br><span class="line">|/\x|	\x	\x	hex digit:			[0-9A-Fa-f]</span><br><span class="line">|/\X|	\X	\X	non-hex digit:			[^0-9A-Fa-f]</span><br><span class="line">|/\o|	\o	\o	octal digit:			[0-7]</span><br><span class="line">|/\O|	\O	\O	non-octal digit:		[^0-7]</span><br><span class="line">|/\w|	\w	\w	word character:			[0-9A-Za-z_]</span><br><span class="line">|/\W|	\W	\W	non-word character:		[^0-9A-Za-z_]</span><br><span class="line">|/\h|	\h	\h	head of word character:		[A-Za-z_]</span><br><span class="line">|/\H|	\H	\H	non-head of word character:	[^A-Za-z_]</span><br><span class="line">|/\a|	\a	\a	alphabetic character:		[A-Za-z]</span><br><span class="line">|/\A|	\A	\A	non-alphabetic character:	[^A-Za-z]</span><br><span class="line">|/\l|	\l	\l	lowercase character:		[a-z]</span><br><span class="line">|/\L|	\L	\L	non-lowercase character:	[^a-z]</span><br><span class="line">|/\u|	\u	\u	uppercase character:		[A-Z]</span><br><span class="line">|/\U|	\U	\U	non-uppercase character		[^A-Z]</span><br><span class="line">|/\_|	\_x	\_x	where x is any of the characters above: character class with end-of-line included (end of character classes)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">|/\e|	\e	\e	&lt;Esc&gt;</span><br><span class="line">|/\t|	\t	\t	&lt;Tab&gt;</span><br><span class="line">|/\r|	\r	\r	&lt;CR&gt;</span><br><span class="line">|/\b|	\b	\b	&lt;BS&gt;</span><br><span class="line">|/\n|	\n	\n	end-of-line</span><br><span class="line">|/~|	~	\~	last given substitute string</span><br><span class="line">|/\1|	\1	\1	same string as matched by first \(\) &#123;not in Vi&#125;</span><br><span class="line">|/\2|	\2	\2	Like "\1", but uses second \(\)</span><br><span class="line">	   ...</span><br><span class="line">|/\9|	\9	\9	Like "\1", but uses ninth \(\)</span><br><span class="line">								*E68*</span><br><span class="line">|/\z1|	\z1	\z1	only for syntax highlighting, see |:syn-ext-match|</span><br><span class="line">	   ...</span><br><span class="line">|/\z1|	\z9	\z9	only for syntax highlighting, see |:syn-ext-match|</span><br><span class="line"></span><br><span class="line">	x	x	a character with no special meaning matches itself</span><br><span class="line"></span><br><span class="line">|/[]|	[]	\[]	any character specified inside the []</span><br><span class="line">|/\%[]|	\%[]	\%[]	a sequence of optionally matched atoms</span><br><span class="line"></span><br><span class="line">|/\c|	\c	\c	ignore case, do not use the 'ignorecase' option</span><br><span class="line">|/\C|	\C	\C	match case, do not use the 'ignorecase' option</span><br><span class="line">|/\Z|	\Z	\Z	ignore differences in Unicode "combining characters".</span><br><span class="line">			Useful when searching voweled Hebrew or Arabic text.</span><br><span class="line"></span><br><span class="line">|/\m|	\m	\m	'magic' on for the following chars in the pattern</span><br><span class="line">|/\M|	\M	\M	'magic' off for the following chars in the pattern</span><br><span class="line">|/\v|	\v	\v	the following chars in the pattern are "very magic"</span><br><span class="line">|/\V|	\V	\V	the following chars in the pattern are "very nomagic"</span><br><span class="line">|/\%#=|   \%#=1   \%#=1   select regexp engine |/zero-width|</span><br><span class="line"></span><br><span class="line">|/\%d|	\%d	\%d	match specified decimal character (eg \%d123)</span><br><span class="line">|/\%x|	\%x	\%x	match specified hex character (eg \%x2a)</span><br><span class="line">|/\%o|	\%o	\%o	match specified octal character (eg \%o040)</span><br><span class="line">|/\%u|	\%u	\%u	match specified multibyte character (eg \%u20ac)</span><br><span class="line">|/\%U|	\%U	\%U	match specified large multibyte character (eg</span><br><span class="line">			\%U12345678)</span><br><span class="line">|/\%C|	\%C	\%C	match any composing characters</span><br></pre></td></tr></table></figure>
+<p>Example</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">\&lt;\I\i*		or</span><br><span class="line">\&lt;\h\w*</span><br><span class="line">\&lt;[a-zA-Z_][a-zA-Z0-9_]*</span><br><span class="line">			An identifier (e.g., in a C program).</span><br><span class="line"></span><br><span class="line">\(\.$\|\. \)		A period followed by &lt;EOL&gt; or a space.</span><br><span class="line"></span><br><span class="line">[.!?][])"']*\($\|[ ]\)	A search pattern that finds the end of a sentence,</span><br><span class="line">			with almost the same definition as the ")" command.</span><br><span class="line"></span><br><span class="line">cat\Z			Both "cat" and "càt" ("a" followed by 0x0300)</span><br><span class="line">			Does not match "càt" (character 0x00e0), even</span><br><span class="line">			though it may look the same.</span><br></pre></td></tr></table></figure>
+
+<h1 id="vim中的零宽断言举例"><a href="#vim中的零宽断言举例" class="headerlink" title="vim中的零宽断言举例"></a>vim中的零宽断言举例</h1><p>@=    Matches the preceding atom with zero width. {not in Vi}<br>    Like “(?=pattern)” in Perl.<br>    Example            matches ~<br>    foo(bar)@=        “foo” in “foobar”<br>    foo(bar)@=foo    nothing<br>                            <em>/zero-width</em><br>    When using “@=” (or “^”, “$”, “&lt;“, “&gt;“) no characters are included<br>    in the match.  These items are only used to check if a match can be<br>    made.  This can be tricky, because a match with following items will<br>    be done in the same position.  The last example above will not match<br>    “foobarfoo”, because it tries match “foo” in the same position where<br>    “bar” matched.</p>
+<pre><code>Note that using &quot;\&amp;&quot; works the same as using &quot;\@=&quot;: &quot;foo\&amp;..&quot; is the
+same as &quot;\(foo\)\@=..&quot;.  But using &quot;\&amp;&quot; is easier, you don&apos;t need the
+braces.
+
+
+                        */\@!*</code></pre><p>@!    Matches with zero width if the preceding atom does NOT match at the<br>    current position. |/zero-width| {not in Vi}<br>    Like “(?!pattern)” in Perl.<br>    Example            matches ~<br>    foo(bar)@!        any “foo” not followed by “bar”<br>    a.{-}p@!        “a”, “ap”, “app”, “appp”, etc. not immediately<br>                followed by a “p”<br>    if ((then)@!.)*$    “if “ not followed by “then”</p>
+<pre><code>Using &quot;\@!&quot; is tricky, because there are many places where a pattern
+does not match.  &quot;a.*p\@!&quot; will match from an &quot;a&quot; to the end of the
+line, because &quot;.*&quot; can match all characters in the line and the &quot;p&quot;
+doesn&apos;t match at the end of the line.  &quot;a.\{-}p\@!&quot; will match any
+&quot;a&quot;, &quot;ap&quot;, &quot;app&quot;, etc. that isn&apos;t followed by a &quot;p&quot;, because the &quot;.&quot;
+can match a &quot;p&quot; and &quot;p\@!&quot; doesn&apos;t match after that.
+
+You can&apos;t use &quot;\@!&quot; to look for a non-match before the matching
+position: &quot;\(foo\)\@!bar&quot; will match &quot;bar&quot; in &quot;foobar&quot;, because at the
+position where &quot;bar&quot; matches, &quot;foo&quot; does not match.  To avoid matching
+&quot;foobar&quot; you could use &quot;\(foo\)\@!...bar&quot;, but that doesn&apos;t match a
+bar at the start of a line.  Use &quot;\(foo\)\@&lt;!bar&quot;.
+
+Useful example: to find &quot;foo&quot; in a line that does not contain &quot;bar&quot;: &gt;
+    /^\%(.*bar\)\@!.*\zsfoo</code></pre><p>&lt;    This pattern first checks that there is not a single position in the<br>    line where “bar” matches.  If “.*bar” matches somewhere the @! will<br>    reject the pattern.  When there is no match any “foo” will be found.<br>    The “\zs” is to have the match start just before “foo”.</p>
+<pre><code>*/\@&lt;=*</code></pre><p>@&lt;=    Matches with zero width if the preceding atom matches just before what<br>    follows. |/zero-width| {not in Vi}<br>    Like “(?&lt;=pattern)” in Perl, but Vim allows non-fixed-width patterns.<br>    Example            matches ~<br>    (an_s+)@&lt;=file    “file” after “an” and white space or an<br>                end-of-line<br>    For speed it’s often much better to avoid this multi.  Try using “\zs”<br>    instead |/\zs|.  To match the same as the above example:<br>        an_s+\zsfile<br>    At least set a limit for the look-behind, see below.</p>
+<pre><code>&quot;\@&lt;=&quot; and &quot;\@&lt;!&quot; check for matches just before what follows.
+Theoretically these matches could start anywhere before this position.
+But to limit the time needed, only the line where what follows matches
+is searched, and one line before that (if there is one).  This should
+be sufficient to match most things and not be too slow.
+
+In the old regexp engine the part of the pattern after &quot;\@&lt;=&quot; and
+&quot;\@&lt;!&quot; are checked for a match first, thus things like &quot;\1&quot; don&apos;t work
+to reference \(\) inside the preceding atom.  It does work the other
+way around:
+Bad example            matches ~
+\%#=1\1\@&lt;=,\([a-z]\+\)        &quot;,abc&quot; in &quot;abc,abc&quot;
+
+However, the new regexp engine works differently, it is better to not
+rely on this behavior, do not use \@&lt;= if it can be avoided:
+Example                matches ~
+\([a-z]\+\)\zs,\1        &quot;,abc&quot; in &quot;abc,abc&quot;</code></pre><p>@123&lt;=<br>    Like “@&lt;=” but only look back 123 bytes. This avoids trying lots<br>    of matches that are known to fail and make executing the pattern very<br>    slow.  Example, check if there is a “&lt;” just before “span”:<br>        /&lt;@1&lt;=span<br>    This will try matching “&lt;” only one byte before “span”, which is the<br>    only place that works anyway.<br>    After crossing a line boundary, the limit is relative to the end of<br>    the line.  Thus the characters at the start of the line with the match<br>    are not counted (this is just to keep it simple).<br>    The number zero is the same as no limit.</p>
+<pre><code>*/\@&lt;!*</code></pre><p>@&lt;!    Matches with zero width if the preceding atom does NOT match just<br>    before what follows.  Thus this matches if there is no position in the<br>    current or previous line where the atom matches such that it ends just<br>    before what follows.  |/zero-width| {not in Vi}<br>    Like “(?&lt;!pattern)” in Perl, but Vim allows non-fixed-width patterns.<br>    The match with the preceding atom is made to end just before the match<br>    with what follows, thus an atom that ends in “.*” will work.<br>    Warning: This can be slow (because many positions need to be checked<br>    for a match).  Use a limit if you can, see below.<br>    Example            matches ~<br>    (foo)@&lt;!bar        any “bar” that’s not in “foobar”<br>    (//.*)@&lt;!in    “in” which is not after “//“</p>
+<p>@123&lt;!<br>    Like “@&lt;!” but only look back 123 bytes. This avoids trying lots of<br>    matches that are known to fail and make executing the pattern very<br>    slow.</p>
+<pre><code>*/\@&gt;*</code></pre><p>@&gt;    Matches the preceding atom like matching a whole pattern. {not in Vi}<br>    Like “(?&gt;pattern)” in Perl.<br>    Example        matches ~<br>    (a<em>)@&gt;a    nothing (the “a</em>“ takes all the “a”‘s, there can’t be<br>            another one following)</p>
+<pre><code>This matches the preceding atom as if it was a pattern by itself.  If
+it doesn&apos;t match, there is no retry with shorter sub-matches or
+anything.  Observe this difference: &quot;a*b&quot; and &quot;a*ab&quot; both match
+&quot;aaab&quot;, but in the second case the &quot;a*&quot; matches only the first two
+&quot;a&quot;s.  &quot;\(a*\)\@&gt;ab&quot; will not match &quot;aaab&quot;, because the &quot;a*&quot; matches
+the &quot;aaa&quot; (as many &quot;a&quot;s as possible), thus the &quot;ab&quot; can&apos;t match.</code></pre>
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Regex/" rel="tag"># Regex</a>
+              <a href="/tags/vim/" rel="tag"># vim</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/12/13/vim-tips/" rel="prev" title="vim的一些实用技巧">
+      <i class="fa fa-chevron-left"></i> vim的一些实用技巧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/12/13/cpp-oop-copy-control/" rel="next" title="C++学习笔记之拷贝控制">
+      C++学习笔记之拷贝控制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vim中正则模式说明"><span class="nav-number">1.</span> <span class="nav-text">vim中正则模式说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vim匹配规则概览"><span class="nav-number">2.</span> <span class="nav-text">vim匹配规则概览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Overview-of-ordinary-atoms"><span class="nav-number">3.</span> <span class="nav-text">Overview of ordinary atoms</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vim中的零宽断言举例"><span class="nav-number">4.</span> <span class="nav-text">vim中的零宽断言举例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2015/12/13/vim-regexp/";
+    this.page.identifier = "2015/12/13/vim-regexp/";
+    this.page.title = "vim中的正则表达式匹配规则";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

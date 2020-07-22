@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本来只是为了从底层了解下堆和栈的区别，以及heap和free-store的区别，结果便引出了从源代码编译开始，直到可执行程序如何加载到内存，以及C&#x2F;C++内存布局的问题，这里做个总结，主要参考C++ Internals :: Memory Layout本文所使用的环境：     Ubuntu-14.04 x64 kernel 4.2.0-36-generic GCC version 4.8.4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实例验证C&#x2F;C++源代码变成程序的过程">
+<meta property="og:url" content="http://notes.maxwi.com/3416/06/05/source-to-program/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="本来只是为了从底层了解下堆和栈的区别，以及heap和free-store的区别，结果便引出了从源代码编译开始，直到可执行程序如何加载到内存，以及C&#x2F;C++内存布局的问题，这里做个总结，主要参考C++ Internals :: Memory Layout本文所使用的环境：     Ubuntu-14.04 x64 kernel 4.2.0-36-generic GCC version 4.8.4">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://notes.maxwi.com/3416/06/05/source-to-program/compile_cpp.png">
+<meta property="article:published_time" content="3416-06-05T07:58:11.000Z">
+<meta property="article:modified_time" content="2017-12-26T13:39:02.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Top">
+<meta property="article:tag" content="CPP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://notes.maxwi.com/3416/06/05/source-to-program/compile_cpp.png">
+
+<link rel="canonical" href="http://notes.maxwi.com/3416/06/05/source-to-program/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>实例验证C/C++源代码变成程序的过程 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3416/06/05/source-to-program/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实例验证C/C++源代码变成程序的过程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 3416-06-05 15:58:11" itemprop="dateCreated datePublished" datetime="3416-06-05T15:58:11+08:00">3416-06-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-26 21:39:02" itemprop="dateModified" datetime="2017-12-26T21:39:02+08:00">2017-12-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/3416/06/05/source-to-program/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3416/06/05/source-to-program/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本来只是为了从底层了解下堆和栈的区别，以及heap和free-store的区别，结果便引出了从源代码编译开始，直到可执行程序如何加载到内存，以及C/C++内存布局的问题，这里做个总结，主要参考<a href="http://www.gahcep.com/cpp-internals-memory-layout/" target="_blank" rel="noopener">C++ Internals :: Memory Layout</a><br>本文所使用的环境：   </p>
+<ul>
+<li>Ubuntu-14.04 x64 kernel 4.2.0-36-generic</li>
+<li>GCC version 4.8.4   </li>
+</ul>
+<p>需要使用的其他工具：   </p>
+<ul>
+<li>c++filt – Demangle C++ and Java symbols.详情可以自行查看man手册   </li>
+</ul>
+<p>C++编译器通常进行以下4个步骤将源代码编译为可执行程序：   </p>
+<ul>
+<li>预处理器的预处理阶段，替换#开头的内容   </li>
+<li>编译器编译阶段，将预处理后的源程序处理成汇编源程序   </li>
+<li>汇编器的汇编阶段，将汇编源程序汇编为可重定位的目标二进制程序   </li>
+<li>连接器将可生定位的目标程序连接成为可执行的二进制目标程序   </li>
+</ul>
+<p>以下面这段代码的编译链接过程举例：   </p>
+<a id="more"></a>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> PI</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PI 3.1415926</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> pi = PI;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; numbers &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> n : numbers)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; n * n &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="预处理阶段"><a href="#预处理阶段" class="headerlink" title="预处理阶段"></a>预处理阶段</h2><p>命令：<code>g++ -std=c++11 -E main.cpp &gt; main.ii</code><br>-E参数可以让gcc只对源代码进行预处理，并将预处理之后的代码输出的标准输出中。默认情况下gcc会将预处理之后的代码命名为后缀<code>.ii</code><br>该阶段预处理器会处理以<code>#</code>开头的命令（如#include，#define，#if等），处理之后的输出文件就完全是个纯C++源文件，不再包含预处理命令，当该处理过程将根据#if，#ifdef，#ifndef，#endif来确定是否需要时行相应的处理。其中#include命令中包含的头文件会被替换成相应的文件内容，但通常只是声明，实现部分可能依然在源文件中，但会以特殊标记标出，以便编译器可以找到相应的实现。对于#define定义的宏命令，会直接进行相应内容的替换。<br>由于上例中包含有头文件vector和iostream，这两个头文件中包含有大量声明和实现，所以经过预处理之后会生成一个很大的输出文件，下面以下较简单的例子举例说明：<br><em>t.cpp</em></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> PI</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PI 3.1415926</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> a33 = <span class="number">33</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> pi = PI * <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> b44 = a33;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>经过预处理之后的文件为<br><em>t.ii</em></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">"const_folding.cpp"</span></span><br><span class="line"># <span class="number">1</span> <span class="string">"&lt;built-in&gt;"</span></span><br><span class="line"># <span class="number">1</span> <span class="string">"&lt;command-line&gt;"</span></span><br><span class="line"># <span class="number">1</span> <span class="string">"/usr/include/stdc-predef.h"</span> <span class="number">1</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"># <span class="number">1</span> <span class="string">"&lt;command-line&gt;"</span> <span class="number">2</span></span><br><span class="line"># <span class="number">1</span> <span class="string">"const_folding.cpp"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> a33 = <span class="number">33</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> pi = <span class="number">3.1415926</span> * <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> b44 = a33;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意上述代码有我额外定义了const的变量，发现在预编译阶段const变量并没有变化，也就是说网上很多人说的常量折叠其实并不是发生在预编译阶段，而是在编译阶段，编译器会将const定义的常量，字符常量表达式（如上面的3.1415926 * 2）替换为结果值<br>从输出代码中可以看出预处理器除了进行了宏替换之外，还增加一些形如：   </p>
+<blockquote>
+<p><code># linenum filename flags</code>      //注意行号是指相应filename的文件中的行   </p>
+</blockquote>
+<p>的代码，根据<a href="https://gcc.gnu.org/onlinedocs/cpp/Preprocessor-Output.html" target="_blank" rel="noopener">GCC官方文档</a>最后的flags可以包含1、2、3、4，当包含多个时，以空格隔开，具体各自的意思，文档中都有详细说明。   </p>
+<h2 id="编译阶段"><a href="#编译阶段" class="headerlink" title="编译阶段"></a>编译阶段</h2><p>编译阶段，编译器使用预处理器的输出文件生成汇编源文件，注意只是汇编源代码，也就是此时的文件还只是文本文件。使用命令：<code>g++ -std=c++11 -S main.ii</code>，<code>-S</code>参数表示GCC只生成汇编源代码，而不进行汇编。默认情况下生成的文件后缀为<code>.s</code>，对于上述代码生成的汇编源码的前17行如下，当然整个文件有1586行。<br><em>main.s</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	.file	&quot;main.cpp&quot;</span><br><span class="line">	.section	.rodata</span><br><span class="line">	.type	_ZStL19piecewise_construct, @object</span><br><span class="line">	.size	_ZStL19piecewise_construct, 1</span><br><span class="line">_ZStL19piecewise_construct:</span><br><span class="line">	.zero	1</span><br><span class="line">	.local	_ZStL8__ioinit</span><br><span class="line">	.comm	_ZStL8__ioinit,1,1</span><br><span class="line">	.text</span><br><span class="line">	.globl	main</span><br><span class="line">	.type	main, @function</span><br><span class="line">main:</span><br><span class="line">.LFB1554:</span><br><span class="line">	.cfi_startproc</span><br><span class="line">	.cfi_personality 0x3,__gxx_personality_v0</span><br><span class="line">	.cfi_lsda 0x3,.LLSDA1554</span><br><span class="line">	pushq	%rbp</span><br><span class="line">&#x2F;&#x2F;.......</span><br></pre></td></tr></table></figure>
+<p>由于编译器为了支持C++的函数重载，所以引用了<code>name mangling</code>机制，也就是相当于给所有函数名一个新的名字以区分不同的重载函数，可以使用GNU的<code>c++filt</code>工具来对原汇编源码unmangle name即可得到原名称，命令为<code>cat main.s | c++filt &gt; main_unmangled.s</code>，unmangle之后的部分代码如下：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">	.file	&quot;main.cpp&quot;</span><br><span class="line">	.section	.rodata</span><br><span class="line">	.type	std::piecewise_construct, @object</span><br><span class="line">	.size	std::piecewise_construct, 1</span><br><span class="line">std::piecewise_construct:</span><br><span class="line">	.zero	1</span><br><span class="line">	.local	std::__ioinit</span><br><span class="line">	.comm	std::__ioinit,1,1</span><br><span class="line">	.text</span><br><span class="line">	.globl	main</span><br><span class="line">	.type	main, @function</span><br><span class="line">main:</span><br><span class="line">.LFB1554:</span><br><span class="line">	.cfi_startproc</span><br><span class="line">	.cfi_personality 0x3,__gxx_personality_v0</span><br><span class="line">	.cfi_lsda 0x3,.LLSDA1554</span><br><span class="line">	pushq	%rbp</span><br></pre></td></tr></table></figure>
+
+<h2 id="汇编阶段"><a href="#汇编阶段" class="headerlink" title="汇编阶段"></a>汇编阶段</h2><p>汇编阶段使用汇编器将汇编源代码汇编为可重定位的目标程序（relocatable object program），该阶段生成的文件为二进制文件，它的字节码是机器语言指令而不是字符。命令为<code>g++ -std=c++11 -c main.s</code>。<code>-c</code>参数表示只编译而不进行链接，默认输出文件为源程序名加后缀<code>.o</code>。注意汇编的输入文件必须是原汇编文件，而不能是unmangle name之后的文件。可重定位的目标程序相当于是编译器与链接器之间的桥梁，正是由于该中间结果的出现，使得不同的编程语言产生的含有符号表(symbols)和重定位表<code>relocations</code>的目标程序可以被链接器链接到一起成为可执行的目标程序。   </p>
+<h2 id="链接阶段"><a href="#链接阶段" class="headerlink" title="链接阶段"></a>链接阶段</h2><p>以下未明天说“可执行”的目标文件是都是指可重定位的目标文件，符号=<code>symbols</code>，重定位=<code>relocations</code><br>该阶段使用链接器将目标文件链接到一个可执行文件或共享库中，该可执行文件将可以由操作系统或者加载器加载到内存中执行。命令为<code>g++ -std=c++11 -o main main.o</code>，如果不指定<code>-o</code>参数，则默认为输出文件名为<code>a.out</code><br>该阶段的实质是链接器通过符号（<code>symbols</code>）和重定位（<code>relocations</code>）将多个可重定位的目标程序中相应的节（section）合并到一个二进制文件中。此处如何合并就要涉及到内存布局的问题，参见<a href="">C++内存布局</a><br>关于symbols和relocations的详细介绍：   </p>
+<h3 id="symbols"><a href="#symbols" class="headerlink" title="symbols"></a>symbols</h3><p>详情查看<a href="https://en.wikipedia.org/wiki/Linker_(computing)" target="_blank" rel="noopener">Wikipedia</a><br>通常情况下可重定位的目标文件中包含三种类型的symbols（其实也是ELF格式的三种类型）:   </p>
+<ul>
+<li>已经定义的”external” symbols，该符号允许被其他模块调用   </li>
+<li>未定义的”external” symbols，该符号引用在其他模块中已经定义的符号。   </li>
+<li>局部符号，在目标文件中内部使用以便方便进行重定位。<br>例如一个C++源码编译生成的可重定位的目标程序中，每个函数、全局变量、静态变量都会有一个symbol与之对应，这些就是已经定义的symbols。定义在不同文件中symbols就是未定义的symbols。在链接期间，链接器会给每个symbol指定一个地址，并会通过查找同名的已经定义的symbol来解决所有未定义的symbol。根据该symbol是局部或全局、已初始化或未初始化、变量还是常量，链接器会将它们放在可执行的目标程序文件中的不同节（sections）。   </li>
+</ul>
+<h3 id="relocation"><a href="#relocation" class="headerlink" title="relocation"></a>relocation</h3><p>详情查看<a href="https://en.wikipedia.org/wiki/Relocation_(computing)" target="_blank" rel="noopener">Wikipedia</a><br>重定位是指一个过程，该过程将为程序中不同部分指定载入地址并调整程序中的代码和数据以将其映射到指定的地址。<br>与重定位过程紧密相关的有重定位表（relocation tables）和一些包含额外信息的特定的节（sections），例如其中一个section就是<code>.rela.text</code>，该节与重定位可执行目标文件中的<code>.text</code>节有关。深入了解相关问题可以参见<code>ELF</code>文件格式。<br>每一个<code>.o</code>文件都有一个重定位表（relocation table），该表给出了每一个需要被链接器更新的符号symbol，以及该如何更新的信息。   </p>
+<p>可以通过<code>g++ -std=c++11 -o main main.cpp</code>一次性编译并生成可执行的目标程序，如果希望一个命令编译并链接生成可执行程序的同时保留上面四个步骤中的临时文件，可以通过添加<code>--save-temps</code>参数，如<code>g++ -std=c++11 --save-temps -o main main.cpp</code>。<br>以图说话：<br><img data-src="compile_cpp.png" alt=""></p>
+<p>关于可重定位的目标文件与可执行文件的实质区别，以及内存布局，section(节)与segment（段）的区别，详见<a href="http://notes.maxwi.com/2016/06/11/cpp-memory-layout/">实例分析C++内存布局</a>   </p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Top/" rel="tag"># Top</a>
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/3316/06/11/cpp-memory-layout/" rel="prev" title="实例分析C++内存布局">
+      <i class="fa fa-chevron-left"></i> 实例分析C++内存布局
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/3516/08/19/static-dynamic-binding/" rel="next" title="C++静态绑定与动态绑定">
+      C++静态绑定与动态绑定 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#预处理阶段"><span class="nav-number">1.</span> <span class="nav-text">预处理阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译阶段"><span class="nav-number">2.</span> <span class="nav-text">编译阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#汇编阶段"><span class="nav-number">3.</span> <span class="nav-text">汇编阶段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接阶段"><span class="nav-number">4.</span> <span class="nav-text">链接阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#symbols"><span class="nav-number">4.1.</span> <span class="nav-text">symbols</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#relocation"><span class="nav-number">4.2.</span> <span class="nav-text">relocation</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/3416/06/05/source-to-program/";
+    this.page.identifier = "3416/06/05/source-to-program/";
+    this.page.title = "实例验证C/C++源代码变成程序的过程";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

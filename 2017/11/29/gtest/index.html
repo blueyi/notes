@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="GTest简介GTest是Google官方团队开发的开源的C++单元测试框架，地址为：https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;googletest。该地址下同时有一个名为googlemock的项目，Google Mock可以理解为Google Test的辅助测试框架，Google Mock可以用于实现一个模拟类(mock类)，可以用于完成需要接口交互但相应的类又没有实现的测试。本文不涉">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Test(gtest)使用">
+<meta property="og:url" content="http://notes.maxwi.com/2017/11/29/gtest/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="GTest简介GTest是Google官方团队开发的开源的C++单元测试框架，地址为：https:&#x2F;&#x2F;github.com&#x2F;google&#x2F;googletest。该地址下同时有一个名为googlemock的项目，Google Mock可以理解为Google Test的辅助测试框架，Google Mock可以用于实现一个模拟类(mock类)，可以用于完成需要接口交互但相应的类又没有实现的测试。本文不涉">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-11-29T08:31:54.000Z">
+<meta property="article:modified_time" content="2017-12-19T16:24:08.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="CPP">
+<meta property="article:tag" content="Gtest">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2017/11/29/gtest/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Google Test(gtest)使用 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2017/11/29/gtest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Google Test(gtest)使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-11-29 16:31:54" itemprop="dateCreated datePublished" datetime="2017-11-29T16:31:54+08:00">2017-11-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-20 00:24:08" itemprop="dateModified" datetime="2017-12-20T00:24:08+08:00">2017-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/11/29/gtest/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/11/29/gtest/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>12 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="GTest简介"><a href="#GTest简介" class="headerlink" title="GTest简介"></a>GTest简介</h2><p>GTest是Google官方团队开发的开源的C++单元测试框架，地址为：<a href="https://github.com/google/googletest" target="_blank" rel="noopener">https://github.com/google/googletest</a>。该地址下同时有一个名为googlemock的项目，Google Mock可以理解为Google Test的辅助测试框架，Google Mock可以用于实现一个模拟类(mock类)，可以用于完成需要接口交互但相应的类又没有实现的测试。本文不涉及Mock，以后有空了再追加Google Mock的使用。<br>使用Google Test可以实现：<br>1、测试应该是独立并且可以重复的。<br>2、测试应该组织良好，能够清晰的反应出测试代码的结构。<br>3、测试应该是可移植和可利用的。<br>4、当测试失败时，Google Test将会提供尽可能多的测试信息，并继续后面的测试而不是结束测试。<br>5、Google Test会跟踪所有用户定义的新测试，而不需要用户一一再去调用它们。从而将测试人员从繁杂的测试用例调用中解放出来，将更多的精力关注中测试本身上。<br>6、测试实现起来很快，因为Google Test框架能够在测试用例之间共用资源，并且它们之前还不会相互依赖。</p>
+<a id="more"></a>
+
+<h2 id="VS下的GTest环境配置"><a href="#VS下的GTest环境配置" class="headerlink" title="VS下的GTest环境配置"></a>VS下的GTest环境配置</h2><p>本文测试的环境为VS IDE，linux下使用cmake生成所需要的内容，然后直接引用即可，主要是学习如何使用这个强大的工具。<br>首先将Google Test源码使用你喜欢的方式整到本地（以下命令是git bash中操作，如果是cmd，修改一下mkdir为md）：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/google/googletest.git</span><br><span class="line">$ <span class="built_in">cd</span> googletest</span><br><span class="line">$ mkdir mybuild</span><br><span class="line">$ <span class="built_in">cd</span> mybuild</span><br><span class="line">$ cmake –G “Visual Studio 12 2013” ..</span><br></pre></td></tr></table></figure>
+
+<p><code>-G</code>后面指定你的VS版本号（注意在git bash下有可能<code>-G</code>参数无效，需要在cmd执行，或者直接使用cmake-gui操作），可能通过查看cmake的帮助找到更多版本，如果需要同时生成示例代码的VS工程，添加参数-Dgtest_build_samples=ON<br>运行cmake命令之后会在mybuild目录下生成gtest和gmock的项目工程文件，通过vs打开名为<code>googletest-distribution.sln</code>的解决方案，直接生成即可编译完成gtest和gmock，我们这里只使用gtest，所以只关注gtest即可。在路径<code>“mybuild\googlemock\gtest\Debug”</code>下会有文件“gtest_maind.lib”和“gtestd.lib”两个静态库，用这两个文件即可在自己的测试项目中调用gtest了。<br>为了便于后面的VS或者其他编译器调用头文件和库，可以添加环境变量GTEST_DIR值为<code>/path/to/googletest</code>。值即为你的googletest代码根目录<br>创建项目属性表<br>为了便于以后新建项目可以复用项目属性表，简化新建测试项目的过程，我们可以首先生成gtest的项目属性表，以后直接引用即可。如果觉得下面的创建过程太复杂，可以直接跳过，复制下面项目属性表的内容，本地新建一个文本文件，命名为Gtest_Debug.props。注意其中的路径。<br>先随便建一个项目，然后在属性管理器中右键相应的配置属性，选择添加新项目属性表，任意命名，例如我的GTest_Debug。双击该属性表后在C/C++的附加包含目录添加<code>“$(GTEST_DIR)\include;$(GTEST_DIR)”</code>，在链接器的常规中为附加库目录添加“$(GTEST_DIR)\mybuild\googlemock\gtest\Debug;”，输入中的附加依赖项添加“gtestd.lib;gtest_maind.lib;”。然后保存该属性表后会在相应项目文件夹中生成名为“GTest_Debug.props”的文件，将它保存在一个好找的位置，以后再创建gtest项目直接在刚才的属性管理器中右键添加现有属性表选择它就可以了。<br>下面是我的Gtest_Debug.props文件内容：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span>=<span class="string">"4.0"</span> <span class="attr">xmlns</span>=<span class="string">"http://schemas.microsoft.com/developer/msbuild/2003"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ImportGroup</span> <span class="attr">Label</span>=<span class="string">"PropertySheets"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span> <span class="attr">Label</span>=<span class="string">"UserMacros"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ItemDefinitionGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ClCompile</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">AdditionalIncludeDirectories</span>&gt;</span>$(GTEST_DIR)\include;$(GTEST_DIR)<span class="tag">&lt;/<span class="name">AdditionalIncludeDirectories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ClCompile</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Link</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">AdditionalDependencies</span>&gt;</span>gtestd.lib;gtest_maind.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)<span class="tag">&lt;/<span class="name">AdditionalDependencies</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">AdditionalLibraryDirectories</span>&gt;</span>$(GTEST_DIR)\mybuild\googlemock\gtest\Debug;<span class="tag">&lt;/<span class="name">AdditionalLibraryDirectories</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Link</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">ItemDefinitionGroup</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ItemGroup</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Gtest-基础应用"><a href="#Gtest-基础应用" class="headerlink" title="Gtest-基础应用"></a>Gtest-基础应用</h2><p>举例一个例子说明gtest的用法，当然强烈建议看看官方的sample。</p>
+<h3 id="创建自己的项目"><a href="#创建自己的项目" class="headerlink" title="创建自己的项目"></a>创建自己的项目</h3><p>首先创建一个简单的dll项目，该项目将包含一个名为IsLessStr的函数，检查字符串是否为小字符串，这里假定长度小于等于4的为小字符串。<br>IsLessStr.h文件内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> IS_LESS_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IS_LESS_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsLessStr</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>IsLessStr.cpp文件内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"IsLessStr.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsLessStr</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (str.length() &gt; <span class="number">4</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建dll导出文件IsLessStr.def：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LIBRARY <span class="string">"IsLessStr"</span></span><br><span class="line"></span><br><span class="line">EXPORTS</span><br><span class="line">    IsLessStr</span><br></pre></td></tr></table></figure>
+
+<p>现在我们的这个项目将可以编译生成相应的lib和dll文件了，下面我们使用gtest进行相应的单元测试。</p>
+<h3 id="创建gtest测试项目"><a href="#创建gtest测试项目" class="headerlink" title="创建gtest测试项目"></a>创建gtest测试项目</h3><p>在上面项目的解决方案中创建测试项目，可以命名为IsLessStrTest，在属性管理器中右键这个测试项目的属性选择添加现有属性表，选中我们刚才的那个属性表即可完全gtest的配置。然后再在属性管理器中双击IsLessStrTest会引出它的整体属性页，通用属性—引用中添加新引用，选择我们刚才的项目IsLessStr，以使该项目链接时可以找到IsLessStr的lib文件和dll文件(dll非必须)。在它的配置属性中找到C/C++将IsLessStr的头文件所在路径添加到它的附加包含目录。到此gtest测试项目配置完成。<br>基本测试使用TEST()，用法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TEST(test_case_name, test_name) &#123;</span><br><span class="line"> ... test body ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是测试的实际代码Test.cpp中的内容：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"gtest/gtest.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"IsLessStr.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">GTEST_API_ <span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Study GTEST"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    testing::InitGoogleTest(&amp;argc, argv);</span><br><span class="line">    <span class="keyword">return</span> RUN_ALL_TESTS();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">TEST(IsLessStr_Test, TestShortLen)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> str = <span class="string">"H"</span>;</span><br><span class="line">    EXPECT_TRUE(IsLessStr(str)) &lt;&lt; <span class="string">"Test H is the less str"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">TEST(IsLessStr_Test, TestEmptyStr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> str;</span><br><span class="line">    EXPECT_TRUE(IsLessStr(str));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">TEST(IsLessStr_Test, TestLongLen)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> str = <span class="string">"Hello World! I Love China"</span>;</span><br><span class="line">    EXPECT_TRUE(IsLessStr(str)) &lt;&lt; <span class="string">"AHA, This is an mistake"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意上面的main函数实现，也就是说可以将测试代码放在单独的文件中，而不用再去关注main函数的实现。<br>编译运行，输出如下（cmd窗口中会有彩色的标记）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Study GTEST</span><br><span class="line">[&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;] Running 3 tests from 1 test case.</span><br><span class="line">[----------] Global test environment set-up.</span><br><span class="line">[----------] 3 tests from IsLessStr_Test</span><br><span class="line">[ RUN      ] IsLessStr_Test.TestShortLen</span><br><span class="line">d:\proj\gteststudy\gteststudy\getstrtest\test.cpp(16): error: Value of: IsLessStr(str)</span><br><span class="line">  Actual: true</span><br><span class="line">Expected: false</span><br><span class="line">Test H is the less str</span><br><span class="line">[  FAILED  ] IsLessStr_Test.TestShortLen (1 ms)</span><br><span class="line">[ RUN      ] IsLessStr_Test.TestEmptyStr</span><br><span class="line">[       OK ] IsLessStr_Test.TestEmptyStr (0 ms)</span><br><span class="line">[ RUN      ] IsLessStr_Test.TestLongLen</span><br><span class="line">d:\proj\gteststudy\gteststudy\getstrtest\test.cpp(28): error: Value of: IsLessStr(str)</span><br><span class="line">  Actual: false</span><br><span class="line">Expected: true</span><br><span class="line">AHA, This is an mistake</span><br><span class="line">[  FAILED  ] IsLessStr_Test.TestLongLen (1 ms)</span><br><span class="line">[----------] 3 tests from IsLessStr_Test (2 ms total)</span><br><span class="line"></span><br><span class="line">[----------] Global test environment tear-down</span><br><span class="line">[&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;] 3 tests from 1 test case ran. (3 ms total)</span><br><span class="line">[  PASSED  ] 1 test.</span><br><span class="line">[  FAILED  ] 2 tests, listed below:</span><br><span class="line">[  FAILED  ] IsLessStr_Test.TestShortLen</span><br><span class="line">[  FAILED  ] IsLessStr_Test.TestLongLen</span><br><span class="line"></span><br><span class="line"> 2 FAILED TESTS</span><br></pre></td></tr></table></figure>
+
+<p>为了测试输出信息更丰富，我们上面那最后一个测试用例其实故意写错了</p>
+<h2 id="断言-测试宏"><a href="#断言-测试宏" class="headerlink" title="断言/测试宏"></a>断言/测试宏</h2><p>Google Test采用一系列的断言（assertion）来进行代码测试，这些宏有点类似于函数调用。<br>当断言失败时Google Test将会打印出assertion时的源文件和出错行的位置，以及附加的失败信息，<br>用户可以直接通过<code>“&lt;&lt;”</code>在这些断言宏后面跟上自己希望在断言命中时的输出信息。<br>测试宏可以分为两大类：<code>ASSERT_*</code>和<code>EXPECT_*</code>，这些成对的断言功能相同，但效果不同。其中<code>ASSERT_*</code>将会在失败时产生致命错误并中止当前调用它的函数执行。<code>EXPECT_*</code>版本的会生成非致命错误，不会中止当前函数，而是继续执行当前函数。通常情况应该首选使用<code>EXPECT_*</code>，因为<code>ASSERT_*</code>在报告完错误后不会进行清理工作，有可能导致内容泄露问题。</p>
+<p>断言后面可以直接跟用户想要输出的信息：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ASSERT_EQ(x.size(), y.size()) &lt;&lt; <span class="string">"Vectors x and y are of unequal length"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; x.size(); ++i) &#123;</span><br><span class="line">  EXPECT_EQ(x[i], y[i]) &lt;&lt; <span class="string">"Vectors x and y differ at index "</span> &lt;&lt; i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>常用的一些宏如下：</p>
+<h3 id="基础断言"><a href="#基础断言" class="headerlink" title="基础断言"></a>基础断言</h3><table>
+<thead>
+<tr>
+<th>Fatal assertion</th>
+<th>Nonfatal assertion</th>
+<th>Verifies</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ASSERT_TRUE(condition);</td>
+<td>EXPECT_TRUE(condition);</td>
+<td>condition is true</td>
+</tr>
+<tr>
+<td>ASSERT_FALSE(condition);</td>
+<td>EXPECT_FALSE(condition);</td>
+<td>condition is false</td>
+</tr>
+</tbody></table>
+<h3 id="二值比较"><a href="#二值比较" class="headerlink" title="二值比较"></a>二值比较</h3><table>
+<thead>
+<tr>
+<th>Fatal assertion</th>
+<th>Nonfatal assertion</th>
+<th>Verifies</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ASSERT_EQ(val1,val2);</td>
+<td>EXPECT_EQ(val1,val2);</td>
+<td>val1 == val2</td>
+</tr>
+<tr>
+<td>ASSERT_NE(val1,val2);</td>
+<td>EXPECT_NE(val1,val2);</td>
+<td>val1 != val2</td>
+</tr>
+<tr>
+<td>ASSERT_LT(val1,val2);</td>
+<td>EXPECT_LT(val1,val2);</td>
+<td>val1 &lt; val2</td>
+</tr>
+<tr>
+<td>ASSERT_LE(val1,val2);</td>
+<td>EXPECT_LE(val1,val2);</td>
+<td>val1 &lt;= val2</td>
+</tr>
+<tr>
+<td>ASSERT_GT(val1,val2);</td>
+<td>EXPECT_GT(val1,val2);</td>
+<td>val1 &gt; val2</td>
+</tr>
+<tr>
+<td>ASSERT_GE(val1,val2);</td>
+<td>EXPECT_GE(val1,val2);</td>
+<td>val1 &gt;= val2</td>
+</tr>
+</tbody></table>
+<h3 id="字符串比较"><a href="#字符串比较" class="headerlink" title="字符串比较"></a>字符串比较</h3><table>
+<thead>
+<tr>
+<th>Fatal assertion</th>
+<th>Nonfatal assertion</th>
+<th>Verifies</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ASSERT_STREQ(str1,str2);</td>
+<td>EXPECT_STREQ(str1,str2);</td>
+<td>the two C strings have the same content</td>
+</tr>
+<tr>
+<td>ASSERT_STRNE(str1,str2);</td>
+<td>EXPECT_STRNE(str1,str2);</td>
+<td>the two C strings have different content</td>
+</tr>
+<tr>
+<td>ASSERT_STRCASEEQ(str1,str2);</td>
+<td>EXPECT_STRCASEEQ(str1,str2);</td>
+<td>the two C strings have the same content, ignoring case</td>
+</tr>
+<tr>
+<td>ASSERT_STRCASENE(str1,str2);</td>
+<td>EXPECT_STRCASENE(str1,str2);</td>
+<td>the two C strings have different content, ignoring case</td>
+</tr>
+</tbody></table>
+<p><code>Google Test</code>还有其他很多测试宏，例如单纯的测试成功与失败、测试指定代码块是否抛出指定异常等，更多内容参见：<br><a href="https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md" target="_blank" rel="noopener">https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md</a></p>
+<h2 id="Gtest-Test-Fixtures（多个Test共享一份代码）"><a href="#Gtest-Test-Fixtures（多个Test共享一份代码）" class="headerlink" title="Gtest-Test Fixtures（多个Test共享一份代码）"></a>Gtest-Test Fixtures（多个Test共享一份代码）</h2><p>通常我们测试一些小的代码时直接使用上面的TEST进行相应的宏调用测试即可，但很多时候我们的项目会需要对一些基础数据进行初始化，然后后面运行的代码都是基于这些初始化之后的内容进行。<br>如果我们继续使用TEST进行测试，为了保证代码的可重复性，我们就必须对每一个测试编写相同的基础操作代码，违反了编程中的代码利用性。<br>此时<code>TEST_F</code>就出现了，<code>Test Fixtures</code>通过对<code>::testing::Test</code>进行继承后，将该类做为测试的公共类，在其中进行公共代码的编写。Google Test会在每一个新的TEST_F调用之前删除前一个使用该Test Fixtures的公共类对象，这样就保证了所有测试用例的独立性。可以理解为Test Fixture的目的是为了即要少写代码，又要保证每一个测试用例数据环境的独立性。<br>Test Fixtures的用法：<br>首先需要创建一个fixture：</p>
+<ol>
+<li>通过继承自::testing::Test创建一个类，为了使子类可以访问我们fixture的成员，内容成员应该以protected:或public:开头。</li>
+<li>在类内部声明测试中需要使用的使用成员变量或成员函数。</li>
+<li>类内部会有两个默认的虚函数：默认构造函数SetUp()和默认析构函数TearDown()。SetUp在应该放置每个测试中都需要提前进行的公共操作，如初始化。而TearDown中应该放置每个测试在测试之后需要进行操作，如释放资源。</li>
+</ol>
+<p>创建完fixture之后，通过<code>TEST_F()</code>来使用它，其中_F来自于fixture，用法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TEST_F(Test_Fixture_Name, test_name) &#123;</span><br><span class="line"> ... test body ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与TEST类似，只是test case名必须为我们定义的Test Fixture的类名，这样我们才能在test body中直接调用类对象和类成员函数（实际上是通过宏实现的）。<br>对于每一个TEST_F()，Google Test将会：</p>
+<ol>
+<li>在运行时创建一个全新的test fixture。</li>
+<li>通过SetUp()立即对其进行初始化</li>
+<li>运行测试代码。</li>
+<li>调用TearDown()清理资源</li>
+<li>删除该test fixture。也就是说对于同一个test case中的每一个测试都有一个不同的test fixture对象，并且google test总是会在创建下一下test fixture之前删除之前的。以避免改变某一个测试时对其他测试环境产生影响。</li>
+</ol>
+<p>TEST_F示例：<br>测试一下FIFO的例子，其中头文件sample3-in1.h中包含Queue的如下接口：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> E&gt; <span class="comment">// E is the element type.</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Queue</span> &#123;</span></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">  Queue();</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Enqueue</span><span class="params">(<span class="keyword">const</span> E&amp; element)</span></span>;</span><br><span class="line">  <span class="function">E* <span class="title">Dequeue</span><span class="params">()</span></span>; <span class="comment">// Returns NULL if the queue is empty.</span></span><br><span class="line">  <span class="function"><span class="keyword">size_t</span> <span class="title">size</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>测试文件sample3_unittest.cc文件内容如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"sample3-inl.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"gtest/gtest.h"</span></span></span><br><span class="line"><span class="keyword">namespace</span> &#123;</span><br><span class="line"><span class="comment">// 首先通过继承testing::Test类创建一个测试Test Fixture</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">QueueTestSmpl3</span> :</span> <span class="keyword">public</span> testing::Test &#123;</span><br><span class="line"> <span class="keyword">protected</span>: <span class="comment">// 为了子类可以访问其成员，将类成员定义为protected</span></span><br><span class="line">  <span class="comment">// SetUp()将会在每个test中被调用，可以在其中定义一些需要初始化的变量</span></span><br><span class="line">  <span class="comment">// 如果不需要，可以直接跳过</span></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">SetUp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    q1_.Enqueue(<span class="number">1</span>);</span><br><span class="line">    q2_.Enqueue(<span class="number">2</span>);</span><br><span class="line">    q2_.Enqueue(<span class="number">3</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// TearDown()将会在每个test结束时调用，可以用于清理工作</span></span><br><span class="line">  <span class="comment">// 如果不需要，可以直接省略</span></span><br><span class="line">  <span class="comment">// virtual void TearDown() &#123;</span></span><br><span class="line">  <span class="comment">// &#125;</span></span><br><span class="line">  <span class="comment">// 有些测试中会用到的辅助函数</span></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">Double</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span>*n;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 用于测试Queue::Map()的辅助函数</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">MapTester</span><span class="params">(<span class="keyword">const</span> Queue&lt;<span class="keyword">int</span>&gt; * q)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Map函数接受一个函数做为参数，对queue中每一个元素调用该函数之后</span></span><br><span class="line">    <span class="comment">// 返回一个新的queue</span></span><br><span class="line">    <span class="keyword">const</span> Queue&lt;<span class="keyword">int</span>&gt; * <span class="keyword">const</span> new_q = q-&gt;Map(Double);</span><br><span class="line">    <span class="comment">// 通过ASSERT_EQ验证新的queue是否具有相同的元素个数</span></span><br><span class="line">    ASSERT_EQ(q-&gt;Size(), new_q-&gt;Size());</span><br><span class="line">    <span class="comment">// 调用EXPECT_EQ验证新queue中的每一个元素是否正确</span></span><br><span class="line">    <span class="keyword">for</span> ( <span class="keyword">const</span> QueueNode&lt;<span class="keyword">int</span>&gt; * n1 = q-&gt;Head(), * n2 = new_q-&gt;Head();</span><br><span class="line">          n1 != <span class="literal">NULL</span>; n1 = n1-&gt;next(), n2 = n2-&gt;next() ) &#123;</span><br><span class="line">      EXPECT_EQ(<span class="number">2</span> * n1-&gt;element(), n2-&gt;element());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span> new_q;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 声明需要用到的成员变量</span></span><br><span class="line">  Queue&lt;<span class="keyword">int</span>&gt; q0_;</span><br><span class="line">  Queue&lt;<span class="keyword">int</span>&gt; q1_;</span><br><span class="line">  Queue&lt;<span class="keyword">int</span>&gt; q2_;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 通过TEST_F调用test fixture类</span></span><br><span class="line"><span class="comment">// 测试默认构造函数</span></span><br><span class="line">TEST_F(QueueTestSmpl3, DefaultConstructor) &#123;</span><br><span class="line">  <span class="comment">// 注意这里看上去像是直接通过成员变量名调用了类成员变量</span></span><br><span class="line">  EXPECT_EQ(<span class="number">0u</span>, q0_.Size());</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 测试Dequeue</span></span><br><span class="line">TEST_F(QueueTestSmpl3, Dequeue) &#123;</span><br><span class="line">  <span class="keyword">int</span> * n = q0_.Dequeue();</span><br><span class="line">  EXPECT_TRUE(n == <span class="literal">NULL</span>);</span><br><span class="line">  n = q1_.Dequeue();</span><br><span class="line">  ASSERT_TRUE(n != <span class="literal">NULL</span>);</span><br><span class="line">  EXPECT_EQ(<span class="number">1</span>, *n);</span><br><span class="line">  EXPECT_EQ(<span class="number">0u</span>, q1_.Size());</span><br><span class="line">  <span class="keyword">delete</span> n;</span><br><span class="line">  n = q2_.Dequeue();</span><br><span class="line">  ASSERT_TRUE(n != <span class="literal">NULL</span>);</span><br><span class="line">  EXPECT_EQ(<span class="number">2</span>, *n);</span><br><span class="line">  EXPECT_EQ(<span class="number">1u</span>, q2_.Size());</span><br><span class="line">  <span class="keyword">delete</span> n;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 测试Map函数</span></span><br><span class="line">TEST_F(QueueTestSmpl3, Map) &#123;</span><br><span class="line">  MapTester(&amp;q0_);</span><br><span class="line">  MapTester(&amp;q1_);</span><br><span class="line">  MapTester(&amp;q2_);</span><br><span class="line">&#125;</span><br><span class="line">&#125;  <span class="comment">// namespace</span></span><br></pre></td></tr></table></figure>
+
+<p>参考：<a href="https://github.com/google/googletest/blob/master/googletest/docs/Samples.md" target="_blank" rel="noopener">https://github.com/google/googletest/blob/master/googletest/docs/Samples.md</a><br>Test Fixture中的test case如何共享数据资源<br>Test Fixture可以很好的做到复用一些公共代码，而有些时候我们需要同一个Test Fixture中的Test case可以共用一些基本的初始化数据，而不仅仅是公共的代码。Google Test也考虑了这个需求，通过在Test Fixture类中定义两个静态函数来解决：static void SetUpTestCase()将会在第一个测试用例调用时执行一次； static void TearDownTestCase()将会在最后一个测试用例被删除时执行一次。与SetUp()和TearDown()非常类似，很明显，你应该已经会用了。需要注意的时Google Test并不会保证测试用例按顺序执行，所以不要依赖与测试用例的顺序。下面是举例：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FooTest</span> :</span> <span class="keyword">public</span> ::testing::Test &#123;</span><br><span class="line"> <span class="keyword">protected</span>:</span><br><span class="line">  <span class="comment">// 将在第一个测试用例运行时调用</span></span><br><span class="line">  <span class="comment">// 不需要的话可以直接忽略</span></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SetUpTestCase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    shared_resource_ = <span class="keyword">new</span> ...;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 将在最后一个测试用例删除时调用</span></span><br><span class="line">  <span class="comment">// 不需要的话可以直接忽略</span></span><br><span class="line">  <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TearDownTestCase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">delete</span> shared_resource_;</span><br><span class="line">    shared_resource_ = <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 每一个测试用例都需要执行的内容</span></span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">SetUp</span><span class="params">()</span> </span>&#123; ... &#125;</span><br><span class="line">  <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">TearDown</span><span class="params">()</span> </span>&#123; ... &#125;</span><br><span class="line">  <span class="comment">// 一些由所有测试用例共用且消耗比较大的资源</span></span><br><span class="line">  <span class="keyword">static</span> T* shared_resource_;</span><br><span class="line">&#125;;</span><br><span class="line">T* FooTest::shared_resource_ = <span class="literal">NULL</span>;</span><br><span class="line">TEST_F(FooTest, Test1) &#123;</span><br><span class="line">  ... 可以在这里引用你的shared_resource ...</span><br><span class="line">&#125;</span><br><span class="line">TEST_F(FooTest, Test2) &#123;</span><br><span class="line">  ... 可以在这里引用你的shared_resource ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Gtest-测试调用-main函数"><a href="#Gtest-测试调用-main函数" class="headerlink" title="Gtest-测试调用(main函数)"></a>Gtest-测试调用(main函数)</h2><p>Google Test将会自动注册TEST和<code>TEST_F</code>的调用，当定义了测试用例之后，可以通过调用<code>RUN_ALL_TESTS()</code>来运行测试，该函数当所有测试成功时返回0，否则返回1。<br>主函数通常如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"gtest/gtest.h"</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 一些FLAG设置，例如xml的输出</span></span><br><span class="line">  ::testing::InitGoogleTest(&amp;argc, argv);</span><br><span class="line">  <span class="keyword">return</span> RUN_ALL_TESTS();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可见主函数确实很简洁，所以如果不想写这段代码，如果你还记得的话，之前与gtestd.lib同目录下有一个gtest_maind.lib，可以直接用它来链接你的代码。<br>InitGoogleTest()函数将会解析Google Test的命令行参数，用于影响后续的测试行为<br>关于其命令行参数，可以参见<br><a href="https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md" target="_blank" rel="noopener">https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md</a></p>
+<h2 id="Gtest-输出XML报告"><a href="#Gtest-输出XML报告" class="headerlink" title="Gtest-输出XML报告"></a>Gtest-输出XML报告</h2><p>Google Test有三种方式指定是否输出xml报告，不管哪一种方式，都是通过<code>”xml:_path_to_output_file_”</code>来设定xml文件路径，如果只有”xml”则会在项目目录下输出名为test_tetail.xml的报告。<br>三种配置方式如下：</p>
+<ol>
+<li>通过配置环境变量“GTEST_OUTPUT”指定xml输出路径。例如Windows下，添加环境变量：变量名为GTEST_OUTPUT，值为你需要的路径，如：xml，或者xml:D:/test.xml</li>
+<li>通过命令行参数–gtest_output指定。例如： gtestTest.exe –gtest_output=xml:outputTest.xml</li>
+<li>通过在程序中设置output的FLAG值指定。</li>
+</ol>
+<p>对于第3种情况，可以通过在调用testing::InitGoogleTest之前调用testing::GTEST_FLAG来指定，如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GTEST_API_ <span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Study GTEST"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    testing::GTEST_FLAG(output) = <span class="string">"xml:d:/1.xml"</span>;  <span class="comment">// 指定报告输出路径</span></span><br><span class="line">    testing::InitGoogleTest(&amp;argc, argv);</span><br><span class="line">    <span class="keyword">return</span> RUN_ALL_TESTS();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当三种方式同时使用时，优先级顺序为：命令行参数 &gt; 代码中指定FLAG &gt; 系统环境变量</p>
+<h2 id="Gtest-filter-筛选需要运行的测试"><a href="#Gtest-filter-筛选需要运行的测试" class="headerlink" title="Gtest filter-筛选需要运行的测试"></a>Gtest filter-筛选需要运行的测试</h2><p>类似于上面输出报告<code>xml</code>文件，也有三种相似的方式来指定要运行哪些测试：</p>
+<ul>
+<li>环境变量<code>GTEST_FILTER</code></li>
+<li>命令行参数<code>--gtest_filter</code></li>
+<li>设置相应标示位<code>testing::GTEST_FLAG(filter)</code></li>
+</ul>
+<p><code>filter</code>支持通配符<code>*</code>（0个名多个字符）和<code>?</code>（一个字符），例如以命令行的形式让测试用例只运行以<code>FooTest_CreateHandle</code>开头的用例：<code>./foo_test --gtest_filter=FooTest_CreateHandle*</code>，等价于在其代码中，<code>InitGoogleTest()</code>之前设置标示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">testing::GTEST_FLAG(filter) = <span class="string">"FooTest_CreateHandle*"</span></span><br></pre></td></tr></table></figure>
+
+<p>当然该标志位也可能通过命令行参数来传递<br>当有很多测试用例时，该功能很好用。</p>
+<h2 id="Gtest-portable-2个文件包含所有gtest代码"><a href="#Gtest-portable-2个文件包含所有gtest代码" class="headerlink" title="Gtest(portable)-2个文件包含所有gtest代码"></a>Gtest(portable)-2个文件包含所有gtest代码</h2><p>Google是一个很重视用户体验和用户需求的公司额，为了便于用户将gtest内嵌到自己的项目中，或者为了便于携带，google提供了一个python脚本可以将Google Test的所有代码打包到2个文件中（gtest.h和gtest-all.cc）。脚本位置（1.8.0版本）：<code>googletest\scripts\ fuse_gtest_files.py</code>。<br>用法：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python fuse_gtest_files.py OUTPUT_DIR</span><br></pre></td></tr></table></figure>
+
+<p>编译方法可以查看相应的<code>makefile</code>（<a href="https://github.com/google/googletest/blob/master/googletest/scripts/test/Makefile" target="_blank" rel="noopener">https://github.com/google/googletest/blob/master/googletest/scripts/test/Makefile</a>），其实可以直接使用原项目编译成库然后使用这个头文件，当然这个cc文件也可以直接编译之后与你的测试进行链接，就不再需要头文件了。<br>更多内容可参考链接：<br><a href="https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md#fusing-google-test-source-files" target="_blank" rel="noopener">https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md#fusing-google-test-source-files</a></p>
+<h2 id="Gtest-其他高级功能"><a href="#Gtest-其他高级功能" class="headerlink" title="Gtest-其他高级功能"></a>Gtest-其他高级功能</h2><ol>
+<li>更多的Assertion：SUCCEED()、FAIL()、ADD_FAILURE()等。</li>
+<li>死亡测试（Death Test），是指对程序中那些断言后直接中断程序执行的代码进行测试，例如C标准库函数的assert函数，为了保证程序正常运行，我们通常会在程序中插入这些代码，以便在出错时快速定位错误，死亡测试的目的就是让程序运行在会导致这个assertion触发的情况下，以检查其是否可以正常工作。死亡测试的宏将与正则表达式一起使用。</li>
+<li>通过继承::testing::Environment的子类设置全局的SetUp和TearDown</li>
+<li>当有多个测试函数调用同一个子测试函数时，在子函数中使用Assertion有可能导致该子函数报错时并不知道哪个函数的调用导致的，可以通过SCOPED_TRACE宏来更好的跟踪错误，还有一些其他有关子测试函数的高级用法。</li>
+<li>支持多机环境下的分布式测试，即使用多台机器进行分布式测试，以加快测试速度。</li>
+<li>支持与其他测试框架一起使用。</li>
+<li>支持控制输出报告，如标准输出的颜色、xml格式及内容等。</li>
+<li>支持对测试用例进行混洗（shuffling），即打乱测试顺序。用–gtest_shuffle或GTEST_SHUFFLE环境变量设置。</li>
+<li>通过–gtest_repeat指定测试的次数。</li>
+<li>可以选择需要进行的测试，或者忽略的测试。</li>
+<li>可以通过处理测试事件来扩展Google Test，例如监听测试的情况。</li>
+</ol>
+<p>这些高级功能的应用请参见：<br><a href="https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md" target="_blank" rel="noopener">https://github.com/google/googletest/blob/master/googletest/docs/AdvancedGuide.md</a></p>
+<p>参考：<a href="https://github.com/google/googletest" target="_blank" rel="noopener">https://github.com/google/googletest</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+              <a href="/tags/Gtest/" rel="tag"># Gtest</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/11/10/tmux/" rel="prev" title="tmux简洁教程">
+      <i class="fa fa-chevron-left"></i> tmux简洁教程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/12/01/dll-lib-export-for-windows/" rel="next" title="Windows和Linux下的动态链接库的编译、链接和引用相关问题">
+      Windows和Linux下的动态链接库的编译、链接和引用相关问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GTest简介"><span class="nav-number">1.</span> <span class="nav-text">GTest简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VS下的GTest环境配置"><span class="nav-number">2.</span> <span class="nav-text">VS下的GTest环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-基础应用"><span class="nav-number">3.</span> <span class="nav-text">Gtest-基础应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自己的项目"><span class="nav-number">3.1.</span> <span class="nav-text">创建自己的项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建gtest测试项目"><span class="nav-number">3.2.</span> <span class="nav-text">创建gtest测试项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#断言-测试宏"><span class="nav-number">4.</span> <span class="nav-text">断言&#x2F;测试宏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础断言"><span class="nav-number">4.1.</span> <span class="nav-text">基础断言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二值比较"><span class="nav-number">4.2.</span> <span class="nav-text">二值比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串比较"><span class="nav-number">4.3.</span> <span class="nav-text">字符串比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-Test-Fixtures（多个Test共享一份代码）"><span class="nav-number">5.</span> <span class="nav-text">Gtest-Test Fixtures（多个Test共享一份代码）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-测试调用-main函数"><span class="nav-number">6.</span> <span class="nav-text">Gtest-测试调用(main函数)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-输出XML报告"><span class="nav-number">7.</span> <span class="nav-text">Gtest-输出XML报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-filter-筛选需要运行的测试"><span class="nav-number">8.</span> <span class="nav-text">Gtest filter-筛选需要运行的测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-portable-2个文件包含所有gtest代码"><span class="nav-number">9.</span> <span class="nav-text">Gtest(portable)-2个文件包含所有gtest代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gtest-其他高级功能"><span class="nav-number">10.</span> <span class="nav-text">Gtest-其他高级功能</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2017/11/29/gtest/";
+    this.page.identifier = "2017/11/29/gtest/";
+    this.page.title = "Google Test(gtest)使用";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

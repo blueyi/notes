@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="FFmpeg可以用来处理音视频的编解码，通过对GPU硬解码的支持，可以加速编解码，但需要手动编译FFmpeg时加入对GPU的支持。这里参考Nvidia官网和FFmpeg官网文档进行编译FFmpeg的编译。 编译ffmpeg时启用CUVID，其中包括NVENCODE API和NVDECODE API，ffmpeg中通过nvenc来来提供对Nvidia显卡的支持，同时添加NPP支持来增强编解码性能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04下编译ffmpeg支持CUDA下的cuvid vnenc和NPP">
+<meta property="og:url" content="http://notes.maxwi.com/2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="FFmpeg可以用来处理音视频的编解码，通过对GPU硬解码的支持，可以加速编解码，但需要手动编译FFmpeg时加入对GPU的支持。这里参考Nvidia官网和FFmpeg官网文档进行编译FFmpeg的编译。 编译ffmpeg时启用CUVID，其中包括NVENCODE API和NVDECODE API，ffmpeg中通过nvenc来来提供对Nvidia显卡的支持，同时添加NPP支持来增强编解码性能。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-03-01T00:41:59.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.391Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ffmpeg">
+<meta property="article:tag" content="Ubuntu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Ubuntu 16.04下编译ffmpeg支持CUDA下的cuvid vnenc和NPP | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 16.04下编译ffmpeg支持CUDA下的cuvid vnenc和NPP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-03-01 08:41:59" itemprop="dateCreated datePublished" datetime="2017-03-01T08:41:59+08:00">2017-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ffmpeg/" itemprop="url" rel="index"><span itemprop="name">ffmpeg</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FFmpeg可以用来处理音视频的编解码，通过对GPU硬解码的支持，可以加速编解码，但需要手动编译FFmpeg时加入对GPU的支持。这里参考Nvidia官网和FFmpeg官网文档进行编译FFmpeg的编译。 编译ffmpeg时启用CUVID，其中包括NVENCODE API和NVDECODE API，ffmpeg中通过nvenc来来提供对Nvidia显卡的支持，同时添加NPP支持来增强编解码性能。</p>
+<a id="more"></a>
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>我的硬件环境为ubuntu 16.04.1 x64 服务器版的最小化系统，具体参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DISTRIB_ID&#x3D;Ubuntu</span><br><span class="line">DISTRIB_RELEASE&#x3D;16.04</span><br><span class="line">DISTRIB_CODENAME&#x3D;xenial</span><br><span class="line">DISTRIB_DESCRIPTION&#x3D;&quot;Ubuntu 16.04.1 LTS&quot;</span><br></pre></td></tr></table></figure>
+<p>首先确定已经安装好了CUDA 8，如果还没有安装CUDA 8环境可以参考这里安装<a href="http://notes.maxwi.com/2017/02/26/ubuntu-cuda8-env-set/">http://notes.maxwi.com/2017/02/26/ubuntu-cuda8-env-set/</a><br>我的显卡信息如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Device 0: "GeForce GTX 1080"</span><br><span class="line">  CUDA Driver Version / Runtime Version          8.0 / 8.0</span><br><span class="line">  CUDA Capability Major/Minor version number:    6.1</span><br><span class="line">  Total amount of global memory:                 8112 MBytes (8506179584 bytes)</span><br><span class="line">  (20) Multiprocessors, (128) CUDA Cores/MP:     2560 CUDA Cores</span><br><span class="line">  GPU Max Clock rate:                            1734 MHz (1.73 GHz)</span><br><span class="line">  Memory Clock rate:                             5005 Mhz</span><br><span class="line">  Memory Bus Width:                              256-bit</span><br><span class="line">  L2 Cache Size:                                 2097152 bytes</span><br><span class="line">  Maximum Texture Dimension Size (x,y,z)         1D=(131072), 2D=(131072, 65536), 3D=(16384, 16384, 16384)</span><br><span class="line">  Maximum Layered 1D Texture Size, (num) layers  1D=(32768), 2048 layers</span><br><span class="line">  Maximum Layered 2D Texture Size, (num) layers  2D=(32768, 32768), 2048 layers</span><br><span class="line">  Total amount of constant memory:               65536 bytes</span><br><span class="line">  Total amount of shared memory per block:       49152 bytes</span><br><span class="line">  Total number of registers available per block: 65536</span><br><span class="line">  Warp size:                                     32</span><br><span class="line">  Maximum number of threads per multiprocessor:  2048</span><br><span class="line">  Maximum number of threads per block:           1024</span><br><span class="line">  Max dimension size of a thread block (x,y,z): (1024, 1024, 64)</span><br><span class="line">  Max dimension size of a grid size    (x,y,z): (2147483647, 65535, 65535)</span><br><span class="line">  Maximum memory pitch:                          2147483647 bytes</span><br><span class="line">  Texture alignment:                             512 bytes</span><br><span class="line">  Concurrent copy and kernel execution:          Yes with 2 copy engine(s)</span><br><span class="line">  Run time limit on kernels:                     Yes</span><br><span class="line">  Integrated GPU sharing Host Memory:            No</span><br><span class="line">  Support host page-locked memory mapping:       Yes</span><br><span class="line">  Alignment requirement for Surfaces:            Yes</span><br><span class="line">  Device has ECC support:                        Disabled</span><br><span class="line">  Device supports Unified Addressing (UVA):      Yes</span><br><span class="line">  Device PCI Domain ID / Bus ID / location ID:   0 / 3 / 0</span><br><span class="line">  Compute Mode:</span><br><span class="line">     &lt; Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) &gt;</span><br><span class="line"></span><br><span class="line">deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 8.0, CUDA Runtime Version = 8.0, NumDevs = 1, Device0 = GeForce GTX 1080</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装编译FFmpeg所需要的依赖："><a href="#安装编译FFmpeg所需要的依赖：" class="headerlink" title="安装编译FFmpeg所需要的依赖："></a>安装编译FFmpeg所需要的依赖：</h1><h2 id="基本依赖"><a href="#基本依赖" class="headerlink" title="基本依赖"></a>基本依赖</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get -y install autoconf automake build-essential libass-dev libfreetype6-dev \</span><br><span class="line">  libsdl2-dev libtheora-dev libtool libva-dev libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev \</span><br><span class="line">  libxcb-xfixes0-dev pkg-config texinfo zlib1g-dev</span><br></pre></td></tr></table></figure>
+<p>如果是服务器系统，即没有桌面环境的话可以不安装ffplay和x11grab的依赖: libsdl2-dev libva-dev libvdpau-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev<br>在用户根目录下创建文件夹<code>ffmpeg_sources</code>，<code>ffmpeg_build</code>和<code>bin</code>以备用，其中约定：</p>
+<ul>
+<li>ffmpeg_sources里面放所有编译所需要的源码文件，该文件夹在编译之后可以被删除</li>
+<li>ffmpeg_build里面存放编译文件，包括头文件、库文件和文档，该文件夹在编译之后可以被删除，但建议保留</li>
+<li>bin存放编译后的二进制程序文件，不能被删除<br>当然这些文件夹都可以自定义存放位置<h2 id="安装yasm"><a href="#安装yasm" class="headerlink" title="安装yasm"></a>安装yasm</h2>如果系统中的yasm版本号大于1.2.0，可以直接通过系统源来安装<br>查看yasm版本等信息：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-cache show yasm</span><br></pre></td></tr></table></figure>
+我这里显示版本为1.3，可以直接通过系统源安装：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install yasm</span><br></pre></td></tr></table></figure>
+或者手动编译安装：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz</span><br><span class="line">tar xzvf yasm-1.3.0.tar.gz</span><br><span class="line">cd yasm-1.3.0</span><br><span class="line">./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin"</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure></li>
+<li><em>以下安装的所有依赖包都是可选的，需要在FFmpeg编译是添加相应的启用选项，所以可以根据自己需要来安装*</em><h2 id="安装libx264"><a href="#安装libx264" class="headerlink" title="安装libx264"></a>安装libx264</h2>类似上面查看yasm版本号一样，需要<code>libx264-dev</code>的版本号大于118<br>我这里显示是148，所以可以直接安装：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libx264-dev</span><br><span class="line">``` </span><br><span class="line">或者编译安装：</span><br><span class="line">```shell</span><br><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2</span><br><span class="line">tar xjvf last_x264.tar.bz2</span><br><span class="line">cd x264-snapshot*</span><br><span class="line">PATH="$HOME/bin:$PATH" ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --enable-static --disable-opencl</span><br><span class="line">PATH="$HOME/bin:$PATH" make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h2 id="安装libx265"><a href="#安装libx265" class="headerlink" title="安装libx265"></a>安装libx265</h2>与上面安装方法一样，需要其版本号大于68，我这里源里面版本号是79，直接安装<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libx265-dev</span><br></pre></td></tr></table></figure>
+或者编译安装：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install cmake mercurial</span><br><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">hg clone https://bitbucket.org/multicoreware/x265</span><br><span class="line">cd ~/ffmpeg_sources/x265/build/linux</span><br><span class="line">PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_SHARED:bool=off ../../source</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="安装libvpx"><a href="#安装libvpx" class="headerlink" title="安装libvpx"></a>安装libvpx</h2><p>要求libvpx-dev版本号大于0.9.7，我这里显示的版本号提1.5.0，直接安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libvpx-dev</span><br></pre></td></tr></table></figure>
+<p>或者编译安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-1.6.1.tar.bz2</span><br><span class="line">tar xjvf libvpx-1.6.1.tar.bz2</span><br><span class="line">cd libvpx-1.6.1</span><br><span class="line">PATH="$HOME/bin:$PATH" ./configure --prefix="$HOME/ffmpeg_build" --disable-examples --disable-unit-tests</span><br><span class="line">PATH="$HOME/bin:$PATH" make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>下面是一些音频相关的包，如果只是做视频图像相关，可以不安装</strong></p>
+<h2 id="安装libfdk-aac"><a href="#安装libfdk-aac" class="headerlink" title="安装libfdk-aac"></a>安装libfdk-aac</h2><p>这个没有要求版本号，只要系统有libfdk-aac-dev就可以直接安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libfdk-aac-dev</span><br></pre></td></tr></table></figure>
+<p>或者编译安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget -O fdk-aac.tar.gz https://github.com/mstorsjo/fdk-aac/tarball/master</span><br><span class="line">tar xzvf fdk-aac.tar.gz</span><br><span class="line">cd mstorsjo-fdk-aac*</span><br><span class="line">autoreconf -fiv</span><br><span class="line">./configure --prefix="$HOME/ffmpeg_build" --disable-shared</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h2 id="安装libmp3lam"><a href="#安装libmp3lam" class="headerlink" title="安装libmp3lam"></a>安装libmp3lam</h2><p>要求版本号大于3.98.3，直接安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libmp3lame-dev</span><br></pre></td></tr></table></figure>
+<p>或者编译安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nasm</span><br><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz</span><br><span class="line">tar xzvf lame-3.99.5.tar.gz</span><br><span class="line">cd lame-3.99.5</span><br><span class="line">./configure --prefix="$HOME/ffmpeg_build" --enable-nasm --disable-shared</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h2 id="安装libopus"><a href="#安装libopus" class="headerlink" title="安装libopus"></a>安装libopus</h2><p>要求libopus-dev版本号大于1.1，我这里版本号是1.1.2，直接安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libopus-dev</span><br></pre></td></tr></table></figure>
+<p>或者编译安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget http://downloads.xiph.org/releases/opus/opus-1.1.4.tar.gz</span><br><span class="line">tar xzvf opus-1.1.4.tar.gz</span><br><span class="line">cd opus-1.1.4</span><br><span class="line">./configure --prefix="$HOME/ffmpeg_build" --disable-shared</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p><strong>至此ffmpeg所需要的依赖已经安装完成，下面配置nvcuvid</strong></p>
+<h1 id="配置NVENC并下载ffmpeg"><a href="#配置NVENC并下载ffmpeg" class="headerlink" title="配置NVENC并下载ffmpeg"></a>配置NVENC并下载ffmpeg</h1><p>安装NVENC的依赖：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get -y install glew-utils libglew-dbg libglew-dev libglew1.13 \</span><br><span class="line">libglewmx-dev libglewmx-dbg freeglut3 freeglut3-dev freeglut3-dbg libghc-glut-dev \</span><br><span class="line">libghc-glut-doc libghc-glut-prof libalut-dev libxmu-dev libxmu-headers libxmu6 \</span><br><span class="line">libxmu6-dbg libxmuu-dev libxmuu1 libxmuu1-dbg</span><br></pre></td></tr></table></figure>
+
+<p><strong>下载ffmpeg</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2</span><br><span class="line">tar xjvf ffmpeg-snapshot.tar.bz2</span><br></pre></td></tr></table></figure>
+<p>或者通过git下载最新的版本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">git clone https://github.com/FFmpeg/FFmpeg ffmpeg -b master</span><br></pre></td></tr></table></figure>
+<p>这个时候目录结构应该是这样的（如果上面的其他依赖包都没有通过编译安装的话）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg_sources&#x2F;</span><br><span class="line">├── ffmpeg</span><br><span class="line">└── ffmpeg-snapshot.tar.bz2</span><br></pre></td></tr></table></figure>
+<p><strong>下载Nvidia Video Codec SDK</strong><br>由于Nvidia的下载需要较验用户，所以可能还需要先注册账号才能下载，下载后重命名为nv_sdk.zip并上传到~/ffmpeg_sources目录即可<br>下载地址是：<a href="https://developer.nvidia.com/nvidia-video-codec-sdk#Download" target="_blank" rel="noopener">https://developer.nvidia.com/nvidia-video-codec-sdk#Download</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources</span><br><span class="line">wget -O nv_sdk.zip http://developer.download.nvidia.com/designworks/video-codec-sdk/secure/7.1/01/Video_Codec_SDK_7.1.9.zip?autho=1488251582_076cae8f68a8a091cd5a6f9405967dab&amp;file=Video_Codec_SDK_7.1.9.zip</span><br></pre></td></tr></table></figure>
+<p>解压nv_sdk.zip并将其中的头文件拷贝到系统头文件夹<code>/usr/include/</code>，然后修改sdk文件夹为nv_sdk，后面编译要用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unzip nv_sdk.zip</span><br><span class="line">sudo cp -r Video_Codec_SDK_7.1.9/Samples/common/inc/* /usr/include/ </span><br><span class="line">mv Video_Codec_SDK_7.1.9 nv_sdk</span><br></pre></td></tr></table></figure>
+<h1 id="编译ffmpeg与cuvid-cuda-npp以及nvenc"><a href="#编译ffmpeg与cuvid-cuda-npp以及nvenc" class="headerlink" title="编译ffmpeg与cuvid, cuda, npp以及nvenc"></a>编译ffmpeg与cuvid, cuda, npp以及nvenc</h1><p>现在的目录结构如下（可以忽略根目录下的2个压缩包）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg_sources</span><br><span class="line">├── ffmpeg</span><br><span class="line">│   ├── arch.mak</span><br><span class="line">│   ├── Changelog</span><br><span class="line">│   ├── cmdutils.c</span><br><span class="line">│   ├── cmdutils_common_opts.h</span><br><span class="line">│   ├── cmdutils.h</span><br><span class="line">│   ├── cmdutils_opencl.c</span><br><span class="line">│   ├── common.mak</span><br><span class="line">│   ├── compat</span><br><span class="line">│   ├── configure</span><br><span class="line">│   ├── CONTRIBUTING.md</span><br><span class="line">│   ├── COPYING.GPLv2</span><br><span class="line">│   ├── COPYING.GPLv3</span><br><span class="line">│   ├── COPYING.LGPLv2.1</span><br><span class="line">│   ├── COPYING.LGPLv3</span><br><span class="line">│   ├── CREDITS</span><br><span class="line">│   ├── doc</span><br><span class="line">│   ├── ffmpeg.c</span><br><span class="line">│   ├── ffmpeg_cuvid.c</span><br><span class="line">│   ├── ffmpeg_dxva2.c</span><br><span class="line">│   ├── ffmpeg_filter.c</span><br><span class="line">│   ├── ffmpeg.h</span><br><span class="line">│   ├── ffmpeg_opt.c</span><br><span class="line">│   ├── ffmpeg_qsv.c</span><br><span class="line">│   ├── ffmpeg_vaapi.c</span><br><span class="line">│   ├── ffmpeg_vdpau.c</span><br><span class="line">│   ├── ffmpeg_videotoolbox.c</span><br><span class="line">│   ├── ffplay.c</span><br><span class="line">│   ├── ffprobe.c</span><br><span class="line">│   ├── ffserver.c</span><br><span class="line">│   ├── ffserver_config.c</span><br><span class="line">│   ├── ffserver_config.h</span><br><span class="line">│   ├── INSTALL.md</span><br><span class="line">│   ├── libavcodec</span><br><span class="line">│   ├── libavdevice</span><br><span class="line">│   ├── libavfilter</span><br><span class="line">│   ├── libavformat</span><br><span class="line">│   ├── libavresample</span><br><span class="line">│   ├── libavutil</span><br><span class="line">│   ├── libpostproc</span><br><span class="line">│   ├── library.mak</span><br><span class="line">│   ├── libswresample</span><br><span class="line">│   ├── libswscale</span><br><span class="line">│   ├── LICENSE.md</span><br><span class="line">│   ├── MAINTAINERS</span><br><span class="line">│   ├── Makefile</span><br><span class="line">│   ├── presets</span><br><span class="line">│   ├── README.md</span><br><span class="line">│   ├── RELEASE</span><br><span class="line">│   ├── tests</span><br><span class="line">│   ├── tools</span><br><span class="line">│   ├── VERSION</span><br><span class="line">│   └── version.sh</span><br><span class="line">├── ffmpeg-snapshot.tar.bz2</span><br><span class="line">├── nv_sdk</span><br><span class="line">│   ├── doc</span><br><span class="line">│   ├── LicenseAgreement.pdf</span><br><span class="line">│   ├── ReadMe.txt</span><br><span class="line">│   ├── Release_notes.txt</span><br><span class="line">│   └── Samples</span><br><span class="line">└── nv_sdk.zip</span><br></pre></td></tr></table></figure>
+
+<p>编译命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">cd ~/ffmpeg_sources/ffmpeg</span><br><span class="line">PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig"  ./configure \</span><br><span class="line">    --prefix="$HOME/ffmpeg_build" \</span><br><span class="line">    --pkg-config-flags="--static" \</span><br><span class="line">    --extra-cflags="-I$HOME/ffmpeg_build/include" \</span><br><span class="line">    --extra-ldflags="-L$HOME/ffmpeg_build/lib" \</span><br><span class="line">    --bindir="$HOME/bin" \</span><br><span class="line">    --enable-gpl \</span><br><span class="line">    --enable-libass \</span><br><span class="line">    --enable-libfdk-aac \</span><br><span class="line">    --enable-libfreetype \</span><br><span class="line">    --enable-libmp3lame \</span><br><span class="line">    --enable-libopus \</span><br><span class="line">    --enable-libtheora \</span><br><span class="line">    --enable-libvorbis \</span><br><span class="line">    --enable-libvpx \</span><br><span class="line">    --enable-libx264 \</span><br><span class="line">    --enable-libx265 \</span><br><span class="line">    --enable-nonfree \</span><br><span class="line">    --extra-cflags=-I../nv_sdk \</span><br><span class="line">    --extra-ldflags=-L../nv_sdk \</span><br><span class="line">    --extra-cflags="-I/usr/local/cuda/include/" \</span><br><span class="line">    --extra-ldflags=-L/usr/local/cuda/lib64 \</span><br><span class="line">    --disable-shared \</span><br><span class="line">    --enable-nvenc \</span><br><span class="line">    --enable-cuda \</span><br><span class="line">    --enable-cuvid \</span><br><span class="line">    --enable-libnpp </span><br><span class="line">PATH="$HOME/bin:$PATH" make -j$(nproc)</span><br><span class="line">make -j$(nproc) install</span><br><span class="line">make -j$(nproc) distclean</span><br><span class="line">hash -r</span><br></pre></td></tr></table></figure>
+<p>编译完成之后的文件在目录<code>~/bin</code>下面，将其添加到path路径之后即可直接调用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 'export PATH=~/bin:$PATH' &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<p>将编译好的ffmpeg库加入到系统动态库搜索路径中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/ffmpeg_build/lib' &gt;&gt; ~/.bashrc</span><br><span class="line">sudo ldconfig</span><br></pre></td></tr></table></figure>
+<p>不过好像make安装之后会自动添加库路径，可以通过以下命令查看所有库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ldconfig -v</span><br></pre></td></tr></table></figure>
+
+<p>bin目录下的文件结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;</span><br><span class="line">├── ffmpeg</span><br><span class="line">├── ffplay</span><br><span class="line">├── ffprobe</span><br><span class="line">└── ffserver</span><br></pre></td></tr></table></figure>
+<p>ffmpeg_build目录下的文件结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg_build&#x2F;</span><br><span class="line">├── bin</span><br><span class="line">├── include</span><br><span class="line">├── lib</span><br><span class="line">└── share</span><br></pre></td></tr></table></figure>
+
+<p>为了能够使用<code>man ffmpeg</code>等ffmpeg相关的man手册，可以执行以下语句：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo "MANPATH_MAP $HOME/bin $HOME/ffmpeg_build/share/man" &gt;&gt; ~/.manpath</span><br></pre></td></tr></table></figure>
+
+<h1 id="测试FFmpeg与GPU的硬解码"><a href="#测试FFmpeg与GPU的硬解码" class="headerlink" title="测试FFmpeg与GPU的硬解码"></a>测试FFmpeg与GPU的硬解码</h1><p>测试ffplay播放视频（假定输入文件都已经存在）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffplay input.avi</span><br></pre></td></tr></table></figure>
+<p>测试ffmpeg转码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.avi output.mp4</span><br></pre></td></tr></table></figure>
+<p>测试采用GPU进行解码加速转码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.avi -c:v h264_nvenc -preset default output_2.mp4</span><br></pre></td></tr></table></figure>
+<p>同时使用CUVID,NVENC和NPP进行加速转码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -hwaccel_device 0 -hwaccel cuvid -c:v h264_cuvid -i input.mp4 -vf scale_npp=-1:720 -c:v h264_nvenc -preset slow output.mkv</span><br></pre></td></tr></table></figure>
+<p>转码过程中可以看到后面有个倍速，使用GPU明显比不使用速度要快</p>
+<p>查看ffmpeg支持的cuvid的解码格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -decoders | grep cuvid</span><br></pre></td></tr></table></figure>
+<p>我这里的输出为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg version N-83691-g7f62368 Copyright (c) 2000-2017 the FFmpeg developers</span><br><span class="line">  built with gcc 5.4.0 (Ubuntu 5.4.0-6ubuntu1~16.04.4) 20160609</span><br><span class="line">  configuration: --prefix=/home/dutoeserver/ffmpeg_build --pkg-config-flags=--static --extra-cflags=-I/home/dutoeserver/ffmpeg_build/include --extra-ldflags=-L/home/dutoeserver/ffmpeg_build/lib --bindir=/home/dutoeserver/bin --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-nonfree --extra-cflags=-I../nv_sdk --extra-ldflags=-L../nv_sdk --extra-cflags=-I/usr/local/cuda/include/ --extra-ldflags=-L/usr/local/cuda/lib64 --disable-shared --enable-nvenc --enable-cuda --enable-cuvid --enable-libnpp</span><br><span class="line">  libavutil      55. 47.100 / 55. 47.100</span><br><span class="line">  libavcodec     57. 81.100 / 57. 81.100</span><br><span class="line">  libavformat    57. 66.102 / 57. 66.102</span><br><span class="line">  libavdevice    57.  3.100 / 57.  3.100</span><br><span class="line">  libavfilter     6. 74.100 /  6. 74.100</span><br><span class="line">  libswscale      4.  3.101 /  4.  3.101</span><br><span class="line">  libswresample   2.  4.100 /  2.  4.100</span><br><span class="line">  libpostproc    54.  2.100 / 54.  2.100</span><br><span class="line"> V..... h264_cuvid           Nvidia CUVID H264 decoder (codec h264)</span><br><span class="line"> V..... hevc_cuvid           Nvidia CUVID HEVC decoder (codec hevc)</span><br><span class="line"> V..... mjpeg_cuvid          Nvidia CUVID MJPEG decoder (codec mjpeg)</span><br><span class="line"> V..... mpeg1_cuvid          Nvidia CUVID MPEG1VIDEO decoder (codec mpeg1video)</span><br><span class="line"> V..... mpeg2_cuvid          Nvidia CUVID MPEG2VIDEO decoder (codec mpeg2video)</span><br><span class="line"> V..... mpeg4_cuvid          Nvidia CUVID MPEG4 decoder (codec mpeg4)</span><br><span class="line"> V..... vc1_cuvid            Nvidia CUVID VC1 decoder (codec vc1)</span><br><span class="line"> V..... vp8_cuvid            Nvidia CUVID VP8 decoder (codec vp8)</span><br><span class="line"> V..... vp9_cuvid            Nvidia CUVID VP9 decoder (codec vp9)</span><br></pre></td></tr></table></figure>
+<p>不使用grep过滤的话会显示所有支持的解码格式</p>
+<p>通过以下选项查看ffmpeg支持硬件加速方式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -hwaccels</span><br></pre></td></tr></table></figure>
+<p>我这里的输出为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg version N-83691-g7f62368 Copyright (c) 2000-2017 the FFmpeg developers</span><br><span class="line">  built with gcc 5.4.0 (Ubuntu 5.4.0-6ubuntu1~16.04.4) 20160609</span><br><span class="line">  configuration: --prefix=/home/dutoeserver/ffmpeg_build --pkg-config-flags=--static --extra-cflags=-I/home/dutoeserver/ffmpeg_build/include --extra-ldflags=-L/home/dutoeserver/ffmpeg_build/lib --bindir=/home/dutoeserver/bin --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 --enable-nonfree --extra-cflags=-I../nv_sdk --extra-ldflags=-L../nv_sdk --extra-cflags=-I/usr/local/cuda/include/ --extra-ldflags=-L/usr/local/cuda/lib64 --disable-shared --enable-nvenc --enable-cuda --enable-cuvid --enable-libnpp</span><br><span class="line">  libavutil      55. 47.100 / 55. 47.100</span><br><span class="line">  libavcodec     57. 81.100 / 57. 81.100</span><br><span class="line">  libavformat    57. 66.102 / 57. 66.102</span><br><span class="line">  libavdevice    57.  3.100 / 57.  3.100</span><br><span class="line">  libavfilter     6. 74.100 /  6. 74.100</span><br><span class="line">  libswscale      4.  3.101 /  4.  3.101</span><br><span class="line">  libswresample   2.  4.100 /  2.  4.100</span><br><span class="line">  libpostproc    54.  2.100 / 54.  2.100</span><br><span class="line">Hardware acceleration methods:</span><br><span class="line">vdpau</span><br><span class="line">vaapi</span><br><span class="line">cuvid</span><br></pre></td></tr></table></figure>
+
+<h1 id="卸载ffmpeg"><a href="#卸载ffmpeg" class="headerlink" title="卸载ffmpeg"></a>卸载ffmpeg</h1><p>卸载刚刚编译安装的ffmpeg命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rm -rf ~/ffmpeg_build ~/ffmpeg_sources ~/bin/&#123;ffmpeg,ffprobe,ffplay,ffserver,vsyasm,x264,x265,yasm,ytasm&#125;</span><br><span class="line">sudo apt-get autoremove autoconf automake build-essential cmake libass-dev libfreetype6-dev \</span><br><span class="line">  libmp3lame-dev libopus-dev libsdl2-dev libtheora-dev libtool libva-dev libvdpau-dev \</span><br><span class="line">  libvorbis-dev libvpx-dev libx264-dev libxcb1-dev libxcb-shm0-dev ibxcb-xfixes0-dev mercurial texinfo zlib1g-dev</span><br><span class="line">sed -i '/ffmpeg_build/c\' ~/.manpath</span><br><span class="line">hash -r</span><br></pre></td></tr></table></figure>
+
+<p>可能遇到的错误：<br><strong>ERROR: x265 not found using pkg-config</strong><br>按照上面的x265编译安装方法重新编译，而不是直接使用系统源中自带的包安装<br><strong>ERROR: libnpp not found</strong><br>添加编译参数<code>--extra-cflags=&quot;-I/usr/local/cuda/include/&quot;    --extra-ldflags=-L/usr/local/cuda/lib64 \</code>，并且要在<code>--enable-libnpp</code>之前的位置</p>
+<p>参考：<br>1.<a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Generic" target="_blank" rel="noopener">https://trac.ffmpeg.org/wiki/CompilationGuide/Generic</a><br>2.<a href="https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu" target="_blank" rel="noopener">https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu</a><br>3.<a href="https://developer.nvidia.com/nvidia-video-codec-sdk" target="_blank" rel="noopener">https://developer.nvidia.com/nvidia-video-codec-sdk</a><br>4.<a href="https://developer.nvidia.com/ffmpeg" target="_blank" rel="noopener">https://developer.nvidia.com/ffmpeg</a><br>5.<a href="https://gist.github.com/Brainiarc7/988473b79fd5c8f0db54b92ebb47387a" target="_blank" rel="noopener">https://gist.github.com/Brainiarc7/988473b79fd5c8f0db54b92ebb47387a</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CUDA/" rel="tag"># CUDA</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/ffmpeg/" rel="tag"># ffmpeg</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/02/26/ubuntu-cuda8-env-set/" rel="prev" title="Ubuntu 16.04下CUDA8环境配置的2种方法">
+      <i class="fa fa-chevron-left"></i> Ubuntu 16.04下CUDA8环境配置的2种方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/01/ubuntu-compile-opencv2-with-cuda-and-ffmpeg/" rel="next" title="Ubuntu 16.04下编译OpenCV 2.4.13支持FFmpeg以及CUDA 8加速图像处理">
+      Ubuntu 16.04下编译OpenCV 2.4.13支持FFmpeg以及CUDA 8加速图像处理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装编译FFmpeg所需要的依赖："><span class="nav-number">2.</span> <span class="nav-text">安装编译FFmpeg所需要的依赖：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本依赖"><span class="nav-number">2.1.</span> <span class="nav-text">基本依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装yasm"><span class="nav-number">2.2.</span> <span class="nav-text">安装yasm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装libx264"><span class="nav-number">2.3.</span> <span class="nav-text">安装libx264</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装libx265"><span class="nav-number">2.4.</span> <span class="nav-text">安装libx265</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装libvpx"><span class="nav-number">2.5.</span> <span class="nav-text">安装libvpx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装libfdk-aac"><span class="nav-number">2.6.</span> <span class="nav-text">安装libfdk-aac</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装libmp3lam"><span class="nav-number">2.7.</span> <span class="nav-text">安装libmp3lam</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装libopus"><span class="nav-number">2.8.</span> <span class="nav-text">安装libopus</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置NVENC并下载ffmpeg"><span class="nav-number">3.</span> <span class="nav-text">配置NVENC并下载ffmpeg</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译ffmpeg与cuvid-cuda-npp以及nvenc"><span class="nav-number">4.</span> <span class="nav-text">编译ffmpeg与cuvid, cuda, npp以及nvenc</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试FFmpeg与GPU的硬解码"><span class="nav-number">5.</span> <span class="nav-text">测试FFmpeg与GPU的硬解码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#卸载ffmpeg"><span class="nav-number">6.</span> <span class="nav-text">卸载ffmpeg</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/";
+    this.page.identifier = "2017/03/01/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/";
+    this.page.title = "Ubuntu 16.04下编译ffmpeg支持CUDA下的cuvid vnenc和NPP";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

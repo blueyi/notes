@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文所使用的环境：  Ubuntu-14.04 x64 kernel 4.2.0-36-generic GCC version 4.8.4     需要用到的工具（都是系统自带的，以下是man的基本信息，详细信息可以直接查看man手册）：     size - list section sizes and total size.可以列出section大小和总的大小，能够用于粗略估计，但不适合深度研">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实例分析C++内存布局">
+<meta property="og:url" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="本文所使用的环境：  Ubuntu-14.04 x64 kernel 4.2.0-36-generic GCC version 4.8.4     需要用到的工具（都是系统自带的，以下是man的基本信息，详细信息可以直接查看man手册）：     size - list section sizes and total size.可以列出section大小和总的大小，能够用于粗略估计，但不适合深度研">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/elf-layout.png">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/elfoverview.png">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/REL_EXEC.jpg">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/magic_number.jpeg">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/linuxFlexibleAddressSpaceLayout.png">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/mem_layout_complex.png">
+<meta property="og:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/endian_diagram.png">
+<meta property="article:published_time" content="3316-06-11T05:25:00.000Z">
+<meta property="article:modified_time" content="2020-07-19T15:45:26.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Top">
+<meta property="article:tag" content="CPP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/elf-layout.png">
+
+<link rel="canonical" href="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>实例分析C++内存布局 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实例分析C++内存布局
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 3316-06-11 13:25:00" itemprop="dateCreated datePublished" datetime="3316-06-11T13:25:00+08:00">3316-06-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 23:45:26" itemprop="dateModified" datetime="2020-07-19T23:45:26+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/3316/06/11/cpp-memory-layout/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="3316/06/11/cpp-memory-layout/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>22k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>20 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文所使用的环境：</p>
+<ul>
+<li>Ubuntu-14.04 x64 kernel 4.2.0-36-generic</li>
+<li>GCC version 4.8.4   </li>
+</ul>
+<p>需要用到的工具（都是系统自带的，以下是man的基本信息，详细信息可以直接查看man手册）：   </p>
+<ul>
+<li>size - list section sizes and total size.可以列出section大小和总的大小，能够用于粗略估计，但不适合深度研究section大小   </li>
+<li>readelf - Displays information about ELF files.显示ELF文件的信息，readelf非常强大，能够显示出ELF非常多的信息   </li>
+<li>objdump - display information from object files. 显示object文件的信息，也就是目标文件，功能与readelf类似，但没有readelf强大，有些readelf可以显示的信息，它无法显示   </li>
+</ul>
+<p>如果对编译过程不甚了解，可以参看这里<a href="/2016/06/05/source-to-program/">实例验证C/C++源代码如何变成程序的过程</a>   </p>
+<a id="more"></a>
+
+<h1 id="关于ELF"><a href="#关于ELF" class="headerlink" title="关于ELF"></a>关于ELF</h1><p>关于内存布局，首先需要了解ELF（Executable and Linkable Format）文件，因为ELF文件格式即是可执行文件通用格式，几乎所有UNIX系统的可执行文件都是采用ELF格式，ELF将被加载器（loader）载入到内存中被操作系统执行，所以ELF中指定了可执行程序的内存布局，ELF格式有三种不同的类型：   </p>
+<ul>
+<li>可重定位的目标文件（relocatable或object file），也就是编译之后用于链接的文件   </li>
+<li>可执行文件（Executable），链接之后可以直接运行的文件   </li>
+<li>共享库（Shared Object，或Shared Library）<br>具体一个ELF文件是哪种类型由ELF文件中的ELF Header、Section Header Table和Program Header Table指定。详情可以参考清华大学的一个课件<a href="http://learn.tsinghua.edu.cn/kejian/data/77130/138627/html-chunk/ch18s05.html" target="_blank" rel="noopener">ELF文件</a>和Wikipedia上的<a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format" target="_blank" rel="noopener">Executable and Linkable Format</a><br>或者参见·<a href="http://man7.org/linux/man-pages/man5/elf.5.html" target="_blank" rel="noopener">elf-man</a>，当然自己<code>man elf</code>也是一样的。<br>下面两个图ELF文件的布局：   </li>
+</ul>
+<p><img data-src="elf-layout.png" alt="ELF layout"> <img data-src="elfoverview.png" alt="ELF Overview"></p>
+<h1 id="sections和segments的区别"><a href="#sections和segments的区别" class="headerlink" title="sections和segments的区别"></a>sections和segments的区别</h1><p>从上图中可以清楚的看到与可链接的(linkable)对应的是sections，与可执行的（executable）对应的是segments。ELF格式文件提供了两个视角，如后面的图中所示，左边是从链接器的视角来看ELF文件，右边是从加载器的视角来看ELF文件（左右是相对的，在前面图中则是相反中），链接器把ELF文件看成是Section的集合，sections中包含了链接和重定位的所有重要信息，可重定位的ELF中任意一个字节都最多对应一个section，也可以有一些不属于任何一个section的孤立字节。而加载器（loader）则把ELF文件看成是Segment的集合，segments中包含了可执行文件或共享库需要被加载到内存中的必要信息，每个segment中可以由一个或多个section组成，每个segment都有一个长度和一组与之关联的权限（如read、write、execute），一个进程只有在权限允许且在segment中的偏移长度在segment指定的长度之内，才能正常引用segment，否则将会出现segmentation fault的异常，关于segments的解释可以参看Wikipedia的<a href="https://en.wikipedia.org/wiki/Memory_segmentation" target="_blank" rel="noopener">Memory segmentation</a>。<br>简单分析一下ELF文件各部分的信息，引用自上面提到的清华的一个课件。   </p>
+<blockquote>
+<p>开头的ELF Header描述了体系结构和操作系统等基本信息，并指出Section Header Table和Program Header Table在文件中的什么位置，Program Header Table在链接过程中用不到，所以是可有可无的，Section Header Table中保存了所有Section的描述信息，通过Section Header Table可以找到每个Section在文件中的位置。右边是从加载器的视角来看ELF文件，开头是ELF Header，Program Header Table中保存了所有Segment的描述信息，Section Header Table在加载过程中用不到，所以是可有可无的。从上图可以看出，一个Segment由一个或多个Section组成，这些Section加载到内存时具有相同的访问权限。有些Section只对链接器有意义，在运行时用不到，也不需要加载到内存，那么就不属于任何Segment。注意Section Header Table和Program Header Table并不是一定要位于文件的开头和结尾，其位置由ELF Header指出，上图这么画只是为了清晰   </p>
+</blockquote>
+<blockquote>
+<p>目标文件需要链接器做进一步处理，所以一定有Section Header Table；可执行文件需要加载运行，所以一定有Program Header Table；而共享库既要加载运行，又要在加载时做动态链接，所以既有Section Header Table又有Program Header Table。   </p>
+</blockquote>
+<p>这样就区别出了ELF文件的三种类型。<br>链接器是如何将可重定位的目标程序中的sections映射到可执行目标程序中的segments，详情可以参见<a href="http://www.airs.com/blog/archives/45" target="_blank" rel="noopener">Airs上的Linkers</a>，总结来说：<br>链接器从输入的可重定位的目标程序中读取section，然后根据访问权限将所有可载入的section对应地写入到可执行文件中的segments中。也就是说segments可以直接与内存相映射（终于扯出了内存布局），而setcion则是根据访问权限与segment映射，通常情况下所有的只读setcions被映射到一个segment中，而所有的可写sections被映射到其他segment。    </p>
+<h1 id="查看ELF文件信息"><a href="#查看ELF文件信息" class="headerlink" title="查看ELF文件信息"></a>查看ELF文件信息</h1><p>下图是使用readelf工具读出的<a href="/2016/06/05/source-to-program/">实例验证C/C++源代码如何变成程序的过程</a>中<code>main.cpp</code>生成的可重定位的目标程序和可执行的目标程序的一部分输出，readelf命令是<code>readelf -a main.o</code>   </p>
+<p><img data-src="REL_EXEC.jpg" alt="REL_EXEC"><br>使用vimdiff进行的比对，从图的ELF Header中可以清楚地看到前面一个ELF类型是可重定位的文件（REL），而后面一个是可执行的文件（EXEC）。通过ELF的魔数（Magic）可以看出这个ELF是64位，字节序为小端格式（后面将进行验证），更多关于ELF魔数可以参见<a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format" target="_blank" rel="noopener">Wikipedia</a>，或下图：<br><img data-src="magic_number.jpeg" alt="ELF魔数"><br>通过上图中的Section Headers部分信息可以看出链接之前的可重定位的目标文件中的section地址段全是0，因为这些加载地址要在链接时才会添加，所以可执行的文件中该地址都存在（当然这个地址是虚拟地址，需要根据程序运行时的实际地址进行偏移）。   </p>
+<p>通过命令<code>readelf --segments &lt;input&gt;</code>命令可以查看Section到Segment的映射，由于可重定位的目标文件中并不存在segments，上面也说了可执行的目标文件有program header进行标识，所以该命令作用于<code>main.o</code>（可重定位的目标文件）时会提示”There are no program headers in this file.”。对于<code>main</code>（可执行的目标程序）输出如下，最下面标出了Section到Segment的映射。   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Elf file type is EXEC (Executable file)</span><br><span class="line">Entry point 0x400970</span><br><span class="line">There are 9 program headers, starting at offset 64</span><br><span class="line"></span><br><span class="line">Program Headers:</span><br><span class="line">  Type           Offset             VirtAddr           PhysAddr</span><br><span class="line">                 FileSiz            MemSiz              Flags  Align</span><br><span class="line">  PHDR           0x0000000000000040 0x0000000000400040 0x0000000000400040</span><br><span class="line">                 0x00000000000001f8 0x00000000000001f8  R E    8</span><br><span class="line">  INTERP         0x0000000000000238 0x0000000000400238 0x0000000000400238</span><br><span class="line">                 0x000000000000001c 0x000000000000001c  R      1</span><br><span class="line">      [Requesting program interpreter: &#x2F;lib64&#x2F;ld-linux-x86-64.so.2]</span><br><span class="line">  LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000</span><br><span class="line">                 0x0000000000001dc9 0x0000000000001dc9  R E    200000</span><br><span class="line">  LOAD           0x0000000000001de8 0x0000000000601de8 0x0000000000601de8</span><br><span class="line">                 0x00000000000002b0 0x00000000000003d0  RW     200000</span><br><span class="line">  DYNAMIC        0x0000000000001e08 0x0000000000601e08 0x0000000000601e08</span><br><span class="line">                 0x00000000000001f0 0x00000000000001f0  RW     8</span><br><span class="line">  NOTE           0x0000000000000254 0x0000000000400254 0x0000000000400254</span><br><span class="line">                 0x0000000000000044 0x0000000000000044  R      4</span><br><span class="line">  GNU_EH_FRAME   0x000000000000147c 0x000000000040147c 0x000000000040147c</span><br><span class="line">                 0x00000000000001bc 0x00000000000001bc  R      4</span><br><span class="line">  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000</span><br><span class="line">                 0x0000000000000000 0x0000000000000000  RW     10</span><br><span class="line">  GNU_RELRO      0x0000000000001de8 0x0000000000601de8 0x0000000000601de8</span><br><span class="line">                 0x0000000000000218 0x0000000000000218  R      1</span><br><span class="line"></span><br><span class="line"> Section to Segment mapping:</span><br><span class="line">  Segment Sections...</span><br><span class="line">   00     </span><br><span class="line">   01     .interp </span><br><span class="line">   02     .interp .note.ABI-tag .note.gnu.build-id .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame_hdr .eh_frame .gcc_except_table </span><br><span class="line">   03     .init_array .fini_array .jcr .dynamic .got .got.plt .data .bss </span><br><span class="line">   04     .dynamic </span><br><span class="line">   05     .note.ABI-tag .note.gnu.build-id </span><br><span class="line">   06     .eh_frame_hdr </span><br><span class="line">   07     </span><br><span class="line">   08     .init_array .fini_array .jcr .dynamic .got</span><br></pre></td></tr></table></figure>
+<p>当然可以使用<code>readelf --sections &lt;input&gt;</code>命令读取所有的sections。   </p>
+<h1 id="Segments分析"><a href="#Segments分析" class="headerlink" title="Segments分析"></a>Segments分析</h1><p>上面已经说了ELF中的Segments对应的就是内存的布局，所以这里要先来分析Segments。<br>Segments主要包含以下几个部分   </p>
+<h2 id="text-segment"><a href="#text-segment" class="headerlink" title=".text segment"></a>.text segment</h2><p>它是固定大小的只读segment<br>text segment也称代码段（segment），它包含了编译器和汇编器提供的可执行指令。   </p>
+<h2 id="data-segment"><a href="#data-segment" class="headerlink" title=".data segment"></a>.data segment</h2><p>它是固定大小的可读写segment<br>data segment也称为<strong>已初始化</strong>（initialized）的数据段（segment），它包含已初始化的：</p>
+<ul>
+<li>全局变量，包括全局静态变量   </li>
+<li>局部静态变量（即static声明的变量）   </li>
+</ul>
+<p>该segment的大小由源代码中相应变量所占用的大小决定，这些变量的值可以在运行时改变。   </p>
+<h2 id="rdata-rodata-segment"><a href="#rdata-rodata-segment" class="headerlink" title=".rdata/.rodata segment"></a>.rdata/.rodata segment</h2><p>它是一段只读的segment<br>该segment存储静态的无名数据以及const修饰的常量，例如字符串常量，const修饰的变量。   </p>
+<h2 id="bss-segment"><a href="#bss-segment" class="headerlink" title=".bss segment"></a>.bss segment</h2><p>它是可读写的segment，与.data segment相邻<br>BSS segment也称为未初始化的数据段，包含全局或静态未初始化的变量，该部分数据中的值会在程序启动时直接初始为0，BSS是Block Started by Symbol的简写。   </p>
+<h2 id="堆（head）和栈（stack）"><a href="#堆（head）和栈（stack）" class="headerlink" title="堆（head）和栈（stack）"></a>堆（head）和栈（stack）</h2><p>堆和栈是每个程序都有的内存区域，详情可以参见<a href="https://en.wikipedia.org/wiki/Data_segment" target="_blank" rel="noopener">Data segment</a>   </p>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>维基百科上的解释，堆起始于.bss和.data segments之后，从该处朝着地址空间变大的方向增长。堆通过malloc、realloc、free来管理，具体这三个函数的实现，在linux下有可能是使用brk/sbrk来实现，当然也有可能是通过mmap从虚拟内存的非连续内存中获取后给进程的虚拟地址空间的（brk/sbrk/mmap都是linux下管理内存的函数）。堆被同一个进程的所有线程、共享库以及动态加载的模块共享。<br>关于heap和free store的区别，SOF上也有强烈的争论，Herb Sutter在<a href="http://www.gotw.ca/gotw/009.htm" target="_blank" rel="noopener">Memory Management - Part I</a>中详细说明了内存管理时的几个内存区域的区别，他认为heap和free store是不同的，一个是C语言下的，一个是C++下的。而Bjarne Stroustrup的说法我觉得应该更合适，在这里<a href="http://zamanbakshifirst.blogspot.com/search/label/heap" target="_blank" rel="noopener">C++ : Free-store versus Heap</a>，为了避免可能无法打开该链接，将全文引在下面：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">C++ : Free-store versus Heap</span><br><span class="line"></span><br><span class="line">What&#39;s the difference between the heap and the free-store? The C++ Programming Language keeps on referring them interchangeably. There was as huge cry over this issue in C&#x2F;C++ programmer&#39;s community in Orkut. I had to shoot a mail to Dr. Bjarne Stroustrup. Here&#39;s our conversation:</span><br><span class="line"></span><br><span class="line">My Mail:</span><br><span class="line"></span><br><span class="line">Dear Mr Stroustrup,</span><br><span class="line"></span><br><span class="line">Sorry to disturb you again. You have mentioned several times in the TC++PL that &#39;new&#39; allocates memory from the &#39;free store (or heap)&#39;. There has been a huge cry on the C++ community at Orkut (that I am moderating) as to whether free-store is the same as heap. The argument given against is that Mr Herb Sutter has mentioned that the free-store is different from the heap:</span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;www.gotw.ca&#x2F;gotw&#x2F;009.htm</span><br><span class="line"></span><br><span class="line">and that global &#39;new&#39; has nothing to do with the heap.</span><br><span class="line"></span><br><span class="line">So, if so, why has TC++PL used &#39;free store (or heap)&#39; instead of mentioning the use of &#39;heap&#39; separately.</span><br><span class="line"></span><br><span class="line">Waiting anxiously for the response.</span><br><span class="line"></span><br><span class="line">Regards,</span><br><span class="line">Zaman Bakshi</span><br><span class="line"></span><br><span class="line">His Reply:</span><br><span class="line"></span><br><span class="line">Note that Herb says: &quot;Note about Heap vs. Free Store: We distinguish between &quot;heap&quot; and &quot;free store&quot; because the draft deliberately leaves unspecified the question of whether these two areas are related. For example, when memory is deallocated via operator delete, 18.4.1.1 states:&quot;</span><br><span class="line"></span><br><span class="line">In other word, the &quot;free store&quot; vs &quot;heap&quot; distinction is Herb&#39;s attempt to distinguish malloc() allocation from new allocation.</span><br><span class="line"></span><br><span class="line">&gt;</span><br><span class="line">&gt; So, if so, why has TC++PL used &#39;free store (or heap)&#39; instead of</span><br><span class="line">&gt; mentioning the use of &#39;heap&#39; separately.</span><br><span class="line"></span><br><span class="line">Because even though it is undefined from where new and malloc() get their memory, they typically get them from exactly the same place. It is common for new and malloc() to allocate and free storage from the same part of the computer&#39;s memory. In that case, &quot;free store&quot; and &quot;heap&quot; are synonyms. I consistently use &quot;free store&quot; and &quot;heap&quot; is not a defined term in the C++ standard (outside the heap standard library algorithms, which are unrelated to new and malloc()). In relation to new, &quot;heap&quot; is simply a word someone uses (typically as a synonym to &quot;free store&quot;) - usually because they come from a different language background.</span><br><span class="line"></span><br><span class="line">My Reply:</span><br><span class="line"></span><br><span class="line">Thank you Mr. Stroustrup, I had inferred the same thing (about using free store as general -- or better, synonym -- term) and had explained the community. But, I had been requested to reconfirm.</span><br><span class="line"></span><br><span class="line">With warm regards,</span><br><span class="line">Zaman Bakshi</span><br></pre></td></tr></table></figure>
+<h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>首先栈是先进后出的数据结构，其位于内存的高地址空间中。<br>自动变量存储在栈上，包括函数中定义的变量（也就是{}中的变量，但不包括static，上面说了static存储在data段）。函数调用时的参数也会被压入发起调用的进程栈中。   </p>
+<p>下图可以形象地表示内存布局<br><img data-src="linuxFlexibleAddressSpaceLayout.png" alt="">   </p>
+<p>以下这段程序的内存布局图来自<a href="http://www.cs.uleth.ca/~holzmann/C/system/memorylayout.pdf" target="_blank" rel="noopener">pdf</a>   </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> a;  </span><br><span class="line">    <span class="keyword">int</span> b[<span class="number">3</span>];  </span><br><span class="line">    <span class="comment">/* no other auto variable */</span>  </span><br><span class="line">    ... </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">    ...</span><br><span class="line">    func(<span class="number">72</span>,<span class="number">73</span>);  </span><br><span class="line">    ...  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码内存布局分析<br><img data-src="mem_layout_complex.png" alt=""></p>
+<h2 id="关于堆和栈的增长方向"><a href="#关于堆和栈的增长方向" class="headerlink" title="关于堆和栈的增长方向"></a>关于堆和栈的增长方向</h2><p>从上面的图以及无数的解释中我们可以明显知到堆是沿低地址向高地址增长（低地址指较小的址，高地址指较大的地址，通常所说的向上增长就是指向高地址增长），而栈是沿高地址向低地址增加，栈和堆共用一块内存空间，当然它们有可能会出现重叠的情况。<br>内存中将这两部分称为堆和栈是因为它们的表现类似于数据结构中的堆（heap）和栈（stack）。很多童鞋，例如我想尝试验证堆和栈的增长方式，简单地在函数内定义几个自动变量，再使用malloc或者new创建几个变量，然后来输出地址比较，这种方法是行不通的，因为存在栈帧的问题。所谓栈帧就是每个函数在每次的调用过程中都会对应一个栈帧，栈帧中保存了该函数在调用过程中所需要的所有信息，包括返回地址、局部变量等。所以两个不同的函数调用时的局部变量将保存在不同的栈帧中，所以函数调用者栈帧中的信息必然比被调用者先入栈，如果被调用函数的局部变量地址比调用者的大，则栈肯定是沿低地址向高地址增长，即向上增长，反之则是向下增长。<br>使用下面这段代码分别在windows及linux下来验证栈的增长方向、栈帧内栈的增长方向以及malloc与new分配的空间是否是在同一块内存中：   </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//func2调用func1的参数，first必将比second先入栈</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func2</span><span class="params">(<span class="keyword">int</span> *first)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> second = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"&amp;fir: "</span> &lt;&lt; first &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span></span><br><span class="line">              &lt;&lt; <span class="string">"&amp;sec: "</span> &lt;&lt; &amp;second &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//当func1调用func2时，func1的返回地址及局部变量都将压入一个栈帧中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> first = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"******stack direction******"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    func2(&amp;first);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在一个栈帧内，局部变量的地址可以由编译器决定，输出一个栈帧内堆和栈的地址</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//在栈内定义4个变量</span></span><br><span class="line">    <span class="keyword">int</span> t1 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> t2 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> t3 = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> t4 = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span> &lt;&lt; <span class="string">"*******stack*****"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;t1 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;t2 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;t3 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;t4 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">//在堆内使用new定义4个变量</span></span><br><span class="line">    <span class="keyword">int</span> *n5 = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line">    <span class="keyword">int</span> *n6 = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line">    <span class="keyword">int</span> *n7 = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line">    <span class="keyword">int</span> *n8 = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"*******heap: new allocate*****"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; n5 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; n6 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; n7 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; n8 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">//在堆内使用malloc定义4个变量</span></span><br><span class="line">    <span class="keyword">int</span> *m5 = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">int</span> *m6 = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">int</span> *m7 = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="keyword">int</span> *m8 = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"*******heap: malloc allocate*****"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; m5 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; m6 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; m7 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; m8 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">//释放动态内存</span></span><br><span class="line">    <span class="keyword">delete</span> n5;</span><br><span class="line">    <span class="keyword">delete</span> n6;</span><br><span class="line">    <span class="keyword">delete</span> n7;</span><br><span class="line">    <span class="keyword">delete</span> n8;</span><br><span class="line">    <span class="built_in">free</span>(m5);</span><br><span class="line">    <span class="built_in">free</span>(m6);</span><br><span class="line">    <span class="built_in">free</span>(m7);</span><br><span class="line">    <span class="built_in">free</span>(m8);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    func1();</span><br><span class="line">    func();</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是在Windows 7 x64系统下使用GCC 5.1.0 x64编译运行的结果：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">C:\Windows\system32\cmd.exe &#x2F;c (mem.exe)</span><br><span class="line">******stack direction******</span><br><span class="line">&amp;fir: 0x22fe1c</span><br><span class="line">&amp;sec: 0x22fddc</span><br><span class="line"></span><br><span class="line">*******stack*****</span><br><span class="line">0x22fddc</span><br><span class="line">0x22fdd8</span><br><span class="line">0x22fdd4</span><br><span class="line">0x22fdd0</span><br><span class="line">*******heap: new allocate*****</span><br><span class="line">0x8f7b00</span><br><span class="line">0x8f7b20</span><br><span class="line">0x788ab0</span><br><span class="line">0x788ac0</span><br><span class="line">*******heap: malloc allocate*****</span><br><span class="line">0x788ad0</span><br><span class="line">0x788ae0</span><br><span class="line">0x788af0</span><br><span class="line">0x788b00</span><br></pre></td></tr></table></figure>
+<p>这是在Ubuntu-14.10 x64系统下使用GCC 4.8.4 x64编译运行的结果：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">******stack direction******</span><br><span class="line">&amp;fir: 0x7ffdf88d276c</span><br><span class="line">&amp;sec: 0x7ffdf88d274c</span><br><span class="line"></span><br><span class="line">*******stack*****</span><br><span class="line">0x7ffdf88d2720</span><br><span class="line">0x7ffdf88d2724</span><br><span class="line">0x7ffdf88d2728</span><br><span class="line">0x7ffdf88d272c</span><br><span class="line">*******heap: new allocate*****</span><br><span class="line">0x753010</span><br><span class="line">0x753030</span><br><span class="line">0x753050</span><br><span class="line">0x753070</span><br><span class="line">*******heap: malloc allocate*****</span><br><span class="line">0x753090</span><br><span class="line">0x7530b0</span><br><span class="line">0x7530d0</span><br><span class="line">0x7530f0</span><br></pre></td></tr></table></figure>
+<p>从以上结果可以清楚的看到不管是在windows下还是在linux下，first的地址都比second的地址大，也就是说先入栈的地址比后入栈的地址大，所以栈是向下增长。<br>而在一个栈帧内，即stack部分的输出结果可以看出windows下地址是减小的，而linux下地址却是增大，不管是由于编译器的问题还是系统的分配问题，或者都有可能（至少此处的例子编译器一样，虽然版本不同），所以在一个栈帧内并无法判断栈的增长方向。<br>而根据堆的输出结果可以看出不管是windows下还是linux下，地址都是变大的，也就是向上增长，从windows下的输出可以看出堆分配的内存有可能不连续，而不管是在windows下还是linux下都没有显示出new和malloc分配的内存不是在同一个内存区域上，而且据说new就是使用malloc进行实现的。<br>之所以要设计堆和栈两种不同的内存管理方式，根据函数的调用来说显然是栈的存在的非常有必要的，考虑到逻辑与数据的分享堆和栈也同样的非常有必要的。<br>总结堆和栈的区别：   </p>
+<ol>
+<li>分配方式不同，栈用于存储定义的自动变量、函数的返回地址、函数的参数等，由系统自动分配，而堆需要使用malloc、realloc或new手动分配   </li>
+<li>回收方式不同，栈在函数调用结束或程序运行完成时由系统自动释放，而堆需要使用delete或free来手动释放，当然在程序运行结束后也有可能OS会自动回收   </li>
+<li>增长方向不同，栈由高地址向低地址增长，而堆则是由低地址向高地址增长   </li>
+<li>大小限制不同，栈可申请的空间通常在编译时由操作系统确定，程序运行之前就已经确定大小，且通常较小，而堆则可在运行时扩展，大小受限于系统剩余的虚拟内存   </li>
+<li>申请效率不同，栈由系统自动分配通常效率较高，堆由于在分配和释放时需要由系统维护一个空闲内存地址的链表，容易产生碎片化的内存，在申请时，系统首先需要从空闲内存地址链表中查询空闲内存地址，找到后返回给程序并从该链表中删除，所以速度较慢。   </li>
+<li>堆内存只能通过指针使用，而栈可以通过变量名   </li>
+<li>栈的使用不会引起内存碎片化，但在堆上进行大量的分配和释放有可能造成内存碎片化   </li>
+<li>失败后的结果不同，当分配的栈太大或者死循环，或者递归的太深时会引起栈溢出（stack overflow）。而在申请堆时，请求的内存太大会引起内存分配失败。   </li>
+<li>网上有人说存取效率不同，栈的存取更快，堆较慢。这个应该根据不同的系统实现可能并不一定。   </li>
+</ol>
+<p>关于堆和栈的区别也可以看SOF上的高票<a href="http://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap" target="_blank" rel="noopener">SOF</a>   </p>
+<h1 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h1><p>从以下代码开始：   </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看它的section大小：   </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">blueyi@vm:~/cpp/b$ g++ --save-temps -o main main.cpp</span><br><span class="line">blueyi@vm:~/cpp/b$ size main.o </span><br><span class="line">   text	   data	    bss	    dec	    hex	filename</span><br><span class="line">     67	      0	      0	     67	     43	main.o</span><br></pre></td></tr></table></figure>
+<p>因为没有定义任何变量，所以.data和.bss都是0，现在将程序修改为如下所示：   </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//未初始化的全局变量会存储在.bss中</span></span><br><span class="line"><span class="keyword">int</span> global_uninitialized;</span><br><span class="line"><span class="comment">//已初始化的全局变量会被存储在.data section中</span></span><br><span class="line"><span class="keyword">float</span> global_ini = <span class="number">3.1415</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//未初始化的静态变量也会存放在.bss section中</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> static_uninitialized;</span><br><span class="line">    <span class="comment">//已初始化的静态变量会被放在.data section中</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> ch_ini = <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看section大小：   </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">blueyi@vm:~/cpp/b$ g++ --save-temps -o main main.cpp</span><br><span class="line">blueyi@vm:~/cpp/b$ size main.o </span><br><span class="line">   text	   data	    bss	    dec	    hex	filename</span><br><span class="line">     67	      5	      8	     80	     50	main.o</span><br></pre></td></tr></table></figure>
+<p>现在.data section大小变成了5，刚好是一个已初始化的全局float占用的4个字节加上局部已初始化的静态char所占用的字节，而.bss section的大小刚好是两个int占用的字节8，它们分别来自全局未初始化的global_uninitialized和局部静态未初始化的static_uninitialized。   </p>
+<p>对可执行程序执行反汇编并查看.data中的内容如下：   </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">blueyi@vm:~/cpp/b$ objdump -CS -s -j .data main</span><br><span class="line"></span><br><span class="line">main:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Contents of section .data:</span><br><span class="line"> 601028 00000000 00000000 00000000 00000000  ................</span><br><span class="line"> 601038 560e4940 61                          V.I@a           </span><br><span class="line"></span><br><span class="line">Disassembly of section .data:</span><br><span class="line"></span><br><span class="line">0000000000601028 &lt;__data_start&gt;:</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">0000000000601030 &lt;__dso_handle&gt;:</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">0000000000601038 &lt;global_ini&gt;:</span><br><span class="line">  601038:	56 0e 49 40                                         V.I@</span><br><span class="line"></span><br><span class="line">000000000060103c &lt;main::ch_ini&gt;:</span><br><span class="line">  60103c:	61                                                  a</span><br></pre></td></tr></table></figure>
+<p>可以清楚地看到.data中有<code>&lt;global_ini&gt;</code>和<code>&lt;main::ch_ini&gt;</code>，它们正是我们的两个变量global_ini和ch_ini。   </p>
+<p>反汇编并查看.bss中的内容如下：   </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">blueyi@vm:~/cpp/b$ objdump -CS -s -j .bss main</span><br><span class="line"></span><br><span class="line">main:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disassembly of section .bss:</span><br><span class="line"></span><br><span class="line">0000000000601040 &lt;completed.6973&gt;:</span><br><span class="line">  601040:	00 00 00 00                                         ....</span><br><span class="line"></span><br><span class="line">0000000000601044 &lt;global_uninitialized&gt;:</span><br><span class="line">  601044:	00 00 00 00                                         ....</span><br><span class="line"></span><br><span class="line">0000000000601048 &lt;main::static_uninitialized&gt;:</span><br><span class="line">	...</span><br></pre></td></tr></table></figure>
+<p>同样可以看到与我们源代码中对应的<code>&lt;global_uninitialized&gt;</code>和<code>&lt;main::static_uninitialized&gt;</code>   </p>
+<p>通过反汇编查看.rodata中的数据如下：   </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">blueyi@vm:~/cpp/b$ objdump -CS -s -j .rodata main</span><br><span class="line"></span><br><span class="line">main:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Contents of section .rodata:</span><br><span class="line"> 400580 01000200                             ....            </span><br><span class="line"></span><br><span class="line">Disassembly of section .rodata:</span><br><span class="line"></span><br><span class="line">0000000000400580 &lt;_IO_stdin_used&gt;:</span><br><span class="line">  400580:	01 00 02 00                                         ....</span><br></pre></td></tr></table></figure>
+<p>与之前.data的输出结果类比可以看出.rodata中并没有数据，因为我们的程序中没有定义需要存储在.rodata section中的数据。<br>将程序修改为如下：   </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//未初始化的全局变量会存储在.bss中</span></span><br><span class="line"><span class="keyword">int</span> global_uninitialized;</span><br><span class="line"><span class="comment">//已初始化的全局变量会被存储在.data section中</span></span><br><span class="line"><span class="keyword">float</span> global_ini = <span class="number">3.1415</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//const 修饰的变量相当于常量，会被存放在.rodata中</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAX = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MIN = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//未初始化的静态变量也会存放在.bss section中</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> static_uninitialized;</span><br><span class="line">    <span class="comment">//已初始化的静态变量会被放在.data section中</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> ch_ini = <span class="string">'a'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//const 修饰的变量相当于常量，会被存放在.rodata中</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">float</span> pi = <span class="number">3.14</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *str = <span class="string">"maxwi.com"</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来查看sections大小，以及反汇编之后.rodata的内容：   </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">blueyi@vm:~/cpp/b$ g++ --save-temps -o main main.cpp</span><br><span class="line">blueyi@vm:~/cpp/b$ size main.o</span><br><span class="line">   text	   data	    bss	    dec	    hex	filename</span><br><span class="line">    108	      5	      8	    121	     79	main.o</span><br><span class="line">blueyi@vm:~/cpp/b$ objdump -CS -s -j .rodata main</span><br><span class="line"></span><br><span class="line">main:     file format elf64-x86-64</span><br><span class="line"></span><br><span class="line">Contents of section .rodata:</span><br><span class="line"> 400590 01000200 6d617877 692e636f 6d000000  ....maxwi.com...</span><br><span class="line"> 4005a0 64000000 0a000000 c3f54840           d.........H@    </span><br><span class="line"></span><br><span class="line">Disassembly of section .rodata:</span><br><span class="line"></span><br><span class="line">0000000000400590 &lt;_IO_stdin_used&gt;:</span><br><span class="line">  400590:	01 00 02 00 6d 61 78 77 69 2e 63 6f 6d 00 00 00     ....maxwi.com...</span><br><span class="line"></span><br><span class="line">00000000004005a0 &lt;MAX&gt;:</span><br><span class="line">  4005a0:	64 00 00 00                                         d...</span><br><span class="line"></span><br><span class="line">00000000004005a4 &lt;MIN&gt;:</span><br><span class="line">  4005a4:	0a 00 00 00 c3 f5 48 40                             ......H@</span><br></pre></td></tr></table></figure>
+<p>从输出中可以看出.data和.bss的大小没有增加，而从.rodata section的输出出我们看到了程序中定义的全局const变量对应的内容<code>&lt;MAX&gt;</code>和<code>&lt;MIN&gt;</code>，但没有main函数中的pi和*str，仔细查看输出内容发现<code>&lt;_IO_stdin_used&gt;</code>的后面正是<code>maxwi.com</code>的十六进制ASCII码，紧接在<code>&lt;MIN&gt;</code>后面的是3.14的内容。</p>
+<p>C++变量的内存布局中主要有.data、.bss、.rodata、heap和stack五个部分。.text属于ELF，用于存放源代码指令。      </p>
+<h1 id="关于字节序的大端和小端"><a href="#关于字节序的大端和小端" class="headerlink" title="关于字节序的大端和小端"></a>关于字节序的大端和小端</h1><p>大端（Big-Endian）和小端（Little-Endian）是指字节在内存中的存储顺序：   </p>
+<ul>
+<li>小端（Little-Endian）就是低位字节排放在内存的低地址端，高位字节排放在内存的高地址端。</li>
+<li>大端（Big-Endian）就是高位字节排放在内存的低地址端，低位字节排放在内存的高地址端。<br>下图应该很能说明问题：<br><img data-src="endian_diagram.png" alt=""><br>与之相关的两个关键词：   </li>
+<li>MSB:MoST Significant Bit ——- 最高有效位   </li>
+<li>LSB:Least Significant Bit ——- 最低有效位   </li>
+</ul>
+<p>下面用代码来验证本机是大端还是小端，都知道可以通过定义一个值为1的int型变量，然后将其强制转换为char，由于int占4个字节，而char只占1个字节，所以对于char来说就存在低位有效还是高位有效。默认情况下对于一个元素来说它在内存中存储是由低地址到高地址，例如一个int占4个字节，第二个字节在内存中的地址会比第一个字节大，依此类推，下面的程序中会验证。这样如果是最低位有效，即LSB，也就是与之对应的小端，反之就是MSB，与之对应的就是大端。参见<a href="https://en.wikipedia.org/wiki/Endianness" target="_blank" rel="noopener">Endianness-Wikipedia</a>和<a href="http://www.bogotobogo.com/Embedded/Little_endian_big_endian_htons_htonl.php" target="_blank" rel="noopener">Embedded Systems programming: Little Endian/Big Endian &amp; TCP Sockets - 2016</a><br>说再多也没用，”Talk is cheap. Show me the code.“   </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//单独一个元素在内存中的存储是从低地址到高地址   </span></span><br><span class="line"><span class="comment">//下面验证   </span></span><br><span class="line"><span class="comment">//使用整型转判断</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">int_address</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">12345</span>;  <span class="comment">//0x00003039</span></span><br><span class="line">    <span class="keyword">char</span> *p = (<span class="keyword">char</span>*)(&amp;a);</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; <span class="keyword">sizeof</span>(a); ++i) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%p\t0x%.2x\n"</span>, p + i, *(p + i));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据整型转char保留低位来判断</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_big_end_pointer</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> p = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (*((<span class="keyword">char</span>*)&amp;p) == <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据共用体来判断</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_big_end_union</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="keyword">char</span> ch;</span><br><span class="line">    &#125; endn;</span><br><span class="line">    endn.i = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (endn.ch == <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"address increase direction"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    int_address();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"**pointer**"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">if</span> (is_big_end_pointer())</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big endian"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little endian"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"**union**"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">if</span> (is_big_end_union())</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"big endian"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"little endian"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Windows下的输出结果如下：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">C:\Windows\system32\cmd.exe &#x2F;c (big_and_littel_endian.exe)</span><br><span class="line">address increase direction</span><br><span class="line">000000000022fe0c        0x39</span><br><span class="line">000000000022fe0d        0x30</span><br><span class="line">000000000022fe0e        0x00</span><br><span class="line">000000000022fe0f        0x00</span><br><span class="line"></span><br><span class="line">**pointer**</span><br><span class="line">little endian</span><br><span class="line"></span><br><span class="line">**union**</span><br><span class="line">little endian</span><br></pre></td></tr></table></figure>
+<p>Linux下的输出结果如下：   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">address increase direction</span><br><span class="line">0x7ffd9b54628c      0x39</span><br><span class="line">0x7ffd9b54628d      0x30</span><br><span class="line">0x7ffd9b54628e      0x00</span><br><span class="line">0x7ffd9b54628f      0x00</span><br><span class="line"></span><br><span class="line">**pointer**</span><br><span class="line">little endian</span><br><span class="line"></span><br><span class="line">**union**</span><br><span class="line">little endian</span><br></pre></td></tr></table></figure>
+<p>显然，我机器的内存存储模式是小端格式，其他根据int_address()函数即能看出来单个元素在内存中的存储方向，同样可以清楚的看到低位存储在低地址，高位存储在高地址，即小端模式。<br><strong>关于字节序的一些知识</strong></p>
+<ul>
+<li>采用小端模式的处理器包括：PDP-11、VAX、Intel系列微处理器和一些网络通信设备； 采用大端模式的处理器包括：IBM3700系列、PDP-10、Mortolora微处理器系列和绝大多数的RISC处理器 所以通常我们自己的机器多数都是小端字节序。</li>
+<li>网络字节序是确定的，网络字节序定义为大端模式，所以两台主机之间通过TCP/IP协议进行通信的时候，在向对方发送报文前，都需要调用相应的函数把自己的主机序（Little-Endian）模式的报文转换成网络序（Big-Endian）模式；同样，在接收到对方的报文信息后，都需要将报文（网络序）转换成主机序（Little-Endian）。</li>
+</ul>
+<h1 id="register"><a href="#register" class="headerlink" title="register"></a>register</h1><p>最后提一下register定义的寄存器变量，显然上述没有提到寄存器这个存储区，因为寄存器是CPU的存储单元，寄存器可以直接访问而不需要通过总线，所以速度较快。早期的编程环境，特别是较老硬件下的C语言编程通常会考虑将使用比较频繁的变量定义为register，以加快访问速度，但现在的C++编译器通常会忽略掉register，而是采用自己的优化策略。register在C和C++中的用法也有点区别：<br>在c++中：</p>
+<ol>
+<li>register 关键字无法在全局中定义变量，否则会被提示为不正确的存储类。</li>
+<li>register 关键字在局部作用域中声明时，可以用 &amp; 操作符取地址，一旦使用了取地址操作符，被定义的变量会强制存放在内存中。<br>在c中:</li>
+<li>register 关键字可以在全局中定义变量，当对其变量使用 &amp; 操作符时，只是警告“有坏的存储类”。</li>
+<li>register 关键字可以在局部作用域中声明，但这样就无法对其使用 &amp; 操作符。否则编译不通过。</li>
+</ol>
+<h1 id="常量折叠"><a href="#常量折叠" class="headerlink" title="常量折叠"></a>常量折叠</h1><p>注意.rdata区，这是一段只读的数据区，该区域存储的常量数据通常会在编译阶段用于替换程序中相应的常量类型的变量（也就是所谓的常量折叠）<br>常量折叠发生在编译阶段，而不是预编译阶段，预编译阶段只是对宏定义这类进行替换（如#define、#include等定义），可以参考：<a href="http://notes.maxwi.com/2016/06/05/source-to-program/"> 实例验证C/C++源代码变成程序的过程 </a><br>而编译阶段的常量折叠是一种编译优化技术，会使用常量值来替换常量表达式，如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span> i = <span class="number">2</span> * <span class="number">3</span> * <span class="number">6</span>;</span><br><span class="line"><span class="keyword">int</span> ca = a;</span><br></pre></td></tr></table></figure>
+<p>编译完成之后实际上相当于：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//a被存储在.rodata区中</span></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">36</span>;</span><br><span class="line"><span class="keyword">int</span> ca = <span class="number">5</span>;</span><br></pre></td></tr></table></figure>
+
+<p>所以当我们将某个变量声明为const之后，虽然该变量及其值会被存储在.rdata（只读）区，编译阶段就已经确定了该变量的值，且无法修改该变量的值（实际上该变量的值在编译阶段会直接被替换为相应的值）。虽然程序运行时可以通过指针强行修改const变量所指向的内存区域的值，但当通过这个const变量来使用其值时，由于常量折叠，该值在编译完成之后就已经被替换成了实际的值（注意是编译阶段，而不是预编译阶段）</p>
+<p>如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">int</span> *p = (<span class="keyword">int</span> *)&amp;a;   <span class="comment">//指针p强行指向a的地址，此时系统会为a指向的地址（实际上是虚拟地址）分配内存，并从.rodata中拷贝a5的值到该内存中</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p &lt;&lt; <span class="string">" : "</span> &lt;&lt; *p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    *p = <span class="number">5</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;a &lt;&lt; <span class="string">" : "</span> &lt;&lt; a &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//编译完成后，实际上后面这个a会被替换为4</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p &lt;&lt; <span class="string">" : "</span> &lt;&lt; *p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">int</span> *p2 = (<span class="keyword">int</span> *)&amp;a;  <span class="comment">//将p2指向已经分配了内存的地址，此时该地址内存中的值为5</span></span><br><span class="line">    *p2 = <span class="number">6</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; &amp;a &lt;&lt; <span class="string">" : "</span> &lt;&lt; a &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;  <span class="comment">//a同样会被替换为4</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p &lt;&lt; <span class="string">" : "</span> &lt;&lt; *p &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; p2 &lt;&lt; <span class="string">" : "</span> &lt;&lt; *p2 &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x7fffce11a0ec</span> : <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="number">0x7fffce11a0ec</span> : <span class="number">4</span></span><br><span class="line"><span class="number">0x7fffce11a0ec</span> : <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="number">0x7fffce11a0ec</span> : <span class="number">4</span></span><br><span class="line"><span class="number">0x7fffce11a0ec</span> : <span class="number">6</span></span><br><span class="line"><span class="number">0x7fffce11a0ec</span> : <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>由于输出结果可知虽然a和p、p2的地址一样，但a的值并不会发生变化，因为实际上a的值在编译阶段就已经被替换为4，且被固定在.rodata区，编译器虽然为const定义的变量分配了地址但并不会分析存储空间。<br>当对const定义的变量强行取地址时，此时编译器才会为这些常量分配存储空间，并会从.rodata区域中取出它的值，并重新在内存中创建一个它的拷贝，所以第一次对p赋值后，它的值是5，当通过p2对这块内存赋值为6时，p和p2所指向的同一块内存值为6，但输出中显示的a依然是.rodata中存储的4（编译阶段就已经发生了替换）。<br>看如下程序：<br>rodata.cpp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> a5 = <span class="number">33</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>  <span class="comment">//之所以用个main函数是因为C++不允许在全局赋值，全局只在定义变量，或定义的同时初始化</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> *p = (<span class="keyword">int</span> *)&amp;a5;   </span><br><span class="line">    *p = <span class="number">6</span>;</span><br><span class="line">    <span class="keyword">int</span> dd = a5;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>g++ -S rodata.cpp</code>编译生成汇编源文件rodata.s，并使用c++filt对变量名unmangling：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">        .file   &quot;rodata.cpp&quot;</span><br><span class="line">        .text</span><br><span class="line">        .globl  main</span><br><span class="line">        .type   main, @function</span><br><span class="line">main:</span><br><span class="line">.LFB0:</span><br><span class="line">        .cfi_startproc</span><br><span class="line">        pushq   %rbp</span><br><span class="line">        .cfi_def_cfa_offset 16</span><br><span class="line">        .cfi_offset 6, -16</span><br><span class="line">        movq    %rsp, %rbp</span><br><span class="line">        .cfi_def_cfa_register 6</span><br><span class="line">        movq    a5, -8(%rbp)  &#x2F;&#x2F;从.rodata中取出a5的值，并拷贝到分配的内存中</span><br><span class="line">        movq    -8(%rbp), %rax</span><br><span class="line">        movl    $6, (%rax)</span><br><span class="line">        movl    $33, -12(%rbp)  &#x2F;&#x2F;变量dd的值直接使用33而不是a5</span><br><span class="line">        movl    $0, %eax</span><br><span class="line">        popq    %rbp</span><br><span class="line">        .cfi_def_cfa 7, 8</span><br><span class="line">        ret</span><br><span class="line">        .cfi_endproc</span><br><span class="line">.LFE0:</span><br><span class="line">        .size   main, .-main</span><br><span class="line">        .section        .rodata</span><br><span class="line">        .align 4</span><br><span class="line">        .type   a5, @object</span><br><span class="line">        .size   a5, 4</span><br><span class="line">a5:</span><br><span class="line">        .long   33</span><br><span class="line">        .ident  &quot;GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4&quot;</span><br><span class="line">        .section        .note.GNU-stack,&quot;&quot;,@progbits</span><br></pre></td></tr></table></figure>
+
+<h1 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h1><p>volatile关键字用于修饰变量与const用法类似，但功能恰好相反。volatile 关键字修饰变量表示该变量可以被某些编译器未知的因素更改，比如：操作系统、硬件或者其它线程等。遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。声明时语法：int volatile vInt; 当要求使用 volatile 声明的变量的值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。而且读取的数据立刻被保存。<br>也就是说volatile修饰的变量，不管在什么时候通过变量名使用该变量，都要直接从内存中读取，而不允许编译器对其修饰的变量做任何编译优化，例如常量折叠。volatile可以与const一起使用，const修饰的变量，只是说不能修改该变量的值，毕竟该变量会在编译时优化替换为原值，就像上面的例子一样，依然可以通过指针来修改const变量所指向的内存中的内容。<br>同样是上面的两段代码，如果将前面那段代码的<code>const int a = 4;</code>前面再加上volatile，改成<code>volatile const int a = 4</code>，则输出结果为</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x7fffda9fdf5c</span> : <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> : <span class="number">5</span></span><br><span class="line"><span class="number">0x7fffda9fdf5c</span> : <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> : <span class="number">6</span></span><br><span class="line"><span class="number">0x7fffda9fdf5c</span> : <span class="number">6</span></span><br><span class="line"><span class="number">0x7fffda9fdf5c</span> : <span class="number">6</span></span><br></pre></td></tr></table></figure>
+<p>注意这个地方在g++编译时会有警告<code>The address of &#39;a&#39; will always evaluate as &#39;true&#39; [-Waddress]</code>，然后a的地址都会输出成了1，这是因为operator&lt;&lt;重载的运算符没有volatile void *类型的形参，默认情况下iostream会将指针类型隐式转换为void *以用于显示，但对于volatile类型的指针却不转换，所以上面对于a地址的输出，可以加个到(void *)&amp;a的强制转换，当然输出地址与p是一样的。</p>
+<p>如果将后面那段代码中的<code>const int a5 = 33;</code>改成<code>volatile const int a5 = 33;</code>，则编译后的汇编中可以发现，程序不再采用常量折叠的方式替换dd后面a5的值为33，而是从a5中获取<br>volatile用于多线程环境较多，当两个线程都要用到某一个变量且该变量的值会被改变时，应该用volatile声明，该关键字的作用是防止优化编译器把变量从内存装入CPU寄存器中。如果变量被装入寄存器，那么两个线程有可能一个使用内存中的变量，一个使用寄存器中的变量，这会造成程序的错误执行。<br>主要可用于以下三个方面：</p>
+<ul>
+<li>中断服务程序中修改的供其它程序检测的变量需要加 volatile；</li>
+<li>多任务环境下各任务间共享的标志应该加 volatile；</li>
+<li>存储器映射的硬件寄存器通常也要加 volatile 说明，因为每次对它的读写都可能由不同意义。</li>
+</ul>
+<p>volatile在修饰指针时，也存在类似const修饰指针时的常量指针和指针常量两种情况。所以volatile可用于修饰指针，或修饰指针所指的对象</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Top/" rel="tag"># Top</a>
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/3015/08/12/CUDA-Determine-block-size/" rel="prev" title="Streaming MultiProcessor、Register、Shared-Memory对CUDA线程块尺寸的影响">
+      <i class="fa fa-chevron-left"></i> Streaming MultiProcessor、Register、Shared-Memory对CUDA线程块尺寸的影响
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/3416/06/05/source-to-program/" rel="next" title="实例验证C/C++源代码变成程序的过程">
+      实例验证C/C++源代码变成程序的过程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于ELF"><span class="nav-number">1.</span> <span class="nav-text">关于ELF</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sections和segments的区别"><span class="nav-number">2.</span> <span class="nav-text">sections和segments的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看ELF文件信息"><span class="nav-number">3.</span> <span class="nav-text">查看ELF文件信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Segments分析"><span class="nav-number">4.</span> <span class="nav-text">Segments分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#text-segment"><span class="nav-number">4.1.</span> <span class="nav-text">.text segment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data-segment"><span class="nav-number">4.2.</span> <span class="nav-text">.data segment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rdata-rodata-segment"><span class="nav-number">4.3.</span> <span class="nav-text">.rdata&#x2F;.rodata segment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bss-segment"><span class="nav-number">4.4.</span> <span class="nav-text">.bss segment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#堆（head）和栈（stack）"><span class="nav-number">4.5.</span> <span class="nav-text">堆（head）和栈（stack）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#堆"><span class="nav-number">4.5.1.</span> <span class="nav-text">堆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#栈"><span class="nav-number">4.5.2.</span> <span class="nav-text">栈</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于堆和栈的增长方向"><span class="nav-number">4.6.</span> <span class="nav-text">关于堆和栈的增长方向</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实例分析"><span class="nav-number">5.</span> <span class="nav-text">实例分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于字节序的大端和小端"><span class="nav-number">6.</span> <span class="nav-text">关于字节序的大端和小端</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#register"><span class="nav-number">7.</span> <span class="nav-text">register</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常量折叠"><span class="nav-number">8.</span> <span class="nav-text">常量折叠</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#volatile"><span class="nav-number">9.</span> <span class="nav-text">volatile</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/3316/06/11/cpp-memory-layout/";
+    this.page.identifier = "3316/06/11/cpp-memory-layout/";
+    this.page.title = "实例分析C++内存布局";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

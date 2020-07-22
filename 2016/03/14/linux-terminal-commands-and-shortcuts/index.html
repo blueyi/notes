@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Linux下面的一些常用命令和terminal的常用快捷键整理，并不断补充">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux下常用命令与快捷键整理">
+<meta property="og:url" content="http://notes.maxwi.com/2016/03/14/linux-terminal-commands-and-shortcuts/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="Linux下面的一些常用命令和terminal的常用快捷键整理，并不断补充">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-03-14T03:03:46.000Z">
+<meta property="article:modified_time" content="2017-12-19T16:24:08.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/03/14/linux-terminal-commands-and-shortcuts/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux下常用命令与快捷键整理 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/03/14/linux-terminal-commands-and-shortcuts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux下常用命令与快捷键整理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-03-14 11:03:46" itemprop="dateCreated datePublished" datetime="2016-03-14T11:03:46+08:00">2016-03-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-12-20 00:24:08" itemprop="dateModified" datetime="2017-12-20T00:24:08+08:00">2017-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/03/14/linux-terminal-commands-and-shortcuts/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/03/14/linux-terminal-commands-and-shortcuts/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Linux下面的一些常用命令和terminal的常用快捷键整理，并不断补充</p>
+<a id="more"></a>
+
+<h2 id="系统信息"><a href="#系统信息" class="headerlink" title="系统信息"></a>系统信息</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>date</td>
+<td>显示系统日期与时间</td>
+</tr>
+<tr>
+<td>cal</td>
+<td>显示本月月历</td>
+</tr>
+<tr>
+<td>uptime</td>
+<td>显示开机时数</td>
+</tr>
+<tr>
+<td>w</td>
+<td>显示在线用户列表</td>
+</tr>
+<tr>
+<td>whoami</td>
+<td>显示目前用户名</td>
+</tr>
+<tr>
+<td>uname -a</td>
+<td>显示系统核心信息</td>
+</tr>
+<tr>
+<td>cat /proc/cpuinfo</td>
+<td>显示CPU信息</td>
+</tr>
+<tr>
+<td>cat /proc/meminfo</td>
+<td>显示内存信息</td>
+</tr>
+<tr>
+<td>df -h</td>
+<td>Disk Free，显示硬盘空间信息</td>
+</tr>
+<tr>
+<td>du -h</td>
+<td>Directory Usage，以易读的方式显示目录的硬盘占用情况</td>
+</tr>
+<tr>
+<td>du -sh</td>
+<td>跟上面一样，但不会列出所有文件，只是文件夹的整体占用，可根据通配符*来列出子文件夹</td>
+</tr>
+<tr>
+<td>free -m</td>
+<td>显示内存与Swap区的用量</td>
+</tr>
+<tr>
+<td>sudo fdisk -l</td>
+<td>列出所有磁盘的详细信息</td>
+</tr>
+</tbody></table>
+<h2 id="键盘快捷键"><a href="#键盘快捷键" class="headerlink" title="键盘快捷键"></a>键盘快捷键</h2><table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Enter</td>
+<td>执行命令</td>
+</tr>
+<tr>
+<td>↑</td>
+<td>显示前一个命令</td>
+</tr>
+<tr>
+<td>Ctrl+R</td>
+<td>搜索执行过的命令</td>
+</tr>
+<tr>
+<td>Ctrl+Z</td>
+<td>将执行中的命令丢到后台并暂停执行</td>
+</tr>
+<tr>
+<td>Ctrl+C</td>
+<td>中止执行中的命令</td>
+</tr>
+<tr>
+<td>Ctrl+L</td>
+<td>清除屏幕，同clear命令</td>
+</tr>
+<tr>
+<td>命令｜more</td>
+<td>命令输出满一页暂停，空格翻页，按q跳出</td>
+</tr>
+<tr>
+<td>命令｜less</td>
+<td>同more功能，但支持vim下的查看的命令快捷键</td>
+</tr>
+<tr>
+<td>!!</td>
+<td>再次执行上一个命令</td>
+</tr>
+<tr>
+<td>命令 !$</td>
+<td>取上一个命令的参数当做此命令之参数</td>
+</tr>
+<tr>
+<td>Esc + .</td>
+<td>显示上一命令的参数、修改后执行</td>
+</tr>
+<tr>
+<td>Ctrl+A</td>
+<td>光标移回开头位置</td>
+</tr>
+<tr>
+<td>Ctrl+E</td>
+<td>光标移回最后位置</td>
+</tr>
+<tr>
+<td>Ctrl+U</td>
+<td>剪下光标前方所有文字并复制到暂存粘贴板</td>
+</tr>
+<tr>
+<td>Ctrl+K</td>
+<td>剪下光标后方所有文字并复制到暂存粘贴板</td>
+</tr>
+<tr>
+<td>Ctrl+Y</td>
+<td>从暂存粘贴板贴上Ctrl+U与Ctrl+K剪下的文字</td>
+</tr>
+<tr>
+<td>Ctrl+T</td>
+<td>对调光标左侧两个字元</td>
+</tr>
+<tr>
+<td>Ctrl+W</td>
+<td>删除光标前方的单词(Word)</td>
+</tr>
+<tr>
+<td>Ctrl+D</td>
+<td>退出Terminal，同exit命令</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+C</td>
+<td>复制选中区域的文字到粘贴板</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+V</td>
+<td>贴上粘贴板文字到Terminal里</td>
+</tr>
+<tr>
+<td>选中、鼠标中键</td>
+<td>先用左钮拖拉选取需要的文字后移动光标到新位置按中键 （两键鼠标则是同时按左右钮），选中文字会被复制到新位置。（linux下默认选中的文件会被复制到粘贴板中）</td>
+</tr>
+</tbody></table>
+<h2 id="查看命令手册"><a href="#查看命令手册" class="headerlink" title="查看命令手册"></a>查看命令手册</h2><table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>man 命令</td>
+<td>显示命令的手册内容（man=manual）</td>
+</tr>
+<tr>
+<td>man -k 关键字</td>
+<td>显示含有关键字的手册</td>
+</tr>
+<tr>
+<td>man -t 手册主题 ｜ps2pdf –&gt; 手册主题.pdf</td>
+<td>将指定的手册输出成PDF档</td>
+</tr>
+</tbody></table>
+<h2 id="搜索文件"><a href="#搜索文件" class="headerlink" title="搜索文件"></a>搜索文件</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>grep 样式 文件s</td>
+<td>在文件s里搜索符合样式的内容</td>
+</tr>
+<tr>
+<td>grep -r 样式 目录</td>
+<td>在目录里搜索符合样式的内容</td>
+</tr>
+<tr>
+<td>grep 搜索字串 /dir</td>
+<td>由dir目录开始搜索含有搜索字串的文件</td>
+</tr>
+<tr>
+<td>命令｜grep 样式</td>
+<td>在命令的输出里搜索符合样式的内容，如：ps aux ｜ grep smb</td>
+</tr>
+<tr>
+<td>locate 文件</td>
+<td>搜索符合的文件或目录；必须先用updatedb建立文件名索引。locate -b ‘\name’列出名为name的文件，没加反斜线的话，会列出所有含name的文件</td>
+</tr>
+<tr>
+<td>which 可执行文件名</td>
+<td>列出可执行文件名所在路径</td>
+</tr>
+<tr>
+<td>find / -name 文件名</td>
+<td>由根目录开始搜索文件名</td>
+</tr>
+<tr>
+<td>find . -name 文件名</td>
+<td>由当前目录开始搜索文件名，可以指定目录，文件名支持通配符</td>
+</tr>
+</tbody></table>
+<p>grep更多详情可以参考<a href="http://notes.maxwi.com/2016/02/19/linux-command-tools/#1">http://notes.maxwi.com/2016/02/19/linux-command-tools/#1</a></p>
+<h2 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chmod 权限数值 文件</td>
+<td>变更文件或目录的存取权限为指定的权限数值； 数值为3个八进位数字，依序代表用户（u）、 群组（g）与其他用户（Other）权限，每个数字 可为4(或r，表示可读read）、2（或w，表示可写 write）或1（或ｘ，表示可执行execute）。 chmod的ch是change，mod是mode</td>
+</tr>
+<tr>
+<td>chmod 权限字串 文件</td>
+<td>我们也可以用字串来指定权限：r、w或x， 字串前用+（加号）、-（减号）表示增加或移除， 或=（等号）直接指派权限</td>
+</tr>
+<tr>
+<td>例：chmod 777 myfile 或chmod a+rwx myfile</td>
+<td>设定myfile的存取权限为所有人皆可读、可写、可执行</td>
+</tr>
+<tr>
+<td>例：chmod 755 myfile</td>
+<td>第一个数字是设定用户权限具有所有权限（7=4+2+1）， 第二个数字是设定群组权限具有读取与执行权限 （5=4+1），第三个数字设定其他人的权限为读取与 执行权限</td>
+</tr>
+<tr>
+<td>例：chmod a+x myfile</td>
+<td>所有人（all）增加执行权限</td>
+</tr>
+<tr>
+<td>chown usr1:user2 file</td>
+<td>更改文件或目录的用户及所属组</td>
+</tr>
+</tbody></table>
+<p>chmod和chown都可以跟参数-R来递归地修改文件夹及其子文件夹中的所有文件。</p>
+<h2 id="文件与目录相关命令"><a href="#文件与目录相关命令" class="headerlink" title="文件与目录相关命令"></a>文件与目录相关命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ls</td>
+<td>显示目前所在目录的文件清单（ls=list）</td>
+</tr>
+<tr>
+<td>ls -l</td>
+<td>显示长格式以呈现更多文件信息</td>
+</tr>
+<tr>
+<td>ls -al</td>
+<td>以长格式显示包含隐藏文件在内的所有文件</td>
+</tr>
+<tr>
+<td>ls -ahl</td>
+<td>以长格式显示包含隐藏文件在内的所有文件，文件大小以易读的方式显示，例如mb</td>
+</tr>
+<tr>
+<td>ls -F</td>
+<td>附加文件类型，目录附加/，可执行文件附加<code>*</code></td>
+</tr>
+<tr>
+<td>cd 目录</td>
+<td>切换目录到指定的目录（cd=Change Directory）</td>
+</tr>
+<tr>
+<td>cd –</td>
+<td>cd 减号；切换目录到前一个目录</td>
+</tr>
+<tr>
+<td>cd ~</td>
+<td>切换目录回家目录</td>
+</tr>
+<tr>
+<td>mkdir [-p] 目录</td>
+<td>建立目录，-p参数表示多级目录不存在时自动创建</td>
+</tr>
+<tr>
+<td>pwd</td>
+<td>显示目前位置（pwd=print Working Directory）</td>
+</tr>
+<tr>
+<td>rm 文件</td>
+<td>删除文件（rm=remove）</td>
+</tr>
+<tr>
+<td>rm -r 目录</td>
+<td>删除目录</td>
+</tr>
+<tr>
+<td>rm -f 文件 或 rm -rf 目录</td>
+<td>强制删除文件或目录</td>
+</tr>
+<tr>
+<td>cp 文件1 文件2</td>
+<td>复制文件1为文件2</td>
+</tr>
+<tr>
+<td>cp -r 目录1 目录2</td>
+<td>递归地复制目录1及其中的文件为目录2，目录2不存在时会建立</td>
+</tr>
+<tr>
+<td>mv 文件1 文件2</td>
+<td>文件2不存在时是改名，文件2存在且为目录时是移动</td>
+</tr>
+<tr>
+<td>ln -s 实体文件 连结名</td>
+<td>建立符号连结</td>
+</tr>
+<tr>
+<td>touch 文件</td>
+<td>变更文件时间为目前时间</td>
+</tr>
+<tr>
+<td>cat 文件</td>
+<td>显示文件内容（cat=concatenate，连接）</td>
+</tr>
+<tr>
+<td>cat 文件1 文件2 &gt; 文件3</td>
+<td>连接文件1与文件3的内容并输出为文件3</td>
+</tr>
+<tr>
+<td>more 文件</td>
+<td>显示文件内容并做分页处理，通过空格翻页</td>
+</tr>
+<tr>
+<td>less 文件</td>
+<td>显示文件内容并做分页处理，支持vim下的查看命令快捷键</td>
+</tr>
+<tr>
+<td>head 文件</td>
+<td>显示文件开头10行内容</td>
+</tr>
+<tr>
+<td>head -nn 文件</td>
+<td>显示文件开头nn行内容</td>
+</tr>
+<tr>
+<td>tail 文件</td>
+<td>显示文件倒数10行内容</td>
+</tr>
+<tr>
+<td>tail -nn 文件</td>
+<td>显示文件倒数nn行内容</td>
+</tr>
+</tbody></table>
+<p>更符号连接可以参考这里：<a href="http://notes.maxwi.com/2016/08/03/linux-soft-hard-link/">http://notes.maxwi.com/2016/08/03/linux-soft-hard-link/</a></p>
+<h2 id="压缩"><a href="#压缩" class="headerlink" title="压缩"></a>压缩</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>tar -cf 文件.tar 要压缩的文件…</td>
+<td>将指定的文件压缩到文件.tar（tar=tape archice，c=create）</td>
+</tr>
+<tr>
+<td>tar -xf 文件.tar</td>
+<td>解压缩文件.tar（x=extract）</td>
+</tr>
+<tr>
+<td>tar -cfz 文件.tar.gz</td>
+<td>把.tar文件再用GZip压缩</td>
+</tr>
+<tr>
+<td>tar -xfz 文件.tar.gz</td>
+<td>用GZip解压缩.tar文件</td>
+</tr>
+<tr>
+<td>tar -zxvf 文件.tar.gz -C dir</td>
+<td>用GZip解压缩.tar.gz文件到指定的目录dir</td>
+</tr>
+<tr>
+<td>tar -cfj 文件.tar.bz2</td>
+<td>把.tar文件再用BZip2压缩</td>
+</tr>
+<tr>
+<td>tar -xfj 文件.tar.bz2</td>
+<td>用BZip2解压缩.tar文件</td>
+</tr>
+<tr>
+<td>gzip 文件</td>
+<td>将文件压缩为文件.gz</td>
+</tr>
+</tbody></table>
+<p>其中tar后面可以直接接命令，而不需要<code>-</code>，v表示显示命令操作过程</p>
+<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ifconfig [-a]</td>
+<td>列出本机启动中的的网卡信息及ip，加上-a表示所有网上</td>
+</tr>
+<tr>
+<td>ip a show</td>
+<td>列出本机所有的网卡信息，新系统中通常用ip命令替换为ifconfig</td>
+</tr>
+<tr>
+<td>ping [-c n] 主机</td>
+<td>ping指定的主机，-c表示ping的次数，否则一直ping</td>
+</tr>
+<tr>
+<td>whois 网域</td>
+<td>显示网域主机信息</td>
+</tr>
+<tr>
+<td>dig 网域</td>
+<td>显示网域的DNS信息</td>
+</tr>
+<tr>
+<td>host -a 网域</td>
+<td>显示网域的DNS详细信息</td>
+</tr>
+<tr>
+<td>sudo netstat</td>
+<td>显示所有网络连接、路由表等网络信息，可配合grep使用</td>
+</tr>
+<tr>
+<td>arp -an</td>
+<td>查看本机arp缓存</td>
+</tr>
+<tr>
+<td>nmap -sP 192.168.1.0/24</td>
+<td>使用nmap扫描同一子网下的所有ip</td>
+</tr>
+<tr>
+<td>wget 网址</td>
+<td>下载网址文件</td>
+</tr>
+<tr>
+<td>ssh 帐号@主机</td>
+<td>用SSH登录主机</td>
+</tr>
+<tr>
+<td>scp 帐号1@主机1:文件名1 帐号2@主机2:文件名2</td>
+<td>用scp将主机1上的文件1拷贝到主机2上的文件2中，可省略其中一个主机，换为本地文件</td>
+</tr>
+<tr>
+<td>scp -r 帐号1@主机1:文件夹1 帐号2@主机2:文件夹2</td>
+<td>用scp递归地将主机1上的文件夹1及其中的内容拷贝到主机2上的文件夹2中，同样可活省其中一个主机，换为本地文件夹</td>
+</tr>
+</tbody></table>
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ps</td>
+<td>显示工作中的所有进程</td>
+</tr>
+<tr>
+<td>ps aux</td>
+<td>显示所有进程</td>
+</tr>
+<tr>
+<td>ps aux ｜ grep 字串</td>
+<td>过滤含有字串的进程</td>
+</tr>
+<tr>
+<td>top</td>
+<td>依CPU占用率显示进程信息，可通过按数据1键显示各核CPU的占用</td>
+</tr>
+<tr>
+<td>kill 进程pid</td>
+<td>删除指定pid的进程</td>
+</tr>
+<tr>
+<td>killall 进程名</td>
+<td>删除所有指定名称的进程</td>
+</tr>
+<tr>
+<td>命令 &amp;</td>
+<td>命令后面跟&amp;，让命令在后台执行</td>
+</tr>
+<tr>
+<td>jobs</td>
+<td>查看当前后台运行的命令，及其编号</td>
+</tr>
+<tr>
+<td>ctrl + z</td>
+<td>将当前命令暂停到后台</td>
+</tr>
+<tr>
+<td>bg %jobnumber</td>
+<td>让指定进程号的进程在后台运行（bg=background），不跟编号则执行最后一个命令</td>
+</tr>
+<tr>
+<td>fg %jobnumber</td>
+<td>将最近一个背景进程变更到前景（fg=foreground），不跟编号则执行最后一个任务</td>
+</tr>
+</tbody></table>
+<h2 id="用户与组管理"><a href="#用户与组管理" class="headerlink" title="用户与组管理"></a>用户与组管理</h2><h2 id="其他科普内容"><a href="#其他科普内容" class="headerlink" title="其他科普内容"></a>其他科普内容</h2><h3 id="管道符号（-）"><a href="#管道符号（-）" class="headerlink" title="管道符号（|）"></a>管道符号（|）</h3><p>linux下shell中的竖线，即是unix中的航管道，其作用是command1 | command2 把第一个命令command 1执行的结果作为command2的输入传给command2<br>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ls -sha | sort -nr</span><br></pre></td></tr></table></figure>
+<p>以易读的方式列出所有文件的大小，并按从大到小重排<br>ls的命令-s是列出文件大小，-h是以易读的方式显示文件大小，-a是显示所有文件。sort是排序，-n是根据字符串中的数据由小到大重新排序字符串，-r是反转排序结果。</p>
+<p>管道支持多级级连操作</p>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><p>grep支持正则表达式的匹配，常见的比较强大的编辑器也都支持正则表达式，更多正则表达式可以参见：<br><a href="http://notes.maxwi.com/categories/Regular-Expressions/">http://notes.maxwi.com/categories/Regular-Expressions/</a></p>
+<p>参考：<br><a href="http://jdev.tw/blog/3599/linux-terminal-commands-and-shortcuts" target="_blank" rel="noopener">http://jdev.tw/blog/3599/linux-terminal-commands-and-shortcuts</a><br>补充并修正了原文中存在的很多问题</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/03/10/cpp-reference-pointer/" rel="prev" title="举例详解指针和引用作为函数参数时的不同">
+      <i class="fa fa-chevron-left"></i> 举例详解指针和引用作为函数参数时的不同
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/03/14/dynamic-two-dimension-arr/" rel="next" title="C/C++中二维动态数组的使用方法举例">
+      C/C++中二维动态数组的使用方法举例 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统信息"><span class="nav-number">1.</span> <span class="nav-text">系统信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#键盘快捷键"><span class="nav-number">2.</span> <span class="nav-text">键盘快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看命令手册"><span class="nav-number">3.</span> <span class="nav-text">查看命令手册</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索文件"><span class="nav-number">4.</span> <span class="nav-text">搜索文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件权限"><span class="nav-number">5.</span> <span class="nav-text">文件权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件与目录相关命令"><span class="nav-number">6.</span> <span class="nav-text">文件与目录相关命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩"><span class="nav-number">7.</span> <span class="nav-text">压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络"><span class="nav-number">8.</span> <span class="nav-text">网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程管理"><span class="nav-number">9.</span> <span class="nav-text">进程管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户与组管理"><span class="nav-number">10.</span> <span class="nav-text">用户与组管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他科普内容"><span class="nav-number">11.</span> <span class="nav-text">其他科普内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#管道符号（-）"><span class="nav-number">11.1.</span> <span class="nav-text">管道符号（|）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式"><span class="nav-number">11.2.</span> <span class="nav-text">正则表达式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/03/14/linux-terminal-commands-and-shortcuts/";
+    this.page.identifier = "2016/03/14/linux-terminal-commands-and-shortcuts/";
+    this.page.title = "Linux下常用命令与快捷键整理";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

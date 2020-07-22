@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="接上一篇关于JNI的基本入门Java通过JNI调用C&#x2F;C++动态链接库之HelloWorld，简述给JNI函数传递参数，以及通过JNI函数返回值的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java通过JNI调用C&#x2F;C++动态链接库之参数传递及结果返回">
+<meta property="og:url" content="http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="接上一篇关于JNI的基本入门Java通过JNI调用C&#x2F;C++动态链接库之HelloWorld，简述给JNI函数传递参数，以及通过JNI函数返回值的方式。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-04-20T12:48:42.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.387Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Java通过JNI调用C/C++动态链接库之参数传递及结果返回 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java通过JNI调用C/C++动态链接库之参数传递及结果返回
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-04-20 20:48:42" itemprop="dateCreated datePublished" datetime="2017-04-20T20:48:42+08:00">2017-04-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/04/20/java-jni-cpp-passing-arguments/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/20/java-jni-cpp-passing-arguments/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>7.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>7 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>接上一篇关于JNI的基本入门<a href="/2017/04/19/java-jni-cpp-hello/" title="Java通过JNI调用C&#x2F;C++动态链接库之HelloWorld">Java通过JNI调用C&#x2F;C++动态链接库之HelloWorld</a>，简述给JNI函数传递参数，以及通过JNI函数返回值的方式。</p>
+<a id="more"></a>
+<h2 id="JNI类型映射"><a href="#JNI类型映射" class="headerlink" title="JNI类型映射"></a>JNI类型映射</h2><p>首先来回顾一下上一篇基础文章中通过javah生成的头文件的以下内容：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     hello</span></span><br><span class="line"><span class="comment"> * Method:    helloWorld</span></span><br><span class="line"><span class="comment"> * Signature: ()V</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT <span class="keyword">void</span> JNICALL Java_hello_helloWorld</span><br><span class="line">  (JNIEnv *, jobject);</span><br></pre></td></tr></table></figure>
+<p>发现注释中给出了类名<code>hello</code>，是我们JAVA程序的类名，后面跟着方法名以及方法的签名，注意方法的签名类型为<code>()V</code>，表示该方法不接收任何参数，且返回类型为void，即没有返回值。<br>JNI定义了一些基本类型用于在java与native代码之间的映射，这些基本类型都是<code>j</code>开头，后面跟java中的实际类型，具体的基本类型及方法签名类型如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>Native类型</th>
+<th>Java类型</th>
+<th>描述</th>
+<th>签名类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>unsigned char</td>
+<td>jboolean</td>
+<td>unsigned 8 bits</td>
+<td>Z</td>
+</tr>
+<tr>
+<td>signed char</td>
+<td>jbyte</td>
+<td>signed 8 bits</td>
+<td>B</td>
+</tr>
+<tr>
+<td>unsigned short</td>
+<td>jchar</td>
+<td>unsigned 16 bits</td>
+<td>C</td>
+</tr>
+<tr>
+<td>short</td>
+<td>jshort</td>
+<td>signed 16 bits</td>
+<td>S</td>
+</tr>
+<tr>
+<td>long</td>
+<td>jint</td>
+<td>signed 32 bits</td>
+<td>I</td>
+</tr>
+<tr>
+<td>long long <code>__int64</code></td>
+<td>jlong</td>
+<td>signed 64 bits</td>
+<td>J</td>
+</tr>
+<tr>
+<td>float</td>
+<td>jfloat</td>
+<td>32 bits</td>
+<td>F</td>
+</tr>
+<tr>
+<td>double</td>
+<td>jdouble</td>
+<td>64 bits</td>
+<td>D</td>
+</tr>
+<tr>
+<td>void</td>
+<td></td>
+<td></td>
+<td>V</td>
+</tr>
+</tbody></table>
+<p>方法签名的形式即为<code>(参数签名)返回值类型签名</code>。例如一个形如<code>double func(int a, int b)</code>的方法签名为<code>(II)D</code><br>另外还有几个比较特殊的签名，如<code>object</code>签名为<code>L{用/分割的完整类名}</code>如<code>Ljava/lang/String</code>表示一个String对象。<code>Array</code>的签名为<code>[{相应类型的签名}</code>，如<code>[D</code>，表示类型为D的数组，<code>[Ljava/lang/String</code>表示String对象的数组。<br>当然JNI也定义了很多引用类型的映射，其中<code>jobject</code>对应于<code>java.lang.Object</code>，以及其之类型：</p>
+<ul>
+<li><code>jclass</code>—<code>java.lang.Class</code></li>
+<li><code>jstring</code>—<code>java.lang.String</code></li>
+<li><code>jthrowable</code>—<code>java.lang.Throwable</code></li>
+<li><code>jarray</code>与java中的Array对应，由于Array在java中支持8种基本数据类型，所以相应的有8种Array，分别为<code>jintArray</code>、<code>jbyteArray</code>、<code>jshortArray</code>、<code>jlongArray</code>、<code>jfloatArray</code>、<code>jdoubleArray</code>、<code>jcharArray</code>和<code>jbooleanArray</code>。以及一个对象类型的Array：<code>jobjectArray</code>。</li>
+</ul>
+<p>查看<code>jni.h</code>头文件会发现里面都是使用typedef进行的定义：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 头文件"jni.h"中的声明</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span>   jboolean;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> short  jchar;</span><br><span class="line"><span class="keyword">typedef</span> short           jshort;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">float</span>           jfloat;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">double</span>          jdouble;</span><br><span class="line"><span class="keyword">typedef</span> jint            jsize;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">jobject</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">jobject</span> *<span class="title">jobject</span>;</span></span><br><span class="line"><span class="keyword">typedef</span> jobject jclass;</span><br><span class="line"><span class="keyword">typedef</span> jobject jthrowable;</span><br><span class="line"><span class="keyword">typedef</span> jobject jstring;</span><br><span class="line"><span class="keyword">typedef</span> jobject jarray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jbooleanArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jbyteArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jcharArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jshortArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jintArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jlongArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jfloatArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jdoubleArray;</span><br><span class="line"><span class="keyword">typedef</span> jarray jobjectArray;</span><br><span class="line"></span><br><span class="line"><span class="comment">//"linux/jni_mh.h"中的声明</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> jint;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _LP64 <span class="comment">/* 64-bit Solaris */</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> jlong;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> jlong;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">char</span> jbyte;</span><br></pre></td></tr></table></figure>
+<p>现在可以清楚的知道JNI在java代码和native代码之间做了类型转换，以使两种语言之间的数据类型可以互通。</p>
+<h2 id="基本类型参数传递"><a href="#基本类型参数传递" class="headerlink" title="基本类型参数传递"></a>基本类型参数传递</h2><p>举一个例子说明，程序的功能为给java程序传递两个int做为参数，将该参数传递给native函数，native函数累加两个参数之间的数字，然后取平均后将结果返回给java程序并输出。<br><strong>java代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TestJint.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestJint</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"myjint"</span>);  <span class="comment">//载入本地的动态链接库</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">double</span> <span class="title">avg</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;    <span class="comment">//声明一个本地方法，接受2个int变量做为参数，返回其double类型的累加和的平均值</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (args.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Input Error!"</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> a = Integer.parseInt(args[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">int</span> b = Integer.parseInt(args[<span class="number">1</span>]);</span><br><span class="line">        System.out.println(a + <span class="string">" + ... + "</span> + b + <span class="string">" / "</span> + (b - a + <span class="number">1</span>) + <span class="string">" = "</span> + <span class="keyword">new</span> TestJint().avg(a, b));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>头文件</strong><br>通过<code>javah</code>生成头文件内容如下：<br><code>TestJint.h</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class TestJint */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_TestJint</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_TestJint</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     TestJint</span></span><br><span class="line"><span class="comment"> * Method:    avg</span></span><br><span class="line"><span class="comment"> * Signature: (II)D</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT jdouble JNICALL Java_TestJint_avg</span><br><span class="line">  (JNIEnv *, jobject, jint, jint);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>可以看到其中的方法签名为<code>(II)D</code>，函数参数列表中多了2个jint类型的形参。</p>
+<p><strong>C++代码</strong><br>注意其中传递进行的形参类型都是j开头的JNI类型，而在函数内部则可以使用任何你需要的C++数据结构。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TestJint.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"TestJint.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">JNIEXPORT jdouble JNICALL <span class="title">Java_TestJint_avg</span><span class="params">(JNIEnv *, jobject, jint a, jint b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">double</span> res = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = a; i &lt;= b; ++i) &#123;</span><br><span class="line">        res += i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"In C++, the sum "</span> &lt;&lt; a &lt;&lt; <span class="string">" ... "</span> &lt;&lt; b &lt;&lt; <span class="string">" = "</span> &lt;&lt; res &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> res / <span class="keyword">double</span>(b - a + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>编译并运行</strong><br>编译动态链接库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ -fPIC -shared -o libmyjint.so -I /usr/lib/jvm/java-8-oracle/include/ -I /usr/lib/jvm/java-8-oracle/include/linux/ TestJint.cpp</span><br></pre></td></tr></table></figure>
+
+<p>编译java</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac TestJint.java</span><br></pre></td></tr></table></figure>
+
+<p>运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Djava.library.path=. TestJint 5 8</span><br></pre></td></tr></table></figure>
+<p>输出为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> In C++, the sum 5 ... 8 &#x3D; 26</span><br><span class="line">5 + ... + 8 &#x2F; 4 &#x3D; 6.5</span><br></pre></td></tr></table></figure>
+
+<h2 id="String类型的参数传递"><a href="#String类型的参数传递" class="headerlink" title="String类型的参数传递"></a>String类型的参数传递</h2><p>String其实与基本类型的参数传递类似，只是需要通过JNIEnv参数调用调用jni中的函数进行转换成符合C/C++的字符串后再操作。因为java中的字符串是以unicode表示，而c/c++中是以utf方式表示。<br>举例说明，实现功能为通过向java程序传递字符串参数，然后该字符串传递给native函数，native函数将其反转后与在native函数中获取到的用户输入一起返回给java，并输出</p>
+<p><strong>java程序</strong><br>如下，并没有太大区别：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TestJstr.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestJstr</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"mystr"</span>); <span class="comment">//载入动态库</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//native方法接受一个String对象，该String将由用户从java代码中以命令行参数方式输入</span></span><br><span class="line">    <span class="comment">// 将返回一个C++库中用户输入的字符串加该字符串倒序字符串</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">native</span> String <span class="title">andReverse</span><span class="params">(String msg)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (args.length &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Input Error!"</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        String res = <span class="keyword">new</span> TestJstr().andReverse(args[<span class="number">0</span>]);</span><br><span class="line">        System.out.println(<span class="string">"In Java, Result: "</span> + res);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成头文件</strong><br>通过javah生成头文件，头文件中的函数声明如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     TestJstr</span></span><br><span class="line"><span class="comment"> * Method:    andReverse</span></span><br><span class="line"><span class="comment"> * Signature: (Ljava/lang/String;)Ljava/lang/String;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT jstring JNICALL Java_TestJstr_andReverse</span><br><span class="line">  (JNIEnv *, jobject, jstring);</span><br></pre></td></tr></table></figure>
+<p>可以看到方法签名与我们之前的讨论一样，函数接收一个jstring参数</p>
+<p><strong>C++代码</strong><br>注意里面的函数调用与oracle官方给的文档并不完全致，可以通过查看jni.h头文件来获取相关函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TestJstr.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"TestJstr.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">JNIEXPORT jstring JNICALL <span class="title">Java_TestJstr_andReverse</span><span class="params">(JNIEnv *env, jobject obj, jstring jStr)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//将Java的String转成C语言的char *</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *cStr = env-&gt;GetStringUTFChars(jStr, <span class="literal">NULL</span>); </span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == cStr) <span class="keyword">return</span> <span class="literal">NULL</span>; <span class="comment">//如果转换失败，则返回空</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> tstr = cStr;  <span class="comment">//拷贝一份字符串</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//释放cStr，如果不释放，该数组会一直存在，并且不会被自动回收</span></span><br><span class="line">    env-&gt;ReleaseStringUTFChars(jStr, cStr);  </span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::reverse(tstr.begin(), tstr.end()); <span class="comment">//反转字符串</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//在C++中获取用户输入的字符串</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> ustr;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter a string in C++: "</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; ustr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将c风格字符串转换成jstring并返回</span></span><br><span class="line">    <span class="keyword">return</span> env-&gt;NewStringUTF((<span class="string">"Reverse: "</span> + tstr + <span class="string">" C++ string: "</span> + ustr).c_str());  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意调用方法为<code>env-&gt;GetStringUTFChars(jStr, NULL);</code>，官方文档中需要传递三个参数，是C风格的函数调用方式，C和C++的调用语法如下：</strong></p>
+<ul>
+<li>C syntax: <code>cls = (*env)-&gt;FindClass(env, &quot;Sample2&quot;);</code></li>
+<li>C++ syntax: <code>cls = env-&gt;FindClass(&quot;Sample2&quot;);</code><br>更多字符串操作相关函数参见<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#string_operations" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#string_operations</a></li>
+</ul>
+<p><strong>编译并运行</strong><br>编译java代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javac TestJstr.java</span><br></pre></td></tr></table></figure>
+
+<p>编译C++代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ -fPIC -shared -o libmystr.so -I /usr/lib/jvm/java<span class="number">-8</span>-oracle/include/ -I /usr/lib/jvm/java<span class="number">-8</span>-oracle/include/linux/ TestJstr.cpp</span><br></pre></td></tr></table></figure>
+
+<p>运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -Djava.library.path=. TestJstr HelloWorld</span><br></pre></td></tr></table></figure>
+<p>中间的输入部分，输入<code>Maxwi</code>，输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Enter a string in C++: Maxwi</span><br><span class="line">In Java, Result: Reverse: dlroWolleH C++ string: Maxwi</span><br></pre></td></tr></table></figure>
+<p>完全正确运行</p>
+<h2 id="通过JNI传递数组"><a href="#通过JNI传递数组" class="headerlink" title="通过JNI传递数组"></a>通过JNI传递数组</h2><p>数组的传递同时是通过调用JNI函数进行转换后进行正常的操作即可，数组相关的JNI操作函数参见Oracle官网<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#array_operations" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/functions.html#array_operations</a><br>下面直接上代码，实现功能为从java中传递一个int数组到native中，native计算出其和以及平均值之后以数组形式返回。<br><strong>java代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TestJarr.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestJarr</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"myjarr"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//该native函数接收一个int类型的数组，通过C++代码计算出其和以及平均值后以数组方式返回</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">double</span>[] sumAndAvg(<span class="keyword">int</span>[] num);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] num = &#123;<span class="number">8</span>, <span class="number">19</span>, <span class="number">22</span>, <span class="number">45</span>&#125;;</span><br><span class="line">        <span class="keyword">double</span>[] result = <span class="keyword">new</span> TestJarr().sumAndAvg(num);</span><br><span class="line">        System.out.println(<span class="string">"In java, the sum is "</span> + result[<span class="number">0</span>]);</span><br><span class="line">        System.out.println(<span class="string">"In java, the average is "</span> + result[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成的头文件</strong><br>只写函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     TestJarr</span></span><br><span class="line"><span class="comment"> * Method:    sumAndAvg</span></span><br><span class="line"><span class="comment"> * Signature: ([I)[D</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT jdoubleArray JNICALL Java_TestJarr_sumAndAvg</span><br><span class="line">  (JNIEnv *, jobject, jintArray);</span><br></pre></td></tr></table></figure>
+
+<p><strong>C++代码</strong><br>注意里面的转换，C++数组转成jintArray时需要先分配内存，再拷贝数据，而不是直接有函数进行转换</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//TestJarr.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"TestJarr.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">JNIEXPORT jdoubleArray JNICALL <span class="title">Java_TestJarr_sumAndAvg</span><span class="params">(JNIEnv *env, jobject obj, jintArray num)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//将输入的jintArray转换为C风格的数组</span></span><br><span class="line">    jint *carr = env-&gt;GetIntArrayElements(num, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> == carr) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    jsize length = env-&gt;GetArrayLength(num);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//对数组进行累加</span></span><br><span class="line">    jdouble sum = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; ++i)</span><br><span class="line">        sum += carr[i];</span><br><span class="line"></span><br><span class="line">    <span class="comment">//求平均值</span></span><br><span class="line">    jdouble avg = sum / length;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//释放资源</span></span><br><span class="line">    env-&gt;ReleaseIntArrayElements(num, carr, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//定义C++中的数组</span></span><br><span class="line">    jdouble resArr[] = &#123;sum, avg&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//转换为JNI数组后返回</span></span><br><span class="line">    jdoubleArray outRes = env-&gt;NewDoubleArray(<span class="number">2</span>); <span class="comment">//分配数组所需要的空间</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="literal">NULL</span> == outRes) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    env-&gt;SetDoubleArrayRegion(outRes, <span class="number">0</span>, <span class="number">2</span>, resArr);  <span class="comment">//将数据拷贝到jdoubleArray所在空间</span></span><br><span class="line">    <span class="keyword">return</span> outRes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>编译并运行</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">javac TestJarr.java</span><br><span class="line">g++ -fPIC -shared -o libmyjarr.so -I /usr/lib/jvm/java-8-oracle/include/ -I /usr/lib/jvm/java-8-oracle/include/linux/ TestJarr.cpp</span><br><span class="line">java -Djava.library.path=. TestJarr</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In java, the sum is 94.0</span><br><span class="line">In java, the average is 23.5</span><br></pre></td></tr></table></figure>
+
+<p>这些内容对于我当前已经够用，关于访问native访问java对象变量以及方法回调的内容请参见下面的参考文档。<br>以上这些例子都比较简单，实际上可以通过将复杂的计算放在C++函数中运行，最后通过native函数包裹该C++函数之后在JNI中调用，这样需要处理的内容会少很多，而且应该速度也会比较快，少去了那些过多的转换工作。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>1.<a href="https://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html" target="_blank" rel="noopener">Java Native Interface (JNI)</a><br>2.<a href="https://en.wikipedia.org/wiki/Java_Native_Interface" target="_blank" rel="noopener">Wikipdeia-Java Native Interface</a><br>3.<a href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/" target="_blank" rel="noopener">Oracle-JNI</a><br>4.<a href="https://www.ibm.com/developerworks/java/tutorials/j-jni/j-jni.html" target="_blank" rel="noopener">Java programming with JNI</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/04/19/java-jni-cpp-hello/" rel="prev" title="Java通过JNI调用C/C++动态链接库之HelloWorld">
+      <i class="fa fa-chevron-left"></i> Java通过JNI调用C/C++动态链接库之HelloWorld
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/04/23/shell-script/" rel="next" title="Shell脚本简单入门">
+      Shell脚本简单入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI类型映射"><span class="nav-number">1.</span> <span class="nav-text">JNI类型映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本类型参数传递"><span class="nav-number">2.</span> <span class="nav-text">基本类型参数传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String类型的参数传递"><span class="nav-number">3.</span> <span class="nav-text">String类型的参数传递</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过JNI传递数组"><span class="nav-number">4.</span> <span class="nav-text">通过JNI传递数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2017/04/20/java-jni-cpp-passing-arguments/";
+    this.page.identifier = "2017/04/20/java-jni-cpp-passing-arguments/";
+    this.page.title = "Java通过JNI调用C/C++动态链接库之参数传递及结果返回";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1.一个类通过定义五种特殊的成员函数来控制这些操作，包括：拷贝构造函数（copy constructor）、拷贝赋值运算符（copy-assignment operator）、移动构造函数（move constructor）、移动赋值运算符（move-assignment operator）和析构函数（destructor）。拷贝和移动构造函数定义了当用同类型的另一个对象初始化本对象时做什么。拷贝">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++学习笔记之拷贝控制">
+<meta property="og:url" content="http://notes.maxwi.com/2015/12/13/cpp-oop-copy-control/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="1.一个类通过定义五种特殊的成员函数来控制这些操作，包括：拷贝构造函数（copy constructor）、拷贝赋值运算符（copy-assignment operator）、移动构造函数（move constructor）、移动赋值运算符（move-assignment operator）和析构函数（destructor）。拷贝和移动构造函数定义了当用同类型的另一个对象初始化本对象时做什么。拷贝">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-12-13T08:21:39.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.383Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Notes">
+<meta property="article:tag" content="CPP-OOP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2015/12/13/cpp-oop-copy-control/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>C++学习笔记之拷贝控制 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2015/12/13/cpp-oop-copy-control/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++学习笔记之拷贝控制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-12-13 16:21:39" itemprop="dateCreated datePublished" datetime="2015-12-13T16:21:39+08:00">2015-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2015/12/13/cpp-oop-copy-control/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2015/12/13/cpp-oop-copy-control/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1.一个类通过定义五种特殊的成员函数来控制这些操作，包括：拷贝构造函数（copy constructor）、拷贝赋值运算符（copy-assignment operator）、移动构造函数（move constructor）、移动赋值运算符（move-assignment operator）和析构函数（destructor）。拷贝和移动构造函数定义了当用同类型的另一个对象初始化本对象时做什么。拷贝和移动赋值运算符定义了将一个对象赋予同类型的另一个对象时做什么。析构函数定义了当此类型对象销毁时做什么。其中移动操作都是在新标准中引用的。如果我们没有手动定义这些操作，则编译器会为我们自动生成。  </p>
+<a id="more"></a>  
+
+<p>2.拷贝构造函数：该构造函数的第一个参数是自身类类型的引用（该参数几乎总是一个const的引用），且任何额外参数都有默认值，则此构造函数是拷贝构造函数。编译器会默认为所有类定义一个合成拷贝构造函数。    </p>
+<p>3.以下情况下会调用拷贝构造函数：  </p>
+<ul>
+<li>使用<code>=</code>进行定义并初始化变量时</li>
+<li>将一个对象作为实参传递给一个非引用类型的形参</li>
+<li>从一个返回类型为非引用类型的函数返回一个对象</li>
+<li>用花括号列表初始化一个数组中的元素或一个聚合类中的成员</li>
+</ul>
+<p>4.构造函数中，成员的初始化是在函数体执行之前完成的，且按照它们在类中出现的顺序进行初始化。</p>
+<p>5.拷贝赋值运算符就相当于重载赋值运算符，赋值运算符就是一个名为operator=的函数，如果一个运算符是一个成员函数，其左侧运算对象就绑定到隐式的this参数，其右侧运算对象作为显式参数传递。拷贝赋值运算符接受一个与其所在类相同类型的参数：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  Foo&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Foo&amp;);<span class="comment">//赋值运算符  </span></span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>为了与内置类型的赋值保持一致，赋值运算符通常返回一个指针向其左侧运算对象的引用。  </p>
+<p>6.析构函数执行与构造函数相反的操作：构造函数初始化对象的非static数据成员，还可能做一些其他工作；析构函数释放对象使用的资源，并销毁对象的非static数据成员。析构函数是类的一个成员函数，名字由波浪号接类名构成。它没有返回值，也不接受参数：  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> &#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    ~Foo(); <span class="comment">//析构函数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>析构函数不接受参数，所以无法被重载，对于一个给定类，只会有唯一一个析构函数。  </p>
+<p>7.析构函数中，首先执行函数体，然后销毁成员，成员按初始化顺序的逆序销毁。在对象最后一次使用之后，析构函数的函数体可以执行类设计者希望执行的任何收尾工作，通常析构函数释放对象在生存期分配的所有资源。而析构函数不存在类似构造函数中初始化列表的东西来控制成员如何销毁，析构部分是隐式的。所以成员的销毁完成依赖于成员的类型，销毁类类型的成员时需要执行成员自己的析构函数，内置类型没有析构函数，所以销毁内置类型成员时什么也不需要做。    </p>
+<p>8.无论何时一个对象被销毁时，都会自动调用其析构函数，具体有：  </p>
+<ul>
+<li>变量在离开其作用域时被销毁。</li>
+<li>当一个对象被销毁时，其成员被销毁</li>
+<li>容器（无论是标准库容器还是数组）被销毁时，其元素被销毁</li>
+<li>对于动态分配的对象，当对指向它的指针应用delete运算符时被销毁</li>
+<li>对于临时对象，当创建它的完整表达式结束时被销毁  </li>
+</ul>
+<h2 id="拷贝控制函数举例"><a href="#拷贝控制函数举例" class="headerlink" title="拷贝控制函数举例"></a>拷贝控制函数举例</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HasPtr</span> &#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">	<span class="comment">//构造函数，使用传递的string初始ps,0初始化i </span></span><br><span class="line">        HasPtr(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s = <span class="built_in">std</span>::<span class="built_in">string</span>()) : ps(<span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>(s)), i(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">	<span class="comment">//拷贝构造函数，动态分配一个新的string将值拷贝到ps指向的位置，而不是ps本身的位置  </span></span><br><span class="line">        HasPtr(<span class="keyword">const</span> HasPtr&amp; hp) : ps(<span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>(*hp.ps)), i(hp.i) &#123;&#125;</span><br><span class="line">	<span class="comment">//拷贝赋值运算符  </span></span><br><span class="line">        HasPtr&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> HasPtr&amp; hp) &#123;</span><br><span class="line">            <span class="comment">//拷贝底层的string，即新建一个string对象，并将来的this.ps指向新的string对象</span></span><br><span class="line">            <span class="built_in">std</span>::<span class="built_in">string</span>* new_ps = <span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>(*hp.ps);</span><br><span class="line">            <span class="keyword">delete</span> ps; <span class="comment">//释放旧内存</span></span><br><span class="line">            ps = new_ps;  <span class="comment">//从右侧运算对象拷贝数据到本对象</span></span><br><span class="line">            i = hp.i;</span><br><span class="line">            <span class="keyword">return</span> *<span class="keyword">this</span>; <span class="comment">//返回本对象</span></span><br><span class="line">        &#125;</span><br><span class="line">	<span class="comment">//析构函数  </span></span><br><span class="line">	~HasPtr() &#123; <span class="keyword">delete</span> ps; &#125;</span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">string</span> *ps;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>赋值运算符需要注意：  </p>
+<ul>
+<li>如果将一个对象赋予它自身，赋值运算符必须能正确工作。</li>
+<li>大多数赋值运算符组合了析构函数和拷贝构造函数的工作。<br>所以编写一个赋值运算符的好模式是先将右侧运算对象拷贝到一个局部临时对象中，当拷贝完成后，销毁左侧运算对象的现有成员就是安全的了，然后将数据从临时对象拷贝到左侧运算对象的成员中即可。  </li>
+</ul>
+<p>10.如果一个类需要自定义析构函数，几乎可以肯定它也需要自定义拷贝赋值运算符和拷贝构造函数。  </p>
+<p>11.可能通过将拷贝控制成员定义为=default来显式地要求编译器生成合成的版本。eg:  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  Sales_data() = <span class="keyword">default</span>;</span><br><span class="line">  Sales_data(<span class="keyword">const</span> Sales_data&amp;) = <span class="keyword">default</span>;</span><br><span class="line">  Sales_data&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Sales_data &amp;);</span><br><span class="line">  ~Sales_data() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line">Sales_data&amp; Sales_data::<span class="keyword">operator</span>=(<span class="keyword">const</span> Sales_data&amp;) = <span class="keyword">default</span>;</span><br></pre></td></tr></table></figure>
+<p>类内定义的成员函数默认都会被隐式地声明为内联的，所以如果不希望合成的成员是内联函数，那么就只对成员的类外定义使用=default。  </p>
+<p>12.为了阻止拷贝，大多数类应该定义默认构造函数、拷贝构造函数和拷贝赋值运算符，无论是隐式地还是显式地。因为如果不手动定义，编译器会为它生成合成的版本。</p>
+<p>13.在C++11中可以手动在函数的参数列表后面加上=delete来指出我们希望将它定义为删除的，将拷贝构造函数和拷贝赋值运算符定义为删除的函数可以阻止拷贝。因为删除函数是这样一种函数：我们虽然声明了它们，但不能以任何方式使用它们，所以它可以阻止合成的拷贝构造函数。析构函数不能是删除的成员。新标准发布之前，类是通过将拷贝构造函数和拷贝赋值运算符声明为private来阻止拷贝，但现在推荐使用=delete而不是private。    </p>
+<p>15.对于行为像值的类，在类管理的资源中，每个对象都应该拥有一份自己的拷贝。</p>
+<h2 id="行为像指针的类"><a href="#行为像指针的类" class="headerlink" title="行为像指针的类"></a>行为像指针的类</h2><p>对于行为类似指针的类，我们需要为其定义拷贝构造函数和拷贝赋值运算符，来拷贝指针成员本身而不是它指向的string。eg:  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用use记录拷贝次数</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HasPtr</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//构造函数分配新的string和新的计数器，将计数器置为1</span></span><br><span class="line">    HasPtr(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s = <span class="built_in">std</span>::<span class="built_in">string</span>()) : ps(<span class="keyword">new</span> <span class="built_in">std</span>::<span class="built_in">string</span>(s)), i(<span class="number">0</span>), use(<span class="keyword">new</span> <span class="built_in">std</span>::<span class="keyword">size_t</span>(<span class="number">1</span>)) &#123;&#125;</span><br><span class="line">    <span class="comment">//拷贝构造函数拷贝所有三个数据成员，并递增计数器</span></span><br><span class="line">    HasPtr(<span class="keyword">const</span> HasPtr &amp;p) : ps(p.ps), i(p.i), use(p.use) &#123;++*use;&#125;</span><br><span class="line">    HasPtr&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> HasPtr&amp;);</span><br><span class="line">    ~HasPtr();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> *ps;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="built_in">std</span>::<span class="keyword">size_t</span> *use;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">HasPtr::~HasPtr()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (--*use == <span class="number">0</span>) &#123;  <span class="comment">//如果引用计数变为0</span></span><br><span class="line">        <span class="keyword">delete</span> ps;      <span class="comment">//释放string内存</span></span><br><span class="line">        <span class="keyword">delete</span> use;     <span class="comment">//释放计数器内存</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HasPtr&amp; HasPtr::<span class="keyword">operator</span>=(<span class="keyword">const</span> HasPtr &amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    ++*rhs.use; <span class="comment">//递增右侧运算对象的引用计数</span></span><br><span class="line">    <span class="keyword">if</span> (--*use == <span class="number">0</span>) &#123;  <span class="comment">//然后递减本对象的引用计数</span></span><br><span class="line">        <span class="keyword">delete</span> ps; <span class="comment">//如果没有其他用户</span></span><br><span class="line">        <span class="keyword">delete</span> use;  <span class="comment">//释放本对象分配的成员</span></span><br><span class="line">    &#125;</span><br><span class="line">    ps = rhs.ps; <span class="comment">//将数据从rhs拷贝到本对象</span></span><br><span class="line">    i = rhs.i;</span><br><span class="line">    use = rhs.use;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;  <span class="comment">//返回本对象</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用swap实现拷贝赋值运算符"><a href="#使用swap实现拷贝赋值运算符" class="headerlink" title="使用swap实现拷贝赋值运算符"></a>使用swap实现拷贝赋值运算符</h2><p>使用拷贝和交换的赋值运算符自动就是异常安全的，且能正确处理自赋值。  eg:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HasPtr</span> &#123;</span></span><br><span class="line">  <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(HasPtr&amp;, HasPtr&amp;)</span></span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  HasPtr&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> HasPtr);</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(HasPtr &amp;lhs, HasPtr &amp;rhs)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">using</span> <span class="built_in">std</span>::swap;</span><br><span class="line">  swap(lhs.ps, rhs.ps); <span class="comment">//交换指针，而不是string数据</span></span><br><span class="line">  swap(lhs.i, rhs.i);   <span class="comment">//交换int成员</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//注意rhs是按值传递的，意味着HasPtr的拷贝构造函数将右侧运算对象中的string拷贝到rhs</span></span><br><span class="line">HasPtr&amp; HasPtr::<span class="keyword">operator</span>=(HasPtr rhs)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">//交换左侧运算对象和局部变量rhs的内容</span></span><br><span class="line">  swap(*<span class="keyword">this</span>, rhs);  <span class="comment">//rhs现在指向本对象曾经使用的内存</span></span><br><span class="line">  <span class="keyword">return</span> *<span class="keyword">this</span>;     <span class="comment">//rhs被销毁，从而delete了rhs中的指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="拷贝控制实例"><a href="#拷贝控制实例" class="headerlink" title="拷贝控制实例"></a>拷贝控制实例</h2><p><code>Message_Folder.h</code>  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Message_Folder.h</span></span><br><span class="line"><span class="comment"> * Copyright (C) 2016  &lt;@BLUEYI-PC&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Distributed under terms of the MIT license.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MESSAGE_FOLDER_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MESSAGE_FOLDER_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Folder</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Message</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Message &amp;, Message &amp;)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Folder &amp;, Folder &amp;)</span></span>;</span><br><span class="line">    <span class="keyword">friend</span> <span class="class"><span class="keyword">class</span> <span class="title">Folder</span>;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Message</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> str = <span class="string">""</span>)</span> : <span class="title">contents</span><span class="params">(str)</span> </span>&#123;&#125;</span><br><span class="line">    Message(<span class="keyword">const</span> Message&amp;);</span><br><span class="line">    Message &amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Message&amp;);</span><br><span class="line">    ~Message();</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">save</span><span class="params">(Folder&amp;)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">(Folder&amp;)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">printtxt</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">printfolders</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> contents;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">set</span>&lt;Folder *&gt; folders;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add_to_folders</span><span class="params">(<span class="keyword">const</span> Message&amp;)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">remove_from_folders</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addFldr</span><span class="params">(Folder *f)</span> </span>&#123;folders.insert(f);&#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">remFldr</span><span class="params">(Folder *f)</span> </span>&#123;folders.erase(f);&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Message &amp;, Message &amp;)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Folder &amp;, Folder &amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Folder</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Message &amp;, Message &amp;)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Folder &amp;, Folder &amp;)</span></span>;</span><br><span class="line">    <span class="keyword">friend</span> <span class="class"><span class="keyword">class</span> <span class="title">Message</span>;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Folder() = <span class="keyword">default</span>;</span><br><span class="line">    Folder(<span class="keyword">const</span> Folder&amp;);</span><br><span class="line">    Folder &amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> Folder&amp;);</span><br><span class="line">    ~Folder();</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">printmsg</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">set</span>&lt;Message *&gt; messages;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add_to_messages</span><span class="params">(<span class="keyword">const</span> Folder&amp;)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">remove_from_messages</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addMsg</span><span class="params">(Message *m)</span> </span>&#123;messages.insert(m);&#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">remMsg</span><span class="params">(Message *m)</span> </span>&#123;messages.erase(m);&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* !MESSAGE_FOLDER_H */</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>Message_Folder.cpp</code>  </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Message_Folder.cpp</span></span><br><span class="line"><span class="comment"> * Copyright (C) 2016  &lt;@BLUEYI-PC&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Distributed under terms of the MIT license.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Message_Folder.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Message &amp;lhs, Message &amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="built_in">std</span>::swap;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> f : lhs.folders)</span><br><span class="line">        f-&gt;remMsg(&amp;lhs);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> f : rhs.folders)</span><br><span class="line">        f-&gt;remMsg(&amp;rhs);</span><br><span class="line"></span><br><span class="line">    swap(lhs.folders, rhs.folders);</span><br><span class="line">    swap(lhs.contents, rhs.contents);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> f : lhs.folders)</span><br><span class="line">        f-&gt;addMsg(&amp;lhs);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> f : rhs.folders)</span><br><span class="line">        f-&gt;addMsg(&amp;rhs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Folder &amp;lhs, Folder &amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">using</span> <span class="built_in">std</span>::swap;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> m : lhs.messages)</span><br><span class="line">        m-&gt;remFldr(&amp;lhs);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> m : rhs.messages)</span><br><span class="line">        m-&gt;remFldr(&amp;rhs);</span><br><span class="line"></span><br><span class="line">    swap(lhs.messages, rhs.messages);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> m : lhs.messages)</span><br><span class="line">        m-&gt;addFldr(&amp;lhs);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> m : rhs.messages)</span><br><span class="line">        m-&gt;addFldr(&amp;rhs);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Message::save</span><span class="params">(Folder &amp;f)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    folders.insert(&amp;f);</span><br><span class="line">    f.addMsg(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Message::remove</span><span class="params">(Folder &amp;f)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    folders.erase(&amp;f);</span><br><span class="line">    f.remMsg(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Message::add_to_folders</span><span class="params">(<span class="keyword">const</span> Message &amp;m)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> f : m.folders)</span><br><span class="line">        f-&gt;addMsg(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Message::remove_from_folders</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> f : folders)</span><br><span class="line">        f-&gt;remMsg(<span class="keyword">this</span>);</span><br><span class="line">    folders.clear();</span><br><span class="line">&#125;</span><br><span class="line">Message::Message(<span class="keyword">const</span> Message &amp;m) : contents(m.contents), folders(m.folders)</span><br><span class="line">&#123;</span><br><span class="line">    add_to_folders(m);</span><br><span class="line">&#125;</span><br><span class="line">Message::~Message()</span><br><span class="line">&#123;</span><br><span class="line">    remove_from_folders();</span><br><span class="line">&#125;</span><br><span class="line">Message &amp;Message::<span class="keyword">operator</span>=(<span class="keyword">const</span> Message &amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    remove_from_folders();</span><br><span class="line">    contents = rhs.contents;</span><br><span class="line">    folders = rhs.folders;</span><br><span class="line">    add_to_folders(rhs);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Folder::add_to_messages</span><span class="params">(<span class="keyword">const</span> Folder &amp;f)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> m : f.messages)</span><br><span class="line">        m-&gt;addFldr(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line">Folder::Folder(<span class="keyword">const</span> Folder &amp;f) : messages(f.messages)</span><br><span class="line">&#123;</span><br><span class="line">   add_to_messages(f);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Folder::remove_from_messages</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> m : messages)</span><br><span class="line">        m-&gt;remFldr(<span class="keyword">this</span>);</span><br><span class="line">    messages.clear();</span><br><span class="line">&#125;</span><br><span class="line">Folder::~Folder()</span><br><span class="line">&#123;</span><br><span class="line">    remove_from_messages();</span><br><span class="line">&#125;</span><br><span class="line">Folder &amp;Folder::<span class="keyword">operator</span>=(<span class="keyword">const</span> Folder &amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    remove_from_messages();</span><br><span class="line">    messages = rhs.messages;</span><br><span class="line">    add_to_messages(rhs);</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Message::printtxt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"contents: "</span> &lt;&lt; contents &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Message::printfolders</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="function"><span class="built_in">std</span>::<span class="built_in">string</span> <span class="title">str</span><span class="params">(<span class="string">"************************"</span>)</span></span>;</span><br><span class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; str &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"All folders messages: "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">auto</span> f : folders)</span><br><span class="line">   &#123;</span><br><span class="line">      f-&gt;printmsg();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Folder::printmsg</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Msg: "</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">auto</span> m : messages)</span><br><span class="line">      <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; m-&gt;contents &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="function">Message <span class="title">me</span><span class="params">(<span class="string">"Hello world!"</span>)</span></span>;</span><br><span class="line">   Folder* tags = <span class="keyword">new</span> Folder();</span><br><span class="line">   me.save(*tags);</span><br><span class="line">   me.printtxt();</span><br><span class="line">   me.printfolders();</span><br><span class="line">   tags-&gt;printmsg();</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>19.定义动态内存管理类需要使用到allocator类及其成员函数construct，allocate，deallocate等。  </p>
+<p>20.C++11增加了右值引用来支持对象移动。头文件utility中的move函数可以显示地来获得绑定到左值上的右值引用。    </p>
+<h2 id="左值引用"><a href="#左值引用" class="headerlink" title="左值引用"></a>左值引用</h2><p>通过一个&amp;符号定义的引用即为左值引用，所有的变量都是左值。左值引用只能绑定到左值上，具体左值有返回左值引用的函数，连同赋值、下标、解引用和前置递增递减运行符，我们可以将左值引用绑定到这类表达式上。而右值引用刚好相反</p>
+<h2 id="右值引用"><a href="#右值引用" class="headerlink" title="右值引用"></a>右值引用</h2><p>1.右值引用与左值引用相反，例如返回非引用类型的函数，连同算法、关系、位以及后置递增/递减运算符都生成右值，我们不能将一个左值引用绑定这类表达式上，但可以将一个const的左值引用或一个右值引用绑定到这类表达式上。同样右值引用只能绑定到右值上。左值有持久的状态，如变量。而右值要么是字面常量，要么是在表达式求值过程中创建的临时对象。如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i = <span class="number">4</span>;  <span class="comment">//变量i是个左值</span></span><br><span class="line"><span class="keyword">int</span> &amp;ri = i; <span class="comment">//将一个左值引用绑定到一个左值上，变量ri同样为左值</span></span><br><span class="line"><span class="keyword">int</span> &amp;&amp;rri = ri; <span class="comment">//错误：不能将右值引用绑定到一个左值</span></span><br><span class="line"><span class="keyword">int</span> &amp;r2 = i * <span class="number">3</span>; <span class="comment">//错误：i * 3是一个右值</span></span><br><span class="line"><span class="keyword">int</span> &amp;&amp;rr2 = i * <span class="number">3</span>; <span class="comment">//正确：将一个右值引用绑定右值</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> &amp;r3 = i * <span class="number">3</span>; <span class="comment">//正确：将一个const的引用绑定到右值</span></span><br><span class="line"><span class="keyword">int</span> &amp;&amp;rr4 = rr2; <span class="comment">//错误：变量rr2为左值，虽然rr2为右值引用，但其本身是个变量，变量是左值</span></span><br></pre></td></tr></table></figure>
+<p>2.通过标准库move函数可以获得一个绑定到左值上的右值引用，如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> li= <span class="number">23</span>;</span><br><span class="line"><span class="keyword">int</span> &amp;&amp;rli = <span class="built_in">std</span>::move(li);</span><br></pre></td></tr></table></figure>
+<p>调用move就意味着承诺：除了对li赋值或销毁外，我们不再使用它，调用move后，我们不能对移后源对象的值做任何假设，也就是说移动之后，最好不要再使用源对象。move定义在头文件utility中。</p>
+<p>区分一个左值与右值的一个简单方法是：看能不能对表达式取地址，如果能，就是左值，如果不能，就是右值。</p>
+<h2 id="移动构造函数"><a href="#移动构造函数" class="headerlink" title="移动构造函数"></a>移动构造函数</h2><p>移动构造函数类似拷贝构造函数，不同的是它们从给定对象移动资源而不是拷贝资源。移动构造函数的定义为第一个参数是该类类型的一个引用，不同地拷贝构造函数的是这个引用参数在移动构造函数中是一个右值引用，与拷贝构造函数相同的是任何额外的参数都必须有默认实参。除了完成移动，移动构造函数还必须确保移后源对象处于这样一个状态：销毁它是无害的，特别是一旦完成移动，源对象必须不再指向被移动的资源，即这些资源的所有权已经归属新创建的对象。因为移动后新对象将使用源对象指向的内存。eg:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StrVec::StrVec(StrVec &amp;&amp;s) <span class="keyword">noexcept</span>  <span class="comment">//移动操作不应该抛出任何异常</span></span><br><span class="line"><span class="comment">//成员初始化器接管s中的资源</span></span><br><span class="line">  : elements(s.elements), first_free(s.first_free), cap(s.cap)</span><br><span class="line">&#123;</span><br><span class="line">  s.elements = s.first_free = s.cap = <span class="literal">nullptr</span>;  <span class="comment">//令s进入这样的状态——对其调用析构函数是安全的</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与拷贝构造函数不同，移动构造函数不分配任何新内存，它接管给定的StrVec中的内存，接管后它将约定对象中的指针都置为nullptr。<br>关于noexcept，noexcept出现在参数列表和初始化列表开始的冒号之间。我们必须在类头文件的声明和定义中都指定noexcept，不抛出异常的移动构造函数和移动赋值运算符都必须标记为noexcept。这两个函数并不是必须指定为noexcept，只是为了与标准库进行交互。例如标准库容器能对异常发生时其自身的行为提供保障，也就是说以vector举例，除非vector知道元素类型的移动构造函数不会抛出异常，否则在重新分配内存的过程中，它就必须使用拷贝构造函数而不是移动构造函数。因为移动一个对象通常会改变它的值，如果新分配过程中使用移动构造函数，且在移动了部分元素之后抛出一个异常，此时旧空间中的移动源元素已经改变了，而新空间中未构造的元素可能还不存在，此时vector将不能满足自身保存不变的要求。但同样的情况下拷贝构造函数却可以，所以拷贝构造函数可以不需要noexcept。另外一点移动操作通常也不会抛出异常。所以 为了标准库能够正常调用移动构造函数，必须显示地告诉标准库我们的移动构造函数可以安全地使用。</p>
+<h2 id="移动赋值运算符"><a href="#移动赋值运算符" class="headerlink" title="移动赋值运算符"></a>移动赋值运算符</h2><p>与赋值运算符类似，只是传递的对象需要是右值引用，并应该标记为noexcept</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">StrVec &amp;StrVec::<span class="keyword">operator</span>=(StrVec &amp;&amp;rhs) <span class="keyword">noexcept</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">//检测自赋值</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span> != &amp;rhs) &#123;</span><br><span class="line">    <span class="built_in">free</span>(); <span class="comment">//释放已有元素</span></span><br><span class="line">    elements = rhs.elements;  <span class="comment">//从rhs接管资源</span></span><br><span class="line">    first_free = rhs.first_free;</span><br><span class="line">    cap = rhs.cap;</span><br><span class="line">    <span class="comment">//将rhs置于可析构状态</span></span><br><span class="line">    rhs.elements = rhs.first_free = rhs.cap = <span class="literal">nullptr</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在移动操作之后，移后源对象必须保持有效的、可析构的状态，但是用户不能对其值做任何假设</p>
+<h2 id="合成的移动操作"><a href="#合成的移动操作" class="headerlink" title="合成的移动操作"></a>合成的移动操作</h2><p>只有当一个类没有定义任何自己版本的拷贝控制成员，且它的所有数据成员都能够移动构造或移动赋值时，编译器才会为它合成移动构造函数或移动赋值运算符。与拷贝操作不同，移动操作永远不会隐式定义为删除的函数。但如果显示地要求编译器生成=default的移动操作，且编译器不能移动所有成员时，编译器会将移动操作定义为删除的函数。<br>定义了一个移动构造函数或移动赋值运算符的类必须也定义自己的拷贝操作。否则，这些成员默认地被定义为删除的。</p>
+<p>如果一个类既有移动构造函数，也有拷贝构造函数，编译器使用普通的函数匹配规则来确定使用哪个构造函数。如果一个类有一个可用的拷贝构造函数而没有移动构造函数，则其对象是通过拷贝构造函数来进行“移动”的，移动赋值运算符的情况类似。</p>
+<h2 id="移动迭代器"><a href="#移动迭代器" class="headerlink" title="移动迭代器"></a>移动迭代器</h2><p>1.C++11中定义了一种移动迭代器适配器，一个移动迭代器通过改变给定迭代器的解引用运算符的行为来适配此迭代器，移动迭代器的解引用运算符生成一个右值引用。标准库头文件iterator中的make_move_iterator函数可将一个普通迭代器转换为一个移动迭代器，些函数接受一个迭代器参数，返回一个移动迭代器。由于移动迭代器支持正常的迭代器操作，所以可以将一个移动迭代器传递给算法。memory头文件中的uninitialized_copy函数可以对元素进行拷贝。eg:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">StrVec::rellocate</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">auto</span> newcapacity = size() ? <span class="number">2</span> * size() : <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">auto</span> first = alloc.allocate(newcapacity);</span><br><span class="line">  <span class="comment">//移动元素</span></span><br><span class="line">  <span class="keyword">auto</span> last = uninitialized_copy(make_move_iterator(begin()), make_move_iterator(end()), first);</span><br><span class="line">  <span class="built_in">free</span>(); /释放旧空间</span><br><span class="line">  elements = first; <span class="comment">//更新指针</span></span><br><span class="line">  first_free = last;</span><br><span class="line">  cap = elements + newcapacity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="右值引用的其他用法"><a href="#右值引用的其他用法" class="headerlink" title="右值引用的其他用法"></a>右值引用的其他用法</h2><p>1.可以为成员函数提供拷贝和移动版本，既可以同时提供两个版本，一个版本接受一个指向const的左值引用，另一个版本接受一个指向非const的右值引用。eg:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">push_back</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp;)</span></span>;   <span class="comment">//拷贝元素</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">push_back</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">string</span>&amp;&amp;)</span></span>;    <span class="comment">//移动元素</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>2.可以通过向成员函数参数列表后面放置引用限定符（&amp;或&amp;&amp;）来分别指出this可以指向一个左值或右值，类似const限定符，引用限定符只能用于（非static）成员函数，且必须同时现出在函数的声明和定义中。如果一个函数同时用const和引用限定符，则引用限定符必须出现在const的后面。</p>
+<p>3.引用限定符也可以用于区分重载版本，与const不同的是const用于区分时是根据是否有const来区分，而引用限定符则是通过是左值引用还是右值引用，即是&amp;还是&amp;&amp;来区分。如果我们定义两个或两个以上具有相同名字和相同参数列表的成员函数，就必须对所有函数都加上引用限定符，可以是&amp;或&amp;&amp;，或者所有都不加，不能有的加，有的不加。</p>
+<p>4.非常量引用的初始值必须为左值，如果要传递给函数引用类型的形参一个右值，必须以const &amp;的形式，将形参定义为常量。如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fun</span><span class="params">(<span class="keyword">int</span> &amp;)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这样调用是错误的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fun(0);</span><br></pre></td></tr></table></figure>
+<p>但定义为形如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">func</span><span class="params">(<span class="keyword">const</span> <span class="keyword">int</span> &amp;)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>调用：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>没有问题</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Notes/" rel="tag"># Notes</a>
+              <a href="/tags/CPP-OOP/" rel="tag"># CPP-OOP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/12/13/vim-regexp/" rel="prev" title="vim中的正则表达式匹配规则">
+      <i class="fa fa-chevron-left"></i> vim中的正则表达式匹配规则
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/12/23/cpp-oop-overloaded-operator/" rel="next" title="C++学习笔记之重载运算符与类型转换">
+      C++学习笔记之重载运算符与类型转换 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#拷贝控制函数举例"><span class="nav-number">1.</span> <span class="nav-text">拷贝控制函数举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为像指针的类"><span class="nav-number">2.</span> <span class="nav-text">行为像指针的类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用swap实现拷贝赋值运算符"><span class="nav-number">3.</span> <span class="nav-text">使用swap实现拷贝赋值运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拷贝控制实例"><span class="nav-number">4.</span> <span class="nav-text">拷贝控制实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#左值引用"><span class="nav-number">5.</span> <span class="nav-text">左值引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#右值引用"><span class="nav-number">6.</span> <span class="nav-text">右值引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动构造函数"><span class="nav-number">7.</span> <span class="nav-text">移动构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动赋值运算符"><span class="nav-number">8.</span> <span class="nav-text">移动赋值运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合成的移动操作"><span class="nav-number">9.</span> <span class="nav-text">合成的移动操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动迭代器"><span class="nav-number">10.</span> <span class="nav-text">移动迭代器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#右值引用的其他用法"><span class="nav-number">11.</span> <span class="nav-text">右值引用的其他用法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2015/12/13/cpp-oop-copy-control/";
+    this.page.identifier = "2015/12/13/cpp-oop-copy-control/";
+    this.page.title = "C++学习笔记之拷贝控制";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

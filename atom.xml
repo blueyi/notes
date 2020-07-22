@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>blueyi&#39;s notes</title>
+  <icon>http://notes.maxwi.com/icon.png</icon>
+  <subtitle>Follow Excellence,Success will chase you!</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://notes.maxwi.com/"/>
+  <updated>2020-07-22T16:52:46.089Z</updated>
+  <id>http://notes.maxwi.com/</id>
+  
+  <author>
+    <name>blueyi</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CUDA学习笔记</title>
+    <link href="http://notes.maxwi.com/3715/06/11/CUDA-study-notes/"/>
+    <id>http://notes.maxwi.com/3715/06/11/CUDA-study-notes/</id>
+    <published>3715-06-11T08:42:08.000Z</published>
+    <updated>2020-07-22T16:52:46.089Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;关于-准备&quot;&gt;&lt;a href=&quot;#关于-准备&quot; class=&quot;headerlink&quot; title=&quot;关于|准备&quot;&gt;&lt;/a&gt;关于|准备&lt;/h2&gt;&lt;p&gt;本为内容来源于《CUDA by Example.An Introduction to General-Purpose GPU Programming》学习整理，网上中英文版都有，其源码以及本文测试源码在&lt;a href=&quot;https://github.com/blueyi/cuda_example&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;github&lt;/a&gt;。部分内容来源于CUDA官方文档&lt;a href=&quot;http://docs.nvidia.com/cuda&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://docs.nvidia.com/cuda&lt;/a&gt;以及其他网上相关资料，官方文档右上角的搜索不是非常好用，如果没有搜索到你所需要的关键字可以定位到所需文档后试试&lt;code&gt;ctrl+f&lt;/code&gt;,例如&lt;code&gt;dim3&lt;/code&gt;的概念。这里是一个中文版本的&lt;a href=&quot;http://www.nvidia.cn/docs/IO/57399/NVIDIA_CUDA_Programming_Guide_2.0Final.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;NVIDIA_CUDA_Programming_Guide_2.0Final&lt;/a&gt;。&lt;br&gt;&lt;strong&gt;新人入坑看这里，系统学习强烈推荐直接看官方这份编程指南：&lt;a href=&quot;http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html&lt;/a&gt;，本文后期补充的大量内容都来自该指南。&lt;/strong&gt;&lt;br&gt;&lt;strong&gt;看完指南再看官方的进阶文档，最佳实践指南：&lt;a href=&quot;http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://docs.nvidia.com/cuda/cuda-c-best-practices-guide/&lt;/a&gt;，这些看完你也就完全入门了，并且跟上了CUDA的最新技术发展。&lt;/strong&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/categories/CUDA/"/>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
+    
+      <category term="Notes" scheme="http://notes.maxwi.com/tags/Notes/"/>
+    
+      <category term="Top" scheme="http://notes.maxwi.com/tags/Top/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CUDA编程中的错误处理</title>
+    <link href="http://notes.maxwi.com/3617/03/29/cuda-error-handle/"/>
+    <id>http://notes.maxwi.com/3617/03/29/cuda-error-handle/</id>
+    <published>3617-03-29T12:49:18.000Z</published>
+    <updated>2020-07-19T15:45:55.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;CUDA程序往往很难高度，特别是核函数出错时，甚至有些情况下核函数中内容访问错误时，运行程序之后系统返回的报错信息是&lt;code&gt;free() error&lt;/code&gt;之类的错误，会严重误导错误查找过程。所以编写CUDA程序一定记得进行错误错误处理，多写几行代码，有可能省出很多的时间。假如自己的CUDA程序出现了各种奇葩、难以理解的错误，可以考虑加上错误处理，也许就柳岸花明了。&lt;br&gt;在&lt;a href=&quot;http://notes.maxwi.com/2015/06/11/CUDA-study-notes/&quot;&gt;CUDA学习笔记&lt;/a&gt;最后的总结中刻意提到编写CUDA程序一定要做错误处理，但其中一直未提及如何进行错误处理，这里给补上。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/categories/CUDA/"/>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
+    
+      <category term="Top" scheme="http://notes.maxwi.com/tags/Top/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C++静态绑定与动态绑定</title>
+    <link href="http://notes.maxwi.com/3516/08/19/static-dynamic-binding/"/>
+    <id>http://notes.maxwi.com/3516/08/19/static-dynamic-binding/</id>
+    <published>3516-08-19T04:49:03.000Z</published>
+    <updated>2017-12-26T13:39:02.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;首先明确C++中引用或指针的动态类型（dynamic type）与静态类型（static type）可以不同是C++支持多态性（polymorphism）的根本所在。&lt;br&gt;四个概念：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;静态类型：就是对象声明时采用的类型，一旦确定就无法更改，编译期已经确定 &lt;/li&gt;
+&lt;li&gt;动态类型：通常是指一个指针或引用在调用时所指向的类型，可以理解为赋值号右侧对象的类型（当然采用直接赋值就是括号中的对象的类型），可以在运行时更改，在运行期决定&lt;/li&gt;
+&lt;li&gt;静态绑定（static binding）：又名前期绑定（early binding），绑定的是对象的静态类型，发生在编译期，即程序编译完成后就已经确定&lt;/li&gt;
+&lt;li&gt;动态绑定（dynamic binding）：又名后期绑定（late binding），绑定的是对象的动态类型，发生在运行期，即在运行期由当前的动态类型决定所需要调用的函数或属性&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://notes.maxwi.com/categories/C/"/>
+    
+    
+      <category term="Top" scheme="http://notes.maxwi.com/tags/Top/"/>
+    
+      <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+      <category term="C++拾遗" scheme="http://notes.maxwi.com/tags/C-%E6%8B%BE%E9%81%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>实例验证C/C++源代码变成程序的过程</title>
+    <link href="http://notes.maxwi.com/3416/06/05/source-to-program/"/>
+    <id>http://notes.maxwi.com/3416/06/05/source-to-program/</id>
+    <published>3416-06-05T07:58:11.000Z</published>
+    <updated>2017-12-26T13:39:02.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本来只是为了从底层了解下堆和栈的区别，以及heap和free-store的区别，结果便引出了从源代码编译开始，直到可执行程序如何加载到内存，以及C/C++内存布局的问题，这里做个总结，主要参考&lt;a href=&quot;http://www.gahcep.com/cpp-internals-memory-layout/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;C++ Internals :: Memory Layout&lt;/a&gt;&lt;br&gt;本文所使用的环境：   &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ubuntu-14.04 x64 kernel 4.2.0-36-generic&lt;/li&gt;
+&lt;li&gt;GCC version 4.8.4   &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;需要使用的其他工具：   &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;c++filt – Demangle C++ and Java symbols.详情可以自行查看man手册   &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;C++编译器通常进行以下4个步骤将源代码编译为可执行程序：   &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;预处理器的预处理阶段，替换#开头的内容   &lt;/li&gt;
+&lt;li&gt;编译器编译阶段，将预处理后的源程序处理成汇编源程序   &lt;/li&gt;
+&lt;li&gt;汇编器的汇编阶段，将汇编源程序汇编为可重定位的目标二进制程序   &lt;/li&gt;
+&lt;li&gt;连接器将可生定位的目标程序连接成为可执行的二进制目标程序   &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以下面这段代码的编译链接过程举例：   &lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://notes.maxwi.com/categories/C/"/>
+    
+    
+      <category term="Top" scheme="http://notes.maxwi.com/tags/Top/"/>
+    
+      <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>实例分析C++内存布局</title>
+    <link href="http://notes.maxwi.com/3316/06/11/cpp-memory-layout/"/>
+    <id>http://notes.maxwi.com/3316/06/11/cpp-memory-layout/</id>
+    <published>3316-06-11T05:25:00.000Z</published>
+    <updated>2020-07-19T15:45:26.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文所使用的环境：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ubuntu-14.04 x64 kernel 4.2.0-36-generic&lt;/li&gt;
+&lt;li&gt;GCC version 4.8.4   &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;需要用到的工具（都是系统自带的，以下是man的基本信息，详细信息可以直接查看man手册）：   &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;size - list section sizes and total size.可以列出section大小和总的大小，能够用于粗略估计，但不适合深度研究section大小   &lt;/li&gt;
+&lt;li&gt;readelf - Displays information about ELF files.显示ELF文件的信息，readelf非常强大，能够显示出ELF非常多的信息   &lt;/li&gt;
+&lt;li&gt;objdump - display information from object files. 显示object文件的信息，也就是目标文件，功能与readelf类似，但没有readelf强大，有些readelf可以显示的信息，它无法显示   &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果对编译过程不甚了解，可以参看这里&lt;a href=&quot;/2016/06/05/source-to-program/&quot;&gt;实例验证C/C++源代码如何变成程序的过程&lt;/a&gt;   &lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="C++" scheme="http://notes.maxwi.com/categories/C/"/>
+    
+    
+      <category term="Top" scheme="http://notes.maxwi.com/tags/Top/"/>
+    
+      <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Streaming MultiProcessor、Register、Shared-Memory对CUDA线程块尺寸的影响</title>
+    <link href="http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/"/>
+    <id>http://notes.maxwi.com/3015/08/12/CUDA-Determine-block-size/</id>
+    <published>3015-08-12T02:46:17.000Z</published>
+    <updated>2017-12-26T14:52:36.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;线程块中线程总数的大小除了受到硬件中&lt;code&gt;Max Threads Per block&lt;/code&gt;的限制，同时还要受到&lt;code&gt;Streaming Multiprocessor、Register&lt;/code&gt;和&lt;code&gt;Shared Memory&lt;/code&gt;的影响。这些条件的共同作用下可以获得一个相对更合适的&lt;code&gt;block&lt;/code&gt;尺寸。当&lt;code&gt;block&lt;/code&gt;尺寸太小时，将无法充分利用所有线程；当&lt;code&gt;block&lt;/code&gt;尺寸太大时，如果线程需要的资源总和过多，&lt;code&gt;CUDA&lt;/code&gt;将通过强制减少&lt;code&gt;block&lt;/code&gt;数量来保证资源供应，同样无法利用所有线程。而&lt;code&gt;grid&lt;/code&gt;的尺寸通常越大越好，当&lt;code&gt;grid&lt;/code&gt;中的线程总数超过一次所能启动的并发线程总数时，过多的线程将以线程块为单位由CUDA进行新的调用，当然启动数量够用就可以了，以免浪费资源。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/categories/CUDA/"/>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
+    
+      <category term="Notes" scheme="http://notes.maxwi.com/tags/Notes/"/>
+    
+      <category term="Top" scheme="http://notes.maxwi.com/tags/Top/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker run命令参数</title>
+    <link href="http://notes.maxwi.com/2017/12/21/docker-run/"/>
+    <id>http://notes.maxwi.com/2017/12/21/docker-run/</id>
+    <published>2017-12-21T08:31:54.000Z</published>
+    <updated>2017-12-26T14:46:40.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;code&gt;docker run&lt;/code&gt;应该是我们日常使用docker中最常用，也最重要的命令。&lt;br&gt;命令格式如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run [OPTIONS] IMAGE [COMMAND] [ARG...]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="Docker" scheme="http://notes.maxwi.com/categories/Docker/"/>
+    
+    
+      <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>python pip源配置</title>
+    <link href="http://notes.maxwi.com/2017/12/19/python-pip-conf/"/>
+    <id>http://notes.maxwi.com/2017/12/19/python-pip-conf/</id>
+    <published>2017-12-19T08:31:54.000Z</published>
+    <updated>2017-12-26T14:46:07.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于种种原因我们可能无法正常连接到python的官方pip源，或者连接速度很慢，或者由于根证书的原因在安装包时会提示连接证书问题，可以通过修改pip的配置来修改为国内其他源，并信任相应的源，避免证书错误，提高包安装速度。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Python" scheme="http://notes.maxwi.com/categories/Python/"/>
+    
+    
+      <category term="Python" scheme="http://notes.maxwi.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dockerfile的编写</title>
+    <link href="http://notes.maxwi.com/2017/12/14/docker-Dockerfile/"/>
+    <id>http://notes.maxwi.com/2017/12/14/docker-Dockerfile/</id>
+    <published>2017-12-14T08:31:54.000Z</published>
+    <updated>2020-07-19T16:01:25.442Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;记录Dockerfile的编写规则和用法&lt;/p&gt;
+&lt;p&gt;Dockerfile就是用于构建image的一系列命令和参数构成的脚本，通过&lt;code&gt;docker build -t &amp;lt;image_name:tag&amp;gt; -f &amp;lt;/path/to/Dockerfile&amp;gt; .&lt;/code&gt;来构建。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;docker build&lt;/code&gt;命令从名为&lt;code&gt;Dockerfile&lt;/code&gt;的文件和&lt;code&gt;context&lt;/code&gt;来构建image，context是&lt;code&gt;PATH&lt;/code&gt;（本地目录）或者&lt;code&gt;URL&lt;/code&gt;（Git repository位置）处的文件。context会以递归方式处理，所以PATH的子目录和git的submodules都会处理，同样这里要小心用于作为PATH的目录最好不要有与镜像无关的文件，通常会新建一个空文件夹做为context的PATH。&lt;/p&gt;
+&lt;p&gt;PATH下的&lt;code&gt;.dockerignore&lt;/code&gt;可以用于排除文件和目录。&lt;/p&gt;
+&lt;p&gt;构建工作由Docker守护进程运行，而不是docker的CLI，其中&lt;code&gt;-t&lt;/code&gt;参数用于指定镜像的repository和tag，可以有多个&lt;code&gt;-t&lt;/code&gt;，&lt;code&gt;-f&lt;/code&gt;指定&lt;code&gt;Dockerfile&lt;/code&gt;的路径，最后的&lt;code&gt;.&lt;/code&gt;表示上下文件环境为当前目录。&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker build -t blueyi/python-3.6:dev -f ~/docker/Dockerfile .&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="Docker" scheme="http://notes.maxwi.com/categories/Docker/"/>
+    
+    
+      <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
+    
+      <category term="Dockerfile" scheme="http://notes.maxwi.com/tags/Dockerfile/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>手动下载gcc-4.8.5源码在centos6.9上安装多版本GCC</title>
+    <link href="http://notes.maxwi.com/2017/12/09/gnu-gcc-compile-for-centos6/"/>
+    <id>http://notes.maxwi.com/2017/12/09/gnu-gcc-compile-for-centos6/</id>
+    <published>2017-12-09T08:31:54.000Z</published>
+    <updated>2017-12-26T14:50:59.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在一个系统较老的centos（6.9）上编译安装gcc4.8.5，系统源里面带的是4.7.2，对C++11中的特性支持不完整，所以需要手动编译一份新版本。&lt;br&gt;以为会很简单，直接下载源码，根据readme配置相关依赖源码，然而最后还是编译的时候报错，所以记录下来。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/categories/Linux/"/>
+    
+    
+      <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+      <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GCC在64位系统上编译32位程序遇到的问题</title>
+    <link href="http://notes.maxwi.com/2017/12/06/compile-x32-executable-at-x64-linux-system/"/>
+    <id>http://notes.maxwi.com/2017/12/06/compile-x32-executable-at-x64-linux-system/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-26T14:43:46.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;默认的GCC编译选项会编译出与系统一致的输出，例如64位直接使用gcc或g++编译出的为64位程序或库，而32位系统编译的是对应32位的。&lt;br&gt;可以通过在编译时添加选项&lt;code&gt;-m32&lt;/code&gt;或&lt;code&gt;-m64&lt;/code&gt;来指定编译生成的相应版本，如果同时带上这2个选项，只有后一个会生效。&lt;br&gt;问题的关键时多数时候会提示缺少库，这里以64位下编译32位程序为例，给出ubuntu和centos下相关依赖包。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/categories/Dev/"/>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>让普通的VS项目支持编译CUDA代码</title>
+    <link href="http://notes.maxwi.com/2017/12/06/cuda-compiled-for-normal-project-in-vs/"/>
+    <id>http://notes.maxwi.com/2017/12/06/cuda-compiled-for-normal-project-in-vs/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-26T14:47:18.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;当安装了VS之后再安装CUDA套件就可以通过VS创建基于CUDA的项目，但往往我们会需要让之前的老项目支持对CUDA的编译，以便使用CUDA对原有项目中的部分算法加速，网上有各种各样的尝试，搜索SOF之后找到一个超简单的方法，记录之。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/categories/Dev/"/>
+    
+    
+      <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 使用入门</title>
+    <link href="http://notes.maxwi.com/2017/12/06/docker-useful-command/"/>
+    <id>http://notes.maxwi.com/2017/12/06/docker-useful-command/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-26T14:47:41.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;首先 Docker 是由 go 语言编写，基于 Linux 容器技术（LXC）、Namespace、Cgroup 和 UnionFS（联合文件系统）等技术的轻量级操作系统虚拟化解决方案。&lt;/p&gt;
+&lt;p&gt;对于 docker 的概念，可以简单理解如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;镜像（Image）&lt;/strong&gt; 类似于虚拟机的快照，它是只读，可以以镜像为模板创建容器，在容器中的更改不会影响到原镜像。实际镜像是 UnionFS 的层级文件系统。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容器（Container）&lt;/strong&gt; 类似于轻量级的虚拟机，由 docker 镜像实例化而来，docker 推荐一个容器运行一个进程，可见其轻量程度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注册服务器（Registry）&lt;/strong&gt; 提供在线存放 docker 镜像的在线服务，可以理解为 github 所提供的 repository 作用，当我们使用 docker run 运行一个本地不存在的镜像时，默认情况下 docker 会从 docker 官方的 registry 拉取该镜像，然后创建并运行一个容器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dockerfile&lt;/strong&gt; 可以理解为用于构建镜像的命令和设置组合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文将从安装开始，记录docker日常使用的一些命令、问题及深一点的理解&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Docker" scheme="http://notes.maxwi.com/categories/Docker/"/>
+    
+    
+      <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>YUV 数据格式详解</title>
+    <link href="http://notes.maxwi.com/2017/12/05/yuv/"/>
+    <id>http://notes.maxwi.com/2017/12/05/yuv/</id>
+    <published>2017-12-05T08:31:54.000Z</published>
+    <updated>2017-12-19T16:24:08.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;YUV-数据格式概览&quot;&gt;&lt;a href=&quot;#YUV-数据格式概览&quot; class=&quot;headerlink&quot; title=&quot;YUV 数据格式概览&quot;&gt;&lt;/a&gt;YUV 数据格式概览&lt;/h2&gt;&lt;p&gt;YUV 的原理是把亮度与色度分离，使用 Y、U、V 分别表示亮度，以及蓝色通道与亮度的差值和红色通道与亮度的差值。其中 Y 信号分量除了表示亮度 (luma) 信号外，还含有较多的绿色通道量，单纯的 Y 分量可以显示出完整的黑白图像。U、V 分量分别表示蓝 (blue)、红 (red) 分量信号，它们只含有色彩 (chrominance/color) 信息，所以 YUV 也称为 YCbCr，C 意思可以理解为 (component 或者 color)。&lt;/p&gt;
+&lt;p&gt;维基百科上的 RGB 转 YUV 的公式能更好的反应 YUV 与 RGB 的关系，以及为什么称为 YCbCr：&lt;br&gt;&lt;img data-src=&quot;yuv1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Y 中含有三元色色信息，且有较多的 G，所以他们一起可以显示出全彩的图像。&lt;br&gt;很显然我们可以想到是不是会有 YCgCb、YCgCr 等，针对不同的应用场景，也确实有相关应用研究。&lt;/p&gt;
+&lt;p&gt;如下图，一张从上到下分别为原图、Y、U 和 V：&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&quot;yuv2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;采用 YUV 而不是使用 RGB，既有历史原因：为了兼容老式黑白电视，因为 YUV 如果只输出 Y 就成了黑白图像了。也有 YUV 自己的其他优点，例如可以根据需要，采用特定的 YUV 存储格式，以降低祼码流的空间占用。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Video" scheme="http://notes.maxwi.com/categories/Video/"/>
+    
+    
+      <category term="YUV" scheme="http://notes.maxwi.com/tags/YUV/"/>
+    
+      <category term="Video" scheme="http://notes.maxwi.com/tags/Video/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows 下的多线程应用</title>
+    <link href="http://notes.maxwi.com/2017/12/04/windows-multi-threads/"/>
+    <id>http://notes.maxwi.com/2017/12/04/windows-multi-threads/</id>
+    <published>2017-12-04T08:31:54.000Z</published>
+    <updated>2017-12-26T14:44:26.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Windows 下的多线程中线程锁是通过&lt;code&gt;CRITICAL_SECTION&lt;/code&gt;实现，用以保护用户数据，即当串行代码断执行到该部分时，操作系统将告知下一来执行到此处的线程等待，直到上一个线程离开被保护的代码断，从而通过将需要访问数据的部分放在该代码段来保护数据被多线程访问时的一致性。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/categories/Dev/"/>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>gdb调试coredump文件</title>
+    <link href="http://notes.maxwi.com/2017/12/03/coredump/"/>
+    <id>http://notes.maxwi.com/2017/12/03/coredump/</id>
+    <published>2017-12-03T08:31:54.000Z</published>
+    <updated>2017-12-26T13:38:31.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;生成coredump&quot;&gt;&lt;a href=&quot;#生成coredump&quot; class=&quot;headerlink&quot; title=&quot;生成coredump&quot;&gt;&lt;/a&gt;生成coredump&lt;/h2&gt;&lt;p&gt;当程序运行出现如下错误时：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Program terminated with signal 11, Segmentation fault   (core dumped).&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;系统会提示有coredump产生，但通常我们在系统文件夹下并找不到core文件，是因为系统设置产生core文件大小为0，也即不会产生，所以我们这里可以做一些简单的设置：&lt;/p&gt;
+&lt;p&gt;设置core文件产生在当前目录，&lt;code&gt;%e&lt;/code&gt;表示产生core文件的程序名，&lt;code&gt;%p&lt;/code&gt;为pid号：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&quot;core.%e.%p&quot;&lt;/span&gt; &amp;gt; /proc/sys/kernel/core_pattern&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;查看当前core文件设置的大小：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;ulimit&lt;/span&gt; -c&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;设置core文件大小为无限制：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;ulimit&lt;/span&gt; -c unlimited&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/categories/Linux/"/>
+    
+    
+      <category term="gdb" scheme="http://notes.maxwi.com/tags/gdb/"/>
+    
+      <category term="coredump" scheme="http://notes.maxwi.com/tags/coredump/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows和Linux下的动态链接库的编译、链接和引用相关问题</title>
+    <link href="http://notes.maxwi.com/2017/12/01/dll-lib-export-for-windows/"/>
+    <id>http://notes.maxwi.com/2017/12/01/dll-lib-export-for-windows/</id>
+    <published>2017-12-01T08:31:54.000Z</published>
+    <updated>2017-12-26T14:44:59.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;关于动态链接库和静态链接库的区别可以参考另一篇笔记，其实也就一句话：静态链接库在编译期加载到相应的编译目标中（编译后不再需要），而动态链接库是在运行期由执行目标进行调用（每次运行都需要）。&lt;br&gt;Windows下动态链接库以后缀&lt;code&gt;.dll&lt;/code&gt;标识，Linux下的动态链接库命名为&lt;code&gt;libxxx.so&lt;/code&gt;，其中&lt;code&gt;xxx&lt;/code&gt;为库名称。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/categories/Dev/"/>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Google Test(gtest)使用</title>
+    <link href="http://notes.maxwi.com/2017/11/29/gtest/"/>
+    <id>http://notes.maxwi.com/2017/11/29/gtest/</id>
+    <published>2017-11-29T08:31:54.000Z</published>
+    <updated>2017-12-19T16:24:08.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;GTest简介&quot;&gt;&lt;a href=&quot;#GTest简介&quot; class=&quot;headerlink&quot; title=&quot;GTest简介&quot;&gt;&lt;/a&gt;GTest简介&lt;/h2&gt;&lt;p&gt;GTest是Google官方团队开发的开源的C++单元测试框架，地址为：&lt;a href=&quot;https://github.com/google/googletest&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://github.com/google/googletest&lt;/a&gt;。该地址下同时有一个名为googlemock的项目，Google Mock可以理解为Google Test的辅助测试框架，Google Mock可以用于实现一个模拟类(mock类)，可以用于完成需要接口交互但相应的类又没有实现的测试。本文不涉及Mock，以后有空了再追加Google Mock的使用。&lt;br&gt;使用Google Test可以实现：&lt;br&gt;1、测试应该是独立并且可以重复的。&lt;br&gt;2、测试应该组织良好，能够清晰的反应出测试代码的结构。&lt;br&gt;3、测试应该是可移植和可利用的。&lt;br&gt;4、当测试失败时，Google Test将会提供尽可能多的测试信息，并继续后面的测试而不是结束测试。&lt;br&gt;5、Google Test会跟踪所有用户定义的新测试，而不需要用户一一再去调用它们。从而将测试人员从繁杂的测试用例调用中解放出来，将更多的精力关注中测试本身上。&lt;br&gt;6、测试实现起来很快，因为Google Test框架能够在测试用例之间共用资源，并且它们之前还不会相互依赖。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Dev" scheme="http://notes.maxwi.com/categories/Dev/"/>
+    
+    
+      <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+      <category term="Gtest" scheme="http://notes.maxwi.com/tags/Gtest/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>tmux简洁教程</title>
+    <link href="http://notes.maxwi.com/2017/11/10/tmux/"/>
+    <id>http://notes.maxwi.com/2017/11/10/tmux/</id>
+    <published>2017-11-10T08:31:54.000Z</published>
+    <updated>2017-12-26T14:48:12.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;tmux主要的功能有两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;终端利用，可以在一个terminal开启多个shell的session，这样就不需要vim一个terminal，命令又要需要一个，其他服务还要再开一个了。&lt;/li&gt;
+&lt;li&gt;断线保证任务在后台继续执行，以及当你上线后保证原来打开的多个窗口与断线之前完全一样。以后就不用再使用screen了&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/categories/Linux/"/>
+    
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+      <category term="tmux" scheme="http://notes.maxwi.com/tags/tmux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Makefile极简教程</title>
+    <link href="http://notes.maxwi.com/2017/11/09/makefile/"/>
+    <id>http://notes.maxwi.com/2017/11/09/makefile/</id>
+    <published>2017-11-09T08:31:54.000Z</published>
+    <updated>2017-12-26T14:42:16.000Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;关于Makefile的编写和&lt;code&gt;make&lt;/code&gt;命令的简单应用，快速了解Makefile的编写规则，更多功能将在以后的使用中慢慢增加。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/categories/Linux/"/>
+    
+    
+      <category term="make" scheme="http://notes.maxwi.com/tags/make/"/>
+    
+      <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+      <category term="cmake" scheme="http://notes.maxwi.com/tags/cmake/"/>
+    
+  </entry>
+  
+</feed>

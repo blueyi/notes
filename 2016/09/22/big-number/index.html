@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="超大整数的表示及四则运算，大家的多数方法是采用字符串表示超大整数，然后再根据竖式计算的原理进行计算。例如12345678 + 87654321，就是两个字符串，然后将这两个字符串中的各个位取出来右对齐后进行一位位相加，如果有进位就考虑进位的问题，例如这里至少需要相加8次，如果最高位有进位，就是9次。这里采用的方法相当于采用10^n进制来存储超大整数，例如12345678，如果按10000进制来存的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超大整数实现及其四则运算">
+<meta property="og:url" content="http://notes.maxwi.com/2016/09/22/big-number/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="超大整数的表示及四则运算，大家的多数方法是采用字符串表示超大整数，然后再根据竖式计算的原理进行计算。例如12345678 + 87654321，就是两个字符串，然后将这两个字符串中的各个位取出来右对齐后进行一位位相加，如果有进位就考虑进位的问题，例如这里至少需要相加8次，如果最高位有进位，就是9次。这里采用的方法相当于采用10^n进制来存储超大整数，例如12345678，如果按10000进制来存的">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-09-22T10:59:37.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.379Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="CPP">
+<meta property="article:tag" content="Algorithms">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/09/22/big-number/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>超大整数实现及其四则运算 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/09/22/big-number/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          超大整数实现及其四则运算
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-09-22 18:59:37" itemprop="dateCreated datePublished" datetime="2016-09-22T18:59:37+08:00">2016-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithms/" itemprop="url" rel="index"><span itemprop="name">Algorithms</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/09/22/big-number/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/09/22/big-number/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>14 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>超大整数的表示及四则运算，大家的多数方法是采用字符串表示超大整数，然后再根据竖式计算的原理进行计算。例如12345678 + 87654321，就是两个字符串，然后将这两个字符串中的各个位取出来右对齐后进行一位位相加，如果有进位就考虑进位的问题，例如这里至少需要相加8次，如果最高位有进位，就是9次。<br>这里采用的方法相当于采用10^n进制来存储超大整数，例如12345678，如果按10000进制来存的话（因为这样的两个最大数相乘刚好不会超过10^9，可用用int32存），就是存成[1234,5678]，两个整数，这样的话，只需要相加2次就可以了，而且进位的计算也最多只需要2次。相比字符串，当整数超大时，时间复杂度会降低很多。下面的实现中采用的是vector来存储的，由于加入了时间统计及DEBUG，所以看上去代码略多。<br>由于最近太忙，只实现了加、减和乘，除等以后有时间了再，下面是完整的代码，也不整理了，注释比较少，优化空间也很大，等以后有时间了再整，留个备注</p>
+<a id="more"></a>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cstdint&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdexcept&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;chrono&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NDEBUG</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//方便调试的DEBUG输出函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="built_in">std</span>::ostream&amp; <span class="title">DEBUG</span><span class="params">(<span class="keyword">const</span> T&amp; t, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;msg = <span class="string">"DEBUG"</span>, <span class="built_in">std</span>::ostream&amp; os = <span class="built_in">std</span>::<span class="built_in">cout</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    os &lt;&lt; <span class="string">"="</span> &lt;&lt; msg &lt;&lt; <span class="string">"="</span> &lt;&lt; t &lt;&lt; <span class="string">"=="</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::ostream&amp; <span class="title">DEBUG</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;vec, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;msg = <span class="string">"DEBUG"</span>, <span class="built_in">std</span>::ostream&amp; os = <span class="built_in">std</span>::<span class="built_in">cout</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    os &lt;&lt; <span class="string">"="</span> &lt;&lt; msg &lt;&lt; <span class="string">"="</span> ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v : vec)</span><br><span class="line">        os &lt;&lt; <span class="built_in">std</span>::setw(<span class="number">4</span>) &lt;&lt; <span class="built_in">std</span>::setfill(<span class="string">'0'</span>) &lt;&lt; v &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    os &lt;&lt; <span class="string">"=="</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//按10000进制划分数字，因为相乘后的10^8不会越界</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> DEC = <span class="number">4</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">//10进制码表，以快速计算10^n</span></span><br><span class="line"><span class="comment">//由于使用int最多只能存到10^9，够用了</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">quick_pow10</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> pow10[<span class="number">10</span>] = &#123;</span><br><span class="line">        <span class="number">1</span>, <span class="number">10</span>, <span class="number">100</span>, <span class="number">1000</span>, <span class="number">10000</span>, <span class="number">100000</span>, <span class="number">1000000</span>, <span class="number">10000000</span>,</span><br><span class="line">        <span class="number">100000000</span>, <span class="number">1000000000</span> </span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> pow10[n];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//比较含整型vector的大小</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">vcompare</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;&amp;, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BigInt</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">bool</span> <span class="keyword">operator</span>&gt;(<span class="keyword">const</span> BigInt&amp;, <span class="keyword">const</span> BigInt&amp;);</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">bool</span> <span class="keyword">operator</span>&lt;(<span class="keyword">const</span> BigInt&amp;, <span class="keyword">const</span> BigInt&amp;);</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> BigInt&amp;, <span class="keyword">const</span> BigInt&amp;);</span><br><span class="line">    <span class="keyword">friend</span> <span class="keyword">bool</span> <span class="keyword">operator</span>!=(<span class="keyword">const</span> BigInt&amp;, <span class="keyword">const</span> BigInt&amp;);</span><br><span class="line">    <span class="comment">// 存有正整数的vec相加</span></span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vadd</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;)</span></span>;</span><br><span class="line">    <span class="comment">// 存有正整数的vec相减，大减小，lsh - rhs</span></span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vsub</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;)</span></span>;</span><br><span class="line">    <span class="comment">// 存有正整数的vec相乘</span></span><br><span class="line">    <span class="function"><span class="keyword">friend</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vmul</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    BigInt() : negative(<span class="literal">false</span>), zero(<span class="literal">true</span>) &#123; vnum.push_back(<span class="number">0</span>); &#125;</span><br><span class="line">    BigInt(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;);</span><br><span class="line">    BigInt(<span class="keyword">const</span> BigInt&amp;);</span><br><span class="line">    BigInt&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> BigInt&amp;);</span><br><span class="line">    <span class="comment">//负加负、负加正、正加负转化为正减负</span></span><br><span class="line">    BigInt <span class="keyword">operator</span>+(<span class="keyword">const</span> BigInt&amp;) <span class="keyword">const</span>;</span><br><span class="line">    BigInt <span class="keyword">operator</span>-(<span class="keyword">const</span> BigInt&amp;) <span class="keyword">const</span>;</span><br><span class="line">    BigInt <span class="keyword">operator</span>*(<span class="keyword">const</span> BigInt&amp;) <span class="keyword">const</span>;</span><br><span class="line">    BigInt <span class="keyword">operator</span>/(<span class="keyword">const</span> BigInt&amp;) <span class="keyword">const</span>;</span><br><span class="line">    ~BigInt() = <span class="keyword">default</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//    void setnegative(bool ne) &#123; negative = ne; &#125;</span></span><br><span class="line"><span class="comment">//    void setzero(bool ze) &#123; zero = ze; &#125;</span></span><br><span class="line"><span class="comment">//    bool getnegative() const &#123; return negative; &#125;</span></span><br><span class="line"><span class="comment">//    bool getzero() const &#123; return zero; &#125;</span></span><br><span class="line"><span class="comment">//    void setvnum(const std::vector&lt;uint32_t&gt; num) &#123; vnum = num; setzero(false); &#125;</span></span><br><span class="line">    <span class="function"><span class="built_in">std</span>::ostream&amp; <span class="title">print</span><span class="params">(<span class="built_in">std</span>::ostream&amp; os = <span class="built_in">std</span>::<span class="built_in">cout</span>)</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将string按n位一组划分为整型，存入vector</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">strtovec</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;, <span class="keyword">const</span> <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; vnum;  <span class="comment">//存放读取的数字</span></span><br><span class="line">    <span class="keyword">bool</span> negative;  <span class="comment">//是否为负数</span></span><br><span class="line">    <span class="keyword">bool</span> zero;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">ctoi</span><span class="params">(<span class="keyword">char</span> ch)</span> </span>&#123; <span class="keyword">return</span> (ch - <span class="string">'0'</span>); &#125;  <span class="comment">//字符转整型</span></span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">itoc</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123; <span class="keyword">return</span> (i + <span class="string">'0'</span>); &#125;  <span class="comment">//整数转字符</span></span><br><span class="line">    <span class="function"><span class="keyword">uint32_t</span> <span class="title">strtoi</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str)</span></span>;  <span class="comment">//字符串转整型</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">vcompare</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;&amp;lhs, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;&amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lhs.size() &gt; rhs.size())</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (lhs.size() &lt; rhs.size()) </span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type i = <span class="number">0</span>; i &lt; lhs.size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> ( lhs[i] &gt; rhs[i] )</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ( lhs[i] &lt; rhs[i] )</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>&gt;(<span class="keyword">const</span> BigInt&amp;lhs, <span class="keyword">const</span> BigInt&amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;lhsv = lhs.vnum;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;rhsv = rhs.vnum;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#ifndef NDEBUG</span></span><br><span class="line"><span class="comment">    DEBUG(lhs, "lhs");</span></span><br><span class="line"><span class="comment">    DEBUG(rhs, "rhs");</span></span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    <span class="keyword">if</span> (lhs.negative &amp;&amp; ((!rhs.negative) || rhs.zero))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!lhs.negative &amp;&amp; rhs.negative)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((lhs.negative &amp;&amp; rhs.negative) || (!lhs.negative &amp;&amp; !rhs.negative)) &#123;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">#ifndef NDEBUG</span></span><br><span class="line"><span class="comment">        DEBUG(vcompare(lhsv, rhsv), "vcom");</span></span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">        <span class="keyword">int</span> vcom = vcompare(lhsv, rhsv);</span><br><span class="line">        <span class="keyword">if</span> (vcom == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!lhs.negative)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (vcom == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (lhs.negative)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>&lt;(<span class="keyword">const</span> BigInt&amp;lhs, <span class="keyword">const</span> BigInt&amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;lhsv = lhs.vnum;</span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;rhsv = rhs.vnum;</span><br><span class="line">    <span class="keyword">if</span> (lhs.negative &amp;&amp; (!rhs.negative || rhs.zero))</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!lhs.negative &amp;&amp; rhs.negative)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((lhs.negative &amp;&amp; rhs.negative) || (!lhs.negative &amp;&amp; !rhs.negative)) &#123;</span><br><span class="line">       <span class="keyword">int</span> vcom = vcompare(lhsv, rhsv);</span><br><span class="line">        <span class="keyword">if</span> (vcom == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!lhs.negative)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (vcom == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (lhs.negative)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>==(<span class="keyword">const</span> BigInt&amp;lhs, <span class="keyword">const</span> BigInt&amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (lhs.zero &amp;&amp; rhs.zero)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (lhs.negative == rhs.negative &amp;&amp; vcompare(lhs.vnum, rhs.vnum) == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> <span class="keyword">operator</span>!=(<span class="keyword">const</span> BigInt&amp;lhs, <span class="keyword">const</span> BigInt&amp;rhs)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> (lhs == rhs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">uint32_t</span> <span class="title">BigInt::strtoi</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> uin = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> c : str) &#123;</span><br><span class="line">        uin = uin * <span class="number">10</span> + ctoi(c);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> uin;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BigInt::strtovec</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;vec, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str, <span class="keyword">const</span> <span class="keyword">int</span> n = DEC)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>::size_type s_length = str.length();</span><br><span class="line">    <span class="keyword">int</span> first_item_length = s_length % n;</span><br><span class="line">    <span class="keyword">if</span> (first_item_length != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">string</span> fir_str = str.substr(<span class="number">0</span>, first_item_length);</span><br><span class="line">        vec.push_back(strtoi(fir_str));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="built_in">string</span>::size_type sec = first_item_length; sec &lt; s_length; sec += n) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">string</span> sstr = str.substr(sec, n);</span><br><span class="line">        vec.push_back(strtoi(sstr));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BigInt::BigInt(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str)</span><br><span class="line">&#123;</span><br><span class="line">    negative = <span class="literal">false</span>;</span><br><span class="line">    zero = <span class="literal">false</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> tstr = str;</span><br><span class="line">    <span class="keyword">if</span> (str[<span class="number">0</span>] == <span class="string">'-'</span>) &#123;</span><br><span class="line">        negative = <span class="literal">true</span>;</span><br><span class="line">        tstr = str.substr(<span class="number">1</span>, str.length());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (str[<span class="number">0</span>] == <span class="string">'+'</span>) &#123;</span><br><span class="line">        tstr = str.substr(<span class="number">1</span>, str.length());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (tstr.find_first_not_of(<span class="string">"0123456789"</span>) != <span class="built_in">std</span>::<span class="built_in">string</span>::npos || tstr.empty()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">std</span>::runtime_error(<span class="string">"Non-number detected!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span>::size_type nzeropos = tstr.find_first_not_of(<span class="string">"0"</span>);</span><br><span class="line">    <span class="keyword">if</span> (nzeropos == <span class="built_in">std</span>::<span class="built_in">string</span>::npos) &#123;</span><br><span class="line">        negative = <span class="literal">false</span>;</span><br><span class="line">        zero = <span class="literal">true</span>;</span><br><span class="line">        vnum.push_back(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        tstr = tstr.substr(nzeropos, tstr.length());</span><br><span class="line">        strtovec(vnum, tstr, DEC);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BigInt::BigInt(<span class="keyword">const</span> BigInt&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">    negative = rhs.negative; </span><br><span class="line">    zero = rhs.zero;</span><br><span class="line">    vnum = rhs.vnum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BigInt&amp; BigInt::<span class="keyword">operator</span>=(<span class="keyword">const</span> BigInt&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> != &amp;rhs) &#123;</span><br><span class="line">        negative = rhs.negative; </span><br><span class="line">        zero = rhs.zero;</span><br><span class="line">        vnum = rhs.vnum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::ostream&amp; <span class="title">BigInt::print</span><span class="params">(<span class="built_in">std</span>::ostream&amp; os)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (zero) &#123;</span><br><span class="line">        os &lt;&lt; <span class="number">0</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> os;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (negative)</span><br><span class="line">        os &lt;&lt; <span class="string">'-'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> first_nozero = <span class="literal">false</span>;  <span class="comment">//从第一个非0开始输出</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type i = <span class="number">0</span>; i &lt; vnum.size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (vnum[i] != <span class="number">0</span> )</span><br><span class="line">            first_nozero = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (i != <span class="number">0</span> &amp;&amp; first_nozero)</span><br><span class="line">            os &lt;&lt; <span class="built_in">std</span>::setw(<span class="number">4</span>) &lt;&lt; <span class="built_in">std</span>::setfill(<span class="string">'0'</span>) &lt;&lt; vnum[i];</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (first_nozero || i == (vnum.size() - <span class="number">1</span>))</span><br><span class="line">            os &lt;&lt; vnum[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::ostream&amp; <span class="keyword">operator</span>&lt;&lt;(<span class="built_in">std</span>::ostream&amp; os, <span class="keyword">const</span> BigInt&amp; num)</span><br><span class="line">&#123;</span><br><span class="line">    num.print(os);</span><br><span class="line">    <span class="keyword">return</span> os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::istream&amp; <span class="keyword">operator</span>&gt;&gt;(<span class="built_in">std</span>::istream&amp; os, BigInt&amp; num)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> str;</span><br><span class="line">    os &gt;&gt; str;</span><br><span class="line">    num = BigInt(str);</span><br><span class="line">    <span class="keyword">return</span> os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vadd</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;lhs, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">lvnum</span><span class="params">(lhs)</span></span>;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">rvnum</span><span class="params">(rhs)</span></span>;</span><br><span class="line">    <span class="built_in">std</span>::reverse(lvnum.begin(), lvnum.end());</span><br><span class="line">    <span class="built_in">std</span>::reverse(rvnum.begin(), rvnum.end());</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;long_vec = rvnum;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;short_vec = lvnum;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (rvnum.size() &lt; lvnum.size()) &#123;</span><br><span class="line">        <span class="built_in">std</span>::swap(long_vec, short_vec);</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">#ifndef NDEBUG</span></span><br><span class="line"><span class="comment">    DEBUG(long_vec, "lvec");</span></span><br><span class="line"><span class="comment">    DEBUG(short_vec, "svec");</span></span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; resvnum;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type sindex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">pow</span> = quick_pow10(DEC);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; short_vec.size(); ++sindex) &#123;</span><br><span class="line">        <span class="keyword">uint32_t</span> res = long_vec[sindex] + short_vec[sindex] + carry;</span><br><span class="line">        resvnum.push_back(res % <span class="built_in">pow</span>);</span><br><span class="line">        carry = res / <span class="built_in">pow</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; long_vec.size(); ++sindex) &#123;</span><br><span class="line">        <span class="keyword">uint32_t</span> res = long_vec[sindex] + carry;</span><br><span class="line">        resvnum.push_back(res % <span class="built_in">pow</span>);</span><br><span class="line">        carry = res / <span class="built_in">pow</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (carry != <span class="number">0</span>)</span><br><span class="line">        resvnum.push_back(carry);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::reverse(resvnum.begin(), resvnum.end());</span><br><span class="line">    <span class="keyword">return</span> resvnum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vadd_reverse</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;lhs, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">lvnum</span><span class="params">(lhs)</span></span>;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">rvnum</span><span class="params">(rhs)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;long_vec = rvnum;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;short_vec = lvnum;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (rvnum.size() &lt; lvnum.size()) &#123;</span><br><span class="line">        <span class="built_in">std</span>::swap(long_vec, short_vec);</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">#ifndef NDEBUG</span></span><br><span class="line"><span class="comment">    DEBUG(long_vec, "lvec");</span></span><br><span class="line"><span class="comment">    DEBUG(short_vec, "svec");</span></span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; resvnum;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type sindex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">pow</span> = quick_pow10(DEC);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; short_vec.size(); ++sindex) &#123;</span><br><span class="line">        <span class="keyword">uint32_t</span> res = long_vec[sindex] + short_vec[sindex] + carry;</span><br><span class="line">        resvnum.push_back(res % <span class="built_in">pow</span>);</span><br><span class="line">        carry = res / <span class="built_in">pow</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; long_vec.size(); ++sindex) &#123;</span><br><span class="line">        <span class="keyword">uint32_t</span> res = long_vec[sindex] + carry;</span><br><span class="line">        resvnum.push_back(res % <span class="built_in">pow</span>);</span><br><span class="line">        carry = res / <span class="built_in">pow</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (carry != <span class="number">0</span>)</span><br><span class="line">        resvnum.push_back(carry);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> resvnum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vsub</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;lhs, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">lvnum</span><span class="params">(lhs)</span></span>;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">rvnum</span><span class="params">(rhs)</span></span>;</span><br><span class="line">    <span class="built_in">std</span>::reverse(lvnum.begin(), lvnum.end());</span><br><span class="line">    <span class="built_in">std</span>::reverse(rvnum.begin(), rvnum.end());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; resvnum;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type sindex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">pow</span> = quick_pow10(DEC);</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; rvnum.size(); ++sindex) &#123;</span><br><span class="line">        <span class="keyword">uint32_t</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (lvnum[sindex] &lt; rvnum[sindex]) &#123;</span><br><span class="line">            res = lvnum[sindex] - carry + <span class="built_in">pow</span> - rvnum[sindex];</span><br><span class="line">            carry = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (lvnum[sindex] == rvnum[sindex]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (carry == <span class="number">1</span>) &#123;</span><br><span class="line">                res = lvnum[sindex] - carry + <span class="built_in">pow</span> - rvnum[sindex];</span><br><span class="line">                carry = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                res = lvnum[sindex] - rvnum[sindex];</span><br><span class="line">                carry = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            res = lvnum[sindex] - carry - rvnum[sindex];</span><br><span class="line">            carry = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        resvnum.push_back(res);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; lvnum.size(); ++sindex) &#123;</span><br><span class="line">        <span class="keyword">uint32_t</span> res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (lvnum[sindex] == <span class="number">0</span> &amp;&amp; carry == <span class="number">1</span>) &#123;</span><br><span class="line">            res = lvnum[sindex] + <span class="built_in">pow</span> - carry;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            res = lvnum[sindex] - carry;</span><br><span class="line">            carry = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        resvnum.push_back(res);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::reverse(resvnum.begin(), resvnum.end());</span><br><span class="line">    <span class="keyword">return</span> resvnum;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">vmul</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;lhs, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;rhs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">lvnum</span><span class="params">(lhs)</span></span>;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; <span class="title">rvnum</span><span class="params">(rhs)</span></span>;</span><br><span class="line">    <span class="built_in">std</span>::reverse(lvnum.begin(), lvnum.end());</span><br><span class="line">    <span class="built_in">std</span>::reverse(rvnum.begin(), rvnum.end());</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;long_vec = rvnum;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; &amp;short_vec = lvnum;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (rvnum.size() &lt; lvnum.size()) &#123;</span><br><span class="line">        <span class="built_in">std</span>::swap(long_vec, short_vec);</span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; resvnum&#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type sindex = <span class="number">0</span>, lindex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">pow</span> = quick_pow10(DEC);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; sindex &lt; short_vec.size(); ++sindex) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; resv;</span><br><span class="line">        <span class="keyword">uint32_t</span> carry = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt;::size_type i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i++ &lt; sindex) &#123;</span><br><span class="line">            resv.push_back(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (lindex = <span class="number">0</span>; lindex &lt; long_vec.size(); ++lindex) &#123;</span><br><span class="line">            <span class="keyword">uint32_t</span> res = long_vec[lindex] * short_vec[sindex] + carry;</span><br><span class="line">            resv.push_back(res % <span class="built_in">pow</span>);</span><br><span class="line">            carry = res / <span class="built_in">pow</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (carry != <span class="number">0</span>)</span><br><span class="line">            resv.push_back(carry);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> NDEBUG</span></span><br><span class="line">        DEBUG(resv, <span class="string">"resv"</span>);</span><br><span class="line">        DEBUG(carry, <span class="string">"carry"</span>);</span><br><span class="line">        DEBUG(resvnum, <span class="string">"resvnum"</span>);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">        resvnum = vadd_reverse(resvnum, resv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::reverse(resvnum.begin(), resvnum.end());</span><br><span class="line">    <span class="keyword">return</span> resvnum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">BigInt BigInt::<span class="keyword">operator</span>+(<span class="keyword">const</span> BigInt&amp;rhs) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (rhs.zero)</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>-&gt;zero)</span><br><span class="line">        <span class="keyword">return</span> rhs;</span><br><span class="line"></span><br><span class="line">    BigInt res;</span><br><span class="line"></span><br><span class="line">    res.vnum = vadd(<span class="keyword">this</span>-&gt;vnum, rhs.vnum);  <span class="comment">//正加正</span></span><br><span class="line">    res.zero = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (negative &amp;&amp; rhs.negative) &#123; <span class="comment">// 负加负</span></span><br><span class="line">        res.negative = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (negative &amp;&amp; !rhs.negative) &#123; <span class="comment">//负加正</span></span><br><span class="line">        BigInt lhs(*<span class="keyword">this</span>);</span><br><span class="line">        lhs.negative = <span class="literal">false</span>;</span><br><span class="line">        res = rhs - lhs;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!negative &amp;&amp; rhs.negative) &#123; <span class="comment">//正加负</span></span><br><span class="line">        BigInt rrhs(rhs);</span><br><span class="line">        rrhs.negative = <span class="literal">false</span>;</span><br><span class="line">        res = *<span class="keyword">this</span> - rrhs;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BigInt BigInt::<span class="keyword">operator</span>-(<span class="keyword">const</span> BigInt&amp;rhs) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    BigInt res;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (rhs.zero)</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>-&gt;zero) &#123;</span><br><span class="line">        res = *<span class="keyword">this</span>;</span><br><span class="line">        res.negative = !negative;</span><br><span class="line">        <span class="keyword">if</span> (rhs.zero)</span><br><span class="line">            res.zero = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">uint32_t</span>&gt; long_vec, short_vec;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (vcompare(<span class="keyword">this</span>-&gt;vnum, rhs.vnum) == <span class="number">-1</span>) &#123;</span><br><span class="line">        long_vec = rhs.vnum;</span><br><span class="line">        short_vec = <span class="keyword">this</span>-&gt;vnum;</span><br><span class="line">        res.negative = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        long_vec = <span class="keyword">this</span>-&gt;vnum;</span><br><span class="line">        short_vec = rhs.vnum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    res.vnum = vsub(long_vec, short_vec);</span><br><span class="line">    res.zero = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (negative &amp;&amp; rhs.negative) &#123; <span class="comment">// 负减负</span></span><br><span class="line">        res.negative = !res.negative;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (negative &amp;&amp; !rhs.negative) &#123; <span class="comment">//负减正</span></span><br><span class="line">        res.negative = <span class="literal">true</span>;</span><br><span class="line">        res.vnum = vadd(vnum, rhs.vnum);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (!negative &amp;&amp; rhs.negative) &#123; <span class="comment">//正减负</span></span><br><span class="line">        res.negative = <span class="literal">false</span>;</span><br><span class="line">        res.vnum = vadd(vnum, rhs.vnum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BigInt BigInt::<span class="keyword">operator</span>*(<span class="keyword">const</span> BigInt&amp;rhs) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    BigInt res;</span><br><span class="line">    <span class="keyword">if</span> (rhs.zero || <span class="keyword">this</span>-&gt;zero) &#123;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    res.vnum = vmul(<span class="keyword">this</span>-&gt;vnum, rhs.vnum);  <span class="comment">//正乘正，负乘负</span></span><br><span class="line">    res.zero = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((negative &amp;&amp; !rhs.negative) || (!negative &amp;&amp; rhs.negative)) &#123; <span class="comment">//负乘正，正乘负</span></span><br><span class="line">        res.negative = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BigInt BigInt::<span class="keyword">operator</span>/(<span class="keyword">const</span> BigInt&amp;rhs) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    BigInt res;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">BigInt <span class="title">cacBigInt</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">istringstream</span> <span class="title">is</span><span class="params">(str)</span></span>;</span><br><span class="line">    <span class="keyword">char</span> op;</span><br><span class="line">    BigInt lnum, rnum, res;</span><br><span class="line">    is &gt;&gt; lnum &gt;&gt; op &gt;&gt; rnum;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">#ifndef NDEBUG</span></span><br><span class="line"><span class="comment">DEBUG(lnum);</span></span><br><span class="line"><span class="comment">DEBUG(op);</span></span><br><span class="line"><span class="comment">DEBUG(rnum);</span></span><br><span class="line"><span class="comment">#endif</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">    <span class="keyword">switch</span>(op) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'+'</span>:</span><br><span class="line">            res = lnum + rnum; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'-'</span>:</span><br><span class="line">            res = lnum - rnum; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'*'</span>:</span><br><span class="line">            res = lnum * rnum; <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'/'</span>:</span><br><span class="line">            res = lnum / rnum; <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::ifstream <span class="title">inf</span><span class="params">(<span class="string">"cal.txt"</span>)</span></span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> line;</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">std</span>::getline(inf, line) &amp;&amp; !line.empty()) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"=="</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">auto</span> t_start = <span class="built_in">std</span>::chrono::high_resolution_clock::now();</span><br><span class="line"></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; cacBigInt(line) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> t_end = <span class="built_in">std</span>::chrono::high_resolution_clock::now();</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="built_in">std</span>::fixed &lt;&lt; <span class="built_in">std</span>::setprecision(<span class="number">5</span>) &lt;&lt; <span class="string">"---Caculate time: "</span></span><br><span class="line">                  &lt;&lt; <span class="built_in">std</span>::chrono::duration&lt;<span class="keyword">double</span>, <span class="built_in">std</span>::micro&gt;(t_end - t_start).count()</span><br><span class="line">                  &lt;&lt; <span class="string">" μs---"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"=="</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    inf.close();</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+              <a href="/tags/Algorithms/" rel="tag"># Algorithms</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/08/17/linux-fork/" rel="prev" title="Linux下fork函数及pthread函数的总结">
+      <i class="fa fa-chevron-left"></i> Linux下fork函数及pthread函数的总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/10/01/java-env-set/" rel="next" title="ubuntu下2种配置oracle jdk的方法">
+      ubuntu下2种配置oracle jdk的方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/09/22/big-number/";
+    this.page.identifier = "2016/09/22/big-number/";
+    this.page.title = "超大整数实现及其四则运算";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="为了Spark使用HDFS，所以先配置Hadoop集群，系统参数： 123456789101112131415DISTRIB_ID&#x3D;UbuntuDISTRIB_RELEASE&#x3D;16.04DISTRIB_CODENAME&#x3D;xenialDISTRIB_DESCRIPTION&#x3D;&quot;Ubuntu 16.04.2 LTS&quot;NAME&#x3D;&amp;quo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04下配置Hadoop 2.7.3集群">
+<meta property="og:url" content="http://notes.maxwi.com/2017/03/09/hadoop-configure-ubuntu/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="为了Spark使用HDFS，所以先配置Hadoop集群，系统参数： 123456789101112131415DISTRIB_ID&#x3D;UbuntuDISTRIB_RELEASE&#x3D;16.04DISTRIB_CODENAME&#x3D;xenialDISTRIB_DESCRIPTION&#x3D;&quot;Ubuntu 16.04.2 LTS&quot;NAME&#x3D;&amp;quo">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-03-09T02:54:46.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.387Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Hadoop">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2017/03/09/hadoop-configure-ubuntu/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Ubuntu 16.04下配置Hadoop 2.7.3集群 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2017/03/09/hadoop-configure-ubuntu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 16.04下配置Hadoop 2.7.3集群
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-03-09 10:54:46" itemprop="dateCreated datePublished" datetime="2017-03-09T10:54:46+08:00">2017-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index"><span itemprop="name">Hadoop</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/03/09/hadoop-configure-ubuntu/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/09/hadoop-configure-ubuntu/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>13 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>为了Spark使用HDFS，所以先配置Hadoop集群，系统参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">DISTRIB_ID&#x3D;Ubuntu</span><br><span class="line">DISTRIB_RELEASE&#x3D;16.04</span><br><span class="line">DISTRIB_CODENAME&#x3D;xenial</span><br><span class="line">DISTRIB_DESCRIPTION&#x3D;&quot;Ubuntu 16.04.2 LTS&quot;</span><br><span class="line">NAME&#x3D;&quot;Ubuntu&quot;</span><br><span class="line">VERSION&#x3D;&quot;16.04.2 LTS (Xenial Xerus)&quot;</span><br><span class="line">ID&#x3D;ubuntu</span><br><span class="line">ID_LIKE&#x3D;debian</span><br><span class="line">PRETTY_NAME&#x3D;&quot;Ubuntu 16.04.2 LTS&quot;</span><br><span class="line">VERSION_ID&#x3D;&quot;16.04&quot;</span><br><span class="line">HOME_URL&#x3D;&quot;http:&#x2F;&#x2F;www.ubuntu.com&#x2F;&quot;</span><br><span class="line">SUPPORT_URL&#x3D;&quot;http:&#x2F;&#x2F;help.ubuntu.com&#x2F;&quot;</span><br><span class="line">BUG_REPORT_URL&#x3D;&quot;http:&#x2F;&#x2F;bugs.launchpad.net&#x2F;ubuntu&#x2F;&quot;</span><br><span class="line">VERSION_CODENAME&#x3D;xenial</span><br><span class="line">UBUNTU_CODENAME&#x3D;xenial</span><br></pre></td></tr></table></figure>
+<p>Hadoop版本为官方当前最新的2.7.3：<a href="http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz" target="_blank" rel="noopener">http://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz</a></p>
+<a id="more"></a>
+
+<h1 id="基础准备"><a href="#基础准备" class="headerlink" title="基础准备"></a>基础准备</h1><p><strong>配置Java环境</strong><br>可以参见这里：<a href="http://notes.maxwi.com/2016/10/01/java-env-set/">http://notes.maxwi.com/2016/10/01/java-env-set/</a></p>
+<p><strong>配置SSH免密登录</strong><br>可以参见这里：<a href="http://notes.maxwi.com/2017/03/09/linux-ssh-nopasswd/">http://notes.maxwi.com/2017/03/09/linux-ssh-nopasswd/</a></p>
+<p><strong>配置hosts映射</strong><br>首先准备三台机器，可以是虚拟机。三台机器根据其ip将分别命名为：</p>
+<table>
+<thead>
+<tr>
+<th>主机名</th>
+<th>ip</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>master</td>
+<td>192.168.1.187</td>
+</tr>
+<tr>
+<td>slave1</td>
+<td>192.168.1.188</td>
+</tr>
+<tr>
+<td>slave2</td>
+<td>192.168.1.188</td>
+</tr>
+</tbody></table>
+<p>修改各主机名，主机名文件为：<code>/etc/hostname</code>，分别将三台主机的名称修改为对应的名称。<br>修改hosts文件映射，hosts文件路径为<code>/etc/hosts</code>，修改三台主机的hosts内容为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1	localhost</span><br><span class="line"></span><br><span class="line">192.168.1.187 master</span><br><span class="line">192.168.1.188 slave1</span><br><span class="line">192.168.1.189 slave2</span><br></pre></td></tr></table></figure>
+<p><strong>注意：一定要删除ubuntu系统自动添加的那行<code>127.0.1.1 master</code></strong></p>
+<p>上面这里是每一台机器都需要进行的配置，也可以配置其中一台的java环境，然后直接克隆后再修改其他内容</p>
+<p>然后重启机器，主机名就可以生效了，这里面其实主机名的修改并不是必须的，包括hosts映射也非必须，只是为了后面方便配置，同时也为了避免由于ip变动而需要修改各配置文件。</p>
+<p>推荐先根据官方的单节点配置方法走一遍，熟悉一下过程：<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html</a><br>当然也可以直接看下面的内容。</p>
+<h1 id="配置Hadoop"><a href="#配置Hadoop" class="headerlink" title="配置Hadoop"></a>配置Hadoop</h1><h2 id="下载并配置hadoop环境变量"><a href="#下载并配置hadoop环境变量" class="headerlink" title="下载并配置hadoop环境变量"></a>下载并配置hadoop环境变量</h2><p>这里将hadoop安装在/usr/hadoop目录，下面的操作非特殊说明都是在master上进行操作，为了避免权限问题，在root用户下操作，其实普通用户也是一样的。<br><strong>下载hadoop 2.7.3</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz</span><br></pre></td></tr></table></figure>
+<p>这里选择的是清华的源，可以根据需要选择<br><strong>解压并进入到hadoop目录</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf hadoop-2.7.3.tar.gz</span><br><span class="line">mv hadoop-2.7.3 &#x2F;usr&#x2F;hadoop</span><br><span class="line">cd &#x2F;usr&#x2F;hadoop</span><br></pre></td></tr></table></figure>
+<p>将以下环境变量添加到自己的<code>~/.bashrc</code>或者<code>/etc/profile</code>中，这里为了方便就直接放到<code>~/.bashrc</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># for Hadoop</span><br><span class="line">export HADOOP_HOME&#x3D;&#x2F;usr&#x2F;hadoop</span><br><span class="line">PATH&#x3D;$PATH:$HADOOP_HOME&#x2F;bin:$HADOOP_HOME&#x2F;sbin</span><br><span class="line">CLASSPATH&#x3D;$CLASSPATH:$HADOOP_HOME&#x2F;share&#x2F;hadoop&#x2F;common&#x2F;hadoop-common-2.7.3.jar:$HADOOP_HOME&#x2F;share&#x2F;hadoop&#x2F;common&#x2F;lib&#x2F;commons-cli-1.2.jar:$HADOOP_HOME&#x2F;share&#x2F;hadoop&#x2F;mapreduce&#x2F;hadoop-mapreduce-client-core-2.7.3.jar</span><br><span class="line"></span><br><span class="line">export HADOOP_PREFIX&#x3D;&#x2F;usr&#x2F;hadoop</span><br><span class="line">export LD_LIBRARY_PATH&#x3D;$LD_LIBRARY_PATH:$HADOOP_HOME&#x2F;lib&#x2F;native&#x2F;</span><br><span class="line"></span><br><span class="line">PATH&#x3D;$PATH:$HOME&#x2F;bin</span><br><span class="line">export PATH</span><br><span class="line">export CLASSPATH</span><br></pre></td></tr></table></figure>
+
+<p><strong>PATH变量中最好不要添加sbin目录，因为会与spark的sbin目录下的脚本冲突，需要启动的时候直接手动到相应目录下启动相应服务</strong></p>
+<p>scp到其他机器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp ~/.bashrc slave1:~</span><br><span class="line">scp ~/.bashrc slave2:~</span><br></pre></td></tr></table></figure>
+<p>分别在三台机器上执行source使环境变量生效：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<p>如果环境变量配置都没有问题的话，现在已经可以查看到hadoop的版本等信息了：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop version</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证Hadoop单机配置"><a href="#验证Hadoop单机配置" class="headerlink" title="验证Hadoop单机配置"></a>验证Hadoop单机配置</h2><p>修改<code>/usr/hadoop</code>目录下的<code>etc/hadoop/hadoop-env.sh</code>文件，修改Java路径：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br></pre></td></tr></table></figure>
+
+<p>通过拷贝hadoop的配置文件，并在调用hadoop自带示例中的正则表达式来搜索配置文件，并将结果输出到output：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/hadoop</span><br><span class="line">cp etc/hadoop/*.xml input</span><br><span class="line">hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.3.jar grep input output 'dfs[a-z.]+'</span><br><span class="line">cat output/*</span><br></pre></td></tr></table></figure>
+<p>如果执行中没有报错，并且输出如下，则表示hadoop环境变量配置完成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1	dfsadmin</span><br></pre></td></tr></table></figure>
+
+<p>下面开始配置集群环境</p>
+<h2 id="修改Hadoop配置文件"><a href="#修改Hadoop配置文件" class="headerlink" title="修改Hadoop配置文件"></a>修改Hadoop配置文件</h2><p>下面的操作都是在hadoop目录之中的<code>etc/hadoop</code>路径下，即<code>/usr/hadoop/etc/hadoop</code>，该文件夹存放了hadoop所需要的几乎所有配置文件。<br>需要修改的配置文件主要有：<code>hadoop-env.sh</code>, <code>core-site.xml</code>, <code>hdfs-site.xml</code>, <code>mapred-site.xml</code>, <code>yarn-env.sh</code>, <code>yarn-site.xml</code>, <code>slaves</code></p>
+<p><strong>hadoop-env.sh</strong><br>除了上面需要在其中添加JAVA_HOME之外，还需要增加HADOOP_PREFIX变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_PREFIX&#x3D;&#x2F;usr&#x2F;hadoop</span><br></pre></td></tr></table></figure>
+
+<p><strong>core-site.xml</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;fs.defaultFS&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;hdfs:&#x2F;&#x2F;master:9000&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;description&gt;HDFS的URL，文件系统：&#x2F;&#x2F;namenode标识:端口号&lt;&#x2F;description&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hadoop.tmp.dir&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;&#x2F;usr&#x2F;hadoop&#x2F;tmp&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;description&gt;namenode上本地的hadoop临时文件夹&lt;&#x2F;description&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>这里指定master为namenode及相应端口号，并设置本地的临时文件夹为hadoop安装目录下的tmp，该目录需要手动创建</p>
+<p><strong>hdfs-site.xml</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.name.dir&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;&#x2F;usr&#x2F;hadoop&#x2F;hdfs&#x2F;name&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;description&gt;namenode上存储hdfs名字空间元数据&lt;&#x2F;description&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.data.dir&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;&#x2F;usr&#x2F;hadoop&#x2F;hdfs&#x2F;data&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;description&gt;datanode上数据块的物理存储位置&lt;&#x2F;description&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.replication&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;3&lt;&#x2F;value&gt;</span><br><span class="line">    &lt;description&gt;副本个数，配置默认是3，应小于datanode机器数量&lt;&#x2F;description&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>指定namenode和datanode数据的存储位置（需要手动创建），以及副本个数</p>
+<p><strong>mapred-site.xml</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;mapreduce.framework.name&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;yarn&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;mapreduce.jobhistory.address&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master:10020&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master:19888&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>yarn-env.sh</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># export JAVA_HOME&#x3D;&#x2F;home&#x2F;y&#x2F;libexec&#x2F;jdk1.6.0&#x2F;</span><br><span class="line">export JAVA_HOME&#x3D;&#x2F;usr&#x2F;lib&#x2F;jvm&#x2F;java-8-oracle</span><br></pre></td></tr></table></figure>
+<p>修改JAVA_HOME</p>
+<p><strong>yarn-site.xml</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Site specific YARN configuration properties --&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.nodemanager.aux-services&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;mapreduce_shuffle&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.resourcemanager.hostname&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.resourcemanager.webapp.address&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master:8099&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.resourcemanager.address&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master:8032&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.resourcemanager.scheduler.address&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master:8030&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.resourcemanager.resource-tracker.address&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;master:8031&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>指定resourcemanager为master，并修改相应端口，这些端口如果不修改都有默认值，可以根据自己的网络情况进行修改</p>
+<p><strong>slaves</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">master</span><br><span class="line">slave1</span><br><span class="line">slave2</span><br></pre></td></tr></table></figure>
+<p>master即是namenode，同时也是datanode<br>创建刚才配置中用到的文件夹：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/hadoop/hdfs/data /usr/hadoop/hdfs/name /usr/hadoop/tmp</span><br></pre></td></tr></table></figure>
+
+<p>配置完成之后将该配置复制到slave1和slave2上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp -r &#x2F;usr&#x2F;hadoop slave1:&#x2F;usr&#x2F;</span><br><span class="line">scp -r &#x2F;usr&#x2F;hadoop slave2:&#x2F;usr&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h1 id="启动Hadoop集群"><a href="#启动Hadoop集群" class="headerlink" title="启动Hadoop集群"></a>启动Hadoop集群</h1><h2 id="启动hdfs"><a href="#启动hdfs" class="headerlink" title="启动hdfs"></a>启动hdfs</h2><p>记得其他2个slave上的环境变量都已经生效<br>在master上格式化namenode：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs namenode -format</span><br></pre></td></tr></table></figure>
+<p>在master上执行以下命令启动hadoop：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start-dfs.sh</span><br></pre></td></tr></table></figure>
+<p>启动完成之后在master上启动jps命令查看其java进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">4949 NameNode</span><br><span class="line">5415 Jps</span><br><span class="line">5289 SecondaryNameNode</span><br><span class="line">5102 DataNode</span><br></pre></td></tr></table></figure>
+<p>查看slave1和slave2上进程：<br>slave1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1827 DataNode</span><br><span class="line">1903 Jps</span><br></pre></td></tr></table></figure>
+<p>slave2:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2024 Jps</span><br><span class="line">1950 DataNode</span><br></pre></td></tr></table></figure>
+<p>找一个能够访问master的浏览器通过50070端口可以查看namenode和datanode情况<a href="http://192.168.1.187:50070/dfshealth.html#tab-overview" target="_blank" rel="noopener">http://192.168.1.187:50070/dfshealth.html#tab-overview</a><br>如果看到Summary中的Live Nodes显示为3，并且<code>Configured Capacity</code>中显示的DFS总大小刚好为三台机器的可用空间大小，则表示已经配置没有问题</p>
+<h2 id="启动yarn"><a href="#启动yarn" class="headerlink" title="启动yarn"></a>启动yarn</h2><p>执行以下命令启动yarn：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start-yarn.sh</span><br></pre></td></tr></table></figure>
+<p>使用jps查看master及2个slave：<br>master：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">5476 ResourceManager</span><br><span class="line">4949 NameNode</span><br><span class="line">5289 SecondaryNameNode</span><br><span class="line">5883 Jps</span><br><span class="line">5102 DataNode</span><br><span class="line">5775 NodeManager</span><br></pre></td></tr></table></figure>
+<p>slave1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1827 DataNode</span><br><span class="line">1971 NodeManager</span><br><span class="line">2079 Jps</span><br></pre></td></tr></table></figure>
+<p>slave2：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2198 Jps</span><br><span class="line">1950 DataNode</span><br><span class="line">2095 NodeManager</span><br></pre></td></tr></table></figure>
+<p>根据我们的配置，通过master的端口8099端口可以在web端查看集群的内存、CPU、及任务调度情况<a href="http://192.168.1.187:8099/cluster" target="_blank" rel="noopener">http://192.168.1.187:8099/cluster</a>，如果显示的<code>Memory Total</code>、<code>Active Nodes</code>等内容与你的实际相符，则表示yarn启动成功<br>通过各节点的8042端口可以查看各节点的资源情况，如查看slave1的节点信息：<a href="http://192.168.1.188:8042" target="_blank" rel="noopener">http://192.168.1.188:8042</a></p>
+<p>也可以通过以下命令查看hdfs的全局信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfsadmin -report</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">Configured Capacity: 59837042688 (55.73 GB)</span><br><span class="line">Present Capacity: 41174982656 (38.35 GB)</span><br><span class="line">DFS Remaining: 40219471872 (37.46 GB)</span><br><span class="line">DFS Used: 955510784 (911.25 MB)</span><br><span class="line">DFS Used%: 2.32%</span><br><span class="line">Under replicated blocks: 0</span><br><span class="line">Blocks with corrupt replicas: 0</span><br><span class="line">Missing blocks: 0</span><br><span class="line">Missing blocks (with replication factor 1): 0</span><br><span class="line"></span><br><span class="line">-------------------------------------------------</span><br><span class="line">Live datanodes (3):</span><br><span class="line"></span><br><span class="line">Name: 192.168.1.188:50010 (slave1)</span><br><span class="line">Hostname: slave1</span><br><span class="line">Decommission Status : Normal</span><br><span class="line">Configured Capacity: 19945680896 (18.58 GB)</span><br><span class="line">DFS Used: 318500864 (303.75 MB)</span><br><span class="line">Non DFS Used: 6454030336 (6.01 GB)</span><br><span class="line">DFS Remaining: 13173149696 (12.27 GB)</span><br><span class="line">DFS Used%: 1.60%</span><br><span class="line">DFS Remaining%: 66.05%</span><br><span class="line">Configured Cache Capacity: 0 (0 B)</span><br><span class="line">Cache Used: 0 (0 B)</span><br><span class="line">Cache Remaining: 0 (0 B)</span><br><span class="line">Cache Used%: 100.00%</span><br><span class="line">Cache Remaining%: 0.00%</span><br><span class="line">Xceivers: 1</span><br><span class="line">Last contact: Fri Mar 10 00:57:51 CST 2017</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Name: 192.168.1.187:50010 (master)</span><br><span class="line">Hostname: master</span><br><span class="line">Decommission Status : Normal</span><br><span class="line">Configured Capacity: 19945680896 (18.58 GB)</span><br><span class="line">DFS Used: 318500864 (303.75 MB)</span><br><span class="line">Non DFS Used: 6287228928 (5.86 GB)</span><br><span class="line">DFS Remaining: 13339951104 (12.42 GB)</span><br><span class="line">DFS Used%: 1.60%</span><br><span class="line">DFS Remaining%: 66.88%</span><br><span class="line">Configured Cache Capacity: 0 (0 B)</span><br><span class="line">Cache Used: 0 (0 B)</span><br><span class="line">Cache Remaining: 0 (0 B)</span><br><span class="line">Cache Used%: 100.00%</span><br><span class="line">Cache Remaining%: 0.00%</span><br><span class="line">Xceivers: 1</span><br><span class="line">Last contact: Fri Mar 10 00:57:51 CST 2017</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Name: 192.168.1.189:50010 (slave2)</span><br><span class="line">Hostname: slave2</span><br><span class="line">Decommission Status : Normal</span><br><span class="line">Configured Capacity: 19945680896 (18.58 GB)</span><br><span class="line">DFS Used: 318509056 (303.75 MB)</span><br><span class="line">Non DFS Used: 5920800768 (5.51 GB)</span><br><span class="line">DFS Remaining: 13706371072 (12.77 GB)</span><br><span class="line">DFS Used%: 1.60%</span><br><span class="line">DFS Remaining%: 68.72%</span><br><span class="line">Configured Cache Capacity: 0 (0 B)</span><br><span class="line">Cache Used: 0 (0 B)</span><br><span class="line">Cache Remaining: 0 (0 B)</span><br><span class="line">Cache Used%: 100.00%</span><br><span class="line">Cache Remaining%: 0.00%</span><br><span class="line">Xceivers: 1</span><br><span class="line">Last contact: Fri Mar 10 00:57:49 CST 2017</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动Job-History"><a href="#启动Job-History" class="headerlink" title="启动Job History"></a>启动Job History</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mr-jobhistory-daemon.sh start historyserver</span><br></pre></td></tr></table></figure>
+<p>master上的jps进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">8720 Jps</span><br><span class="line">7809 DataNode</span><br><span class="line">8628 JobHistoryServer</span><br><span class="line">7656 NameNode</span><br><span class="line">8155 ResourceManager</span><br><span class="line">8285 NodeManager</span><br><span class="line">7999 SecondaryNameNode</span><br></pre></td></tr></table></figure>
+<p>查看web页面：<a href="http://192.168.1.187:19888" target="_blank" rel="noopener">http://192.168.1.187:19888</a></p>
+<p>至此整个Hadoop集群已经启动成功<br>Job history并不是必须的</p>
+<h1 id="验证HDFS"><a href="#验证HDFS" class="headerlink" title="验证HDFS"></a>验证HDFS</h1><p>查看当前hdfs中的文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -ls /</span><br></pre></td></tr></table></figure>
+<p>在hdfs上创建一个文件夹：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -mkdir /test</span><br></pre></td></tr></table></figure>
+<p>再次查看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@master:/usr/hadoop# hdfs dfs -ls /</span><br><span class="line">Found 1 items</span><br><span class="line">drwxr-xr-x   - root supergroup          0 2017-03-09 23:44 /test</span><br></pre></td></tr></table></figure>
+<p>将hadoop目录下的README.txt存储到hdfs上刚刚创建的test文件夹：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -put README.txt /test</span><br></pre></td></tr></table></figure>
+<p>查看：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> hdfs dfs -ls /test</span><br><span class="line">Found 1 items</span><br><span class="line">-rw-r--r--   3 root supergroup       1366 2017-03-09 23:47 /test/README.txt</span><br></pre></td></tr></table></figure>
+<p>也可以通过web页面查看刚刚在hdfs上创建的文件：<a href="http://192.168.1.187:50070/explorer.html" target="_blank" rel="noopener">http://192.168.1.187:50070/explorer.html</a><br>查看hadoop目录下我们创建的hdfs文件夹name和data中的文件也可以看到其中有了变化，因为我们的副本数为3，所以各节点上应该都会有数据：<br>master：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">hdfs&#x2F;</span><br><span class="line">├── data</span><br><span class="line">│  ├── current</span><br><span class="line">│  │  ├── BP-109196317-192.168.1.187-1489073016129</span><br><span class="line">│  │  │  ├── current</span><br><span class="line">│  │  │  │  ├── finalized</span><br><span class="line">│  │  │  │  │  └── subdir0</span><br><span class="line">│  │  │  │  │      └── subdir0</span><br><span class="line">│  │  │  │  │          ├── blk_1073741825</span><br><span class="line">│  │  │  │  │          └── blk_1073741825_1001.meta</span><br><span class="line">│  │  │  │  ├── rbw</span><br><span class="line">│  │  │  │  └── VERSION</span><br><span class="line">│  │  │  ├── scanner.cursor</span><br><span class="line">│  │  │  └── tmp</span><br><span class="line">│  │  └── VERSION</span><br><span class="line">│  └── in_use.lock</span><br><span class="line">└── name</span><br><span class="line">    ├── current</span><br><span class="line">    │  ├── edits_inprogress_0000000000000000001</span><br><span class="line">    │  ├── fsimage_0000000000000000000</span><br><span class="line">    │  ├── fsimage_0000000000000000000.md5</span><br><span class="line">    │  ├── seen_txid</span><br><span class="line">    │  └── VERSION</span><br><span class="line">    └── in_use.lock</span><br><span class="line"></span><br><span class="line">11 directories, 12 files</span><br></pre></td></tr></table></figure>
+<p>2个slave中的文件内容完全一致：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">hdfs&#x2F;</span><br><span class="line">├── data</span><br><span class="line">│  ├── current</span><br><span class="line">│  │  ├── BP-109196317-192.168.1.187-1489073016129</span><br><span class="line">│  │  │  ├── current</span><br><span class="line">│  │  │  │  ├── finalized</span><br><span class="line">│  │  │  │  │  └── subdir0</span><br><span class="line">│  │  │  │  │      └── subdir0</span><br><span class="line">│  │  │  │  │          ├── blk_1073741825</span><br><span class="line">│  │  │  │  │          └── blk_1073741825_1001.meta</span><br><span class="line">│  │  │  │  ├── rbw</span><br><span class="line">│  │  │  │  └── VERSION</span><br><span class="line">│  │  │  ├── scanner.cursor</span><br><span class="line">│  │  │  └── tmp</span><br><span class="line">│  │  └── VERSION</span><br><span class="line">│  └── in_use.lock</span><br><span class="line">└── name</span><br><span class="line"></span><br><span class="line">10 directories, 6 files</span><br></pre></td></tr></table></figure>
+
+<p>更多HDFS命令参考这里：<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html#ls" target="_blank" rel="noopener">https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html#ls</a></p>
+<h1 id="验证Hadoop集群"><a href="#验证Hadoop集群" class="headerlink" title="验证Hadoop集群"></a>验证Hadoop集群</h1><p>使用hadoop自带的一个wordcount程序来验证集群的运行情况<br>通过hadoop程序目录下的三个文件创建文本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat NOTICE.txt LICENSE.txt README.txt &gt;&gt; word.txt</span><br></pre></td></tr></table></figure>
+<p>为了能够在网页端看到执行进度，可以多执行几次，或者手动上传一个较大的文件，我这里通过vim的p命令，连点了几次，产生了一个60多M的文件后，再将其复制一份word2，然后：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat word2 &gt;&gt; word.txt</span><br></pre></td></tr></table></figure>
+<p>一次增加60M，可以多执行几次，我这里增加到300M<br>将word.txt上传的hdfs的test目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -put word.txt /test</span><br></pre></td></tr></table></figure>
+<p>查看hdfs的test目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@slave1:&#x2F;usr&#x2F;hadoop# hdfs dfs -ls &#x2F;test</span><br><span class="line">Found 2 items</span><br><span class="line">-rw-r--r--   3 root supergroup       1366 2017-03-09 23:47 &#x2F;test&#x2F;README.txt</span><br><span class="line">-rw-r--r--   3 root supergroup  315737315 2017-03-10 00:06 &#x2F;test&#x2F;word.txt</span><br></pre></td></tr></table></figure>
+<p>注意此时我的操作是在slave1中，当hadoop集群配置完成之后，可以在任意通过连通namenode的节点上访问HDFS。</p>
+<p>运行hadoop分布式运算，这里为了测试，我们在slave2节点上提交任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar /usr/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.3.jar wordcount /test /out</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">17/03/10 00:11:15 INFO client.RMProxy: Connecting to ResourceManager at master/192.168.1.187:8032</span><br><span class="line">17/03/10 00:11:15 INFO input.FileInputFormat: Total input paths to process : 2</span><br><span class="line">17/03/10 00:11:16 INFO mapreduce.JobSubmitter: number of splits:4</span><br><span class="line">17/03/10 00:11:16 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1489073635090_0001</span><br><span class="line">17/03/10 00:11:16 INFO impl.YarnClientImpl: Submitted application application_1489073635090_0001</span><br><span class="line">17/03/10 00:11:16 INFO mapreduce.Job: The url to track the job: http://master:8099/proxy/application_1489073635090_0001/</span><br><span class="line">17/03/10 00:11:16 INFO mapreduce.Job: Running job: job_1489073635090_0001</span><br><span class="line">17/03/10 00:11:23 INFO mapreduce.Job: Job job_1489073635090_0001 running in uber mode : false</span><br><span class="line">17/03/10 00:11:23 INFO mapreduce.Job:  map 0% reduce 0%</span><br><span class="line">17/03/10 00:11:31 INFO mapreduce.Job:  map 25% reduce 0%</span><br><span class="line">17/03/10 00:11:36 INFO mapreduce.Job:  map 41% reduce 0%</span><br><span class="line">17/03/10 00:11:39 INFO mapreduce.Job:  map 42% reduce 0%</span><br><span class="line">17/03/10 00:11:42 INFO mapreduce.Job:  map 54% reduce 0%</span><br><span class="line">17/03/10 00:11:43 INFO mapreduce.Job:  map 54% reduce 8%</span><br><span class="line">17/03/10 00:11:45 INFO mapreduce.Job:  map 55% reduce 8%</span><br><span class="line">17/03/10 00:11:46 INFO mapreduce.Job:  map 63% reduce 8%</span><br><span class="line">17/03/10 00:11:48 INFO mapreduce.Job:  map 68% reduce 8%</span><br><span class="line">17/03/10 00:11:49 INFO mapreduce.Job:  map 68% reduce 17%</span><br><span class="line">17/03/10 00:11:51 INFO mapreduce.Job:  map 73% reduce 17%</span><br><span class="line">17/03/10 00:11:54 INFO mapreduce.Job:  map 78% reduce 17%</span><br><span class="line">17/03/10 00:11:58 INFO mapreduce.Job:  map 83% reduce 17%</span><br><span class="line">17/03/10 00:12:01 INFO mapreduce.Job:  map 92% reduce 17%</span><br><span class="line">17/03/10 00:12:02 INFO mapreduce.Job:  map 100% reduce 100%</span><br><span class="line">17/03/10 00:12:03 INFO mapreduce.Job: Job job_1489073635090_0001 completed successfully</span><br></pre></td></tr></table></figure>
+<p>可以看到首先连接了ResourceManager，即master节点<br>现在可以在<a href="http://192.168.1.187:8099/cluster" target="_blank" rel="noopener">http://192.168.1.187:8099/cluster</a>通过浏览器查看任务进度，如果你的word.txt文件太小，可能progress已经为100%</p>
+<p>查看hdfs上的运行结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -cat /out/part-r-00000</span><br></pre></td></tr></table></figure>
+
+<p>输出中会有大量单词的统计，如果都没有报错，则表示Hadoop集群已经配置成功</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p><strong>各节点通过jps命令查看运行正常，但网页端显示Live Nodes并不是3</strong><br>确保hosts中没有将自己的hostname映射到127.0.0.1或127.0.1.1，并且防火墙设置没有问题</p>
+<p><strong>50070端口的web无法访问</strong><br>有可能是格式化namenode之后，hdfs目录下的文件依然存在，可以删除之前创建的namenode和datanode物理存储位置以及tmp文件夹，然后重新创建，并重新格式化namenode之后再执行，记得其他各节点也需要删除相应的目录并重新创建</p>
+<p><strong>配置文件放在单独的文件夹</strong><br>为了便于修改配置文件之后进行不同节点之间的同步，可以将配置文件放在单独的用户文件夹下，然后通过以下环境变量指定配置文件路径即可：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_CONF_DIR=/home/user/conf</span><br></pre></td></tr></table></figure>
+<p><strong>注意：最好将hadoop根据目录下的配置文件夹下的所有文件都拷贝进去，至少根据我们上面的配置文件需要有capacity-scheduler.xml，否则将导致ResourceManager无法启动</strong></p>
+<p><strong>重要的几个环境变量</strong></p>
+<ul>
+<li><code>export HADOOP_CONF_DIR=/home/user/conf</code> 用于指定Hadoop配置文件夹</li>
+<li><code>export HADOOP_USER_NAME=root</code> 指定当前shell访问HDFS的用户名，以免权限不足</li>
+<li><code>HADOOP_PATH=hdfs://127.0.0.1:8020/user/root</code> 指定Hadoop访问路径</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>1.<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html" target="_blank" rel="noopener">Hadoop Cluster Setup</a><br>2.<a href="https://wiki.apache.org/hadoop/ConnectionRefused" target="_blank" rel="noopener">Connection Refused</a><br>3.<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">Hadoop: Setting up a Single Node Cluster</a><br>4.<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/CommandsManual.html" target="_blank" rel="noopener">Hadoop Commands Guide</a><br>5.<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSCommands.html" target="_blank" rel="noopener">HDFS Commands Guide</a><br>6.<a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html" target="_blank" rel="noopener">FileSystemShell</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/09/linux-ssh-nopasswd/" rel="prev" title="Linux下配置SSH免密访问">
+      <i class="fa fa-chevron-left"></i> Linux下配置SSH免密访问
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/10/spark-on-yarn-configure/" rel="next" title="Spark 2.1.0 On Hadoop 2.7集群配置过程">
+      Spark 2.1.0 On Hadoop 2.7集群配置过程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础准备"><span class="nav-number">1.</span> <span class="nav-text">基础准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置Hadoop"><span class="nav-number">2.</span> <span class="nav-text">配置Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#下载并配置hadoop环境变量"><span class="nav-number">2.1.</span> <span class="nav-text">下载并配置hadoop环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证Hadoop单机配置"><span class="nav-number">2.2.</span> <span class="nav-text">验证Hadoop单机配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改Hadoop配置文件"><span class="nav-number">2.3.</span> <span class="nav-text">修改Hadoop配置文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动Hadoop集群"><span class="nav-number">3.</span> <span class="nav-text">启动Hadoop集群</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#启动hdfs"><span class="nav-number">3.1.</span> <span class="nav-text">启动hdfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动yarn"><span class="nav-number">3.2.</span> <span class="nav-text">启动yarn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动Job-History"><span class="nav-number">3.3.</span> <span class="nav-text">启动Job History</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#验证HDFS"><span class="nav-number">4.</span> <span class="nav-text">验证HDFS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#验证Hadoop集群"><span class="nav-number">5.</span> <span class="nav-text">验证Hadoop集群</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题"><span class="nav-number">6.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2017/03/09/hadoop-configure-ubuntu/";
+    this.page.identifier = "2017/03/09/hadoop-configure-ubuntu/";
+    this.page.title = "Ubuntu 16.04下配置Hadoop 2.7.3集群";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>

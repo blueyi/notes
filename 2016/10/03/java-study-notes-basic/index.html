@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"notes.maxwi.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="主要是记录Java中与C++不同的地方，快速浏览，参考书是《Java核心技术 卷I》Java 8 SE API：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;8&#x2F;docs&#x2F;api&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java学习笔记之基础语法">
+<meta property="og:url" content="http://notes.maxwi.com/2016/10/03/java-study-notes-basic/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="主要是记录Java中与C++不同的地方，快速浏览，参考书是《Java核心技术 卷I》Java 8 SE API：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;8&#x2F;docs&#x2F;api&#x2F;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-10-03T11:33:32.000Z">
+<meta property="article:modified_time" content="2020-07-19T11:41:40.387Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="notes">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/10/03/java-study-notes-basic/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Java学习笔记之基础语法 | blueyi's notes</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">blueyi's notes</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/10/03/java-study-notes-basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java学习笔记之基础语法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-10-03 19:33:32" itemprop="dateCreated datePublished" datetime="2016-10-03T19:33:32+08:00">2016-10-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-19 19:41:40" itemprop="dateModified" datetime="2020-07-19T19:41:40+08:00">2020-07-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/10/03/java-study-notes-basic/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/10/03/java-study-notes-basic/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.2k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>主要是记录Java中与C++不同的地方，快速浏览，参考书是《Java核心技术 卷I》<br>Java 8 SE API：<a href="https://docs.oracle.com/javase/8/docs/api/" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/api/</a></p>
+<a id="more"></a>
+<h2 id="HelloWorld"><a href="#HelloWorld" class="headerlink" title="HelloWorld"></a>HelloWorld</h2><p>1.Java中类名的命名方法通常采用驼峰法（CamelCase），java源代码的文件名必须与公共类的名字相同，并以.java作为扩展名。<br>2.Java的运行需要有java虚拟机JVM，使用<code>javac Hello.java</code>将java源代码编译成Hello.class文件，使用<code>java Hello</code>来让JVM加载Hello.class中的内容并执行。JVM的执行入口是java中的main方法，main方法同样需要在一个类中，并且main需要是public的静态方法。下面是一个HelloWorld程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Hello world!"</span>);  <span class="comment">//println默认输出结尾有换行，print输出结尾没有换行</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3.Java中的所有函数都属于某个类的方法（称为类方法而不是成员函数），java的main方法为void，即没有返回值，如果java程序正常退出，则退出代码为0，如果想返回其他退出值，需要调用<code>System.exit()</code>，该函数的参数即为指定的java程序返回值。</p>
+<p>4.Java中注释与C++一样，但<code>/*...*/</code>不支持嵌套，并增加了一种<code>/**...*/</code>的注释方式，这种注释可以自动生成文档</p>
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><p>5.Java中的基本数据类型有4类，8种：<br><strong>整型：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>占用存储空间</th>
+<th>表示范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>byte</td>
+<td>1字节</td>
+<td>-128 ~ 127</td>
+</tr>
+<tr>
+<td>short</td>
+<td>2字节</td>
+<td>-2^15 ~ 2^15-1</td>
+</tr>
+<tr>
+<td>int</td>
+<td>4字节</td>
+<td>-2^32 ~ 2^31-1</td>
+</tr>
+<tr>
+<td>long</td>
+<td>8字节</td>
+<td>-2^63 ~ 2^63-1</td>
+</tr>
+</tbody></table>
+<p>同样支持十进制、八进制和十六进制，默认整数类型都是int型，如果声明为long类型，就需要在数字后接上l或者L<br>Java 7开始支持二进制，以<code>0b</code>为前缀，例如：<code>0b1001</code>即是十进制的9，还可以为了易读在数字字面量加上下划线，如<code>1_024_123</code>，java编译器会自动去掉下划线。<br><strong>浮点型：</strong></p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>占用存储空间</th>
+<th>表示范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>float</td>
+<td>4字节</td>
+<td>-3.403E38 ~ 3.4083E38</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8字节</td>
+<td>-1.798E308 ~ 1.798E308</td>
+</tr>
+</tbody></table>
+<p>科学计数法与C++一样，Java中默认小数类型是double，所以如果要声明float类型，后面需要添加字母f或者F。<br>float有效位数为6~7位，double有效位数为15位<br>有3个用于表示浮点类型溢出或者出错的常量：</p>
+<ul>
+<li><code>-Infinity</code>：负无穷大，例如<code>-1.0/0.0</code></li>
+<li><code>Infinity</code>：正无穷大，例如：<code>1.0/0.0</code></li>
+<li><code>NaN</code>：不是一个数字，例如：<code>0.0/0.0</code></li>
+<li>整数被0除时将产生异常*</li>
+<li>可以使用关键字strctfp来修饰方法，使该方法中的浮点计算采用严格的浮点计算来处理，严格浮点计算更精确，但有可能导致溢出*</li>
+</ul>
+<p><strong>字符类型：</strong><br><code>char</code>：以单引号（<code>&#39;</code>）括住，java字符采用Unicode编码，每个字符占2个字节，所以可以表示中文，也可以采用16进制编码形式表示，如：<br><code>char ch = &#39;\u03C0&#39;;</code>中ch即对应圆周率的字符派，与C++一样，字符中也可以有转义字符，如<code>char ch = &#39;\a&#39;;</code><br><code>\u</code>还可以出现在字符常量或字符串的引号之外，例如main方法可以这样写：<code>public static void main(String\u005B\u005D args)</code><br><em>UTF-16编码采用不同长度的编码表示所有Unicode代码点，代码点（code point）是指一个编码表中的某个字符对应的代码值。Unicode编码通常以U+为前缀，后面跟4位16进制。由于UTF-16只能表示最多65536个字符，Java为了支持多语言，从JDK 5.0靓妈，采用的Unicode代码点可以分成17个级别（code plane），其中第一个级别称为基本的多语言级别（basic multilingual plane），代码点从U+0000到U+FFFF；其余的16个附加级别代码点从U+10000到U+10FFFF，其中包括了一些辅助字符（supplementary character）。在基本的多语言级别中，每个字符用16位表示，通常被称为代码单元（code unit）。而对于那些不在基本语言级别中的辅助字符使用一对连续的代码单元进行编码，这对代码单元区域被称为替代区域（surrogate area），其中U+D800<del>U+DBFF用于表示第一个代码单元，U+DC00</del>U+DFFF用于第二个代码单元。这样的巧妙设计可以很方便的通过一个代码单元知道该编码是一个字符编码，还是一个辅助字符编码的第一或第二部分。例如表示整数集合的数学符号的代码点是U+1D56B，并且是用两个代码单元U+D835和U+DD6B编码的。</em></p>
+<p><strong>Java中强烈建议不要使用char类型，除非是需要对UTF-16代码单元进行操作，最好将需要处理的字符串用抽象数据类型表示</strong></p>
+<p><strong>bool类型：</strong><br><code>boolean</code>：只有两个值<code>true</code>和<code>false</code>，与C++不同的是boolean类型不能转换为整型</p>
+<p>6.Java中不区分变量的声明与定义，只声明为初始化的变量直接使用是错误的，所有变量必须在初始化之后才能使用。<br>7.使用final定义常量，类似C++中的final，const也是java中的保留关键字，但并未使用。常量可以被定义在main方法之外，并且定义为static的类常量，以便可以被其他类方法使用，如果常量被声明为public，那么该常量将可以被其他类方法使用，通常常量的命名为全大写。<br>8.位运算符中<code>&gt;&gt;&gt;</code>将使用0填充高位，<code>&gt;&gt;</code>运算符用符号位填充高位，没有<code>&lt;&lt;&lt;</code>运算符<br>9.java中没有幂运算符，需要使用类Math中的pow方法，该方法默认返回值为double类型。x的a次方调用方法为<code>Math.pow(x, a)</code>，如果想直接可以调用pow而不需要使用Math前缀，可以在源文件顶部通过<code>import static java.lang.Math.*;</code>来导入，注意这句同样需要以分号结尾。<br>10.强制类型转换与C++类似，但boolean类型除外，boolean类型不能与任何数值类型转换，但可以通过<code>b? 1 : 0</code>的方式来获得整型值。可以使用Math.round()方法获取最接近的整数值，该方法返回值为long，例如：<code>double x = 9.997; int nx = (int) Math.round(x);</code>中nx的值为10<br>11.java中不存在逗号运算符，但for循环中可以使用逗号分隔表达式列表。</p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p>12.java中没有内置的字符串类型，而是在标准Java类库中提供一个String类来处理字符串，Java中每个用双引号括起来的字符串都是String类的一个实例。<br>13.Java中当将一个非字符串使用+号与字符串拼接时，将被自动转换为字符串<br>14.Java中的字符串类String中的字符串是不可变字符串，即无法修改某个字符，类似于C++中的字符串常量或字符串字面值。<br>15.Java中的字符串不能通过==号来判等，需要使用类方法equals，<code>&quot;Hello&quot;.equals(greeting)</code>，如果忽略大小写则可使用equalsIgnoreCase方法。==号在java中只能判断两个字符串是否放在同一个位置上，java中只有字符串常量在同一个位置上共享，而被+或substring等操作产生的字符串并不共享。<br>16.空串””是长度为0的字符串，判空使用<code>if (str.length() == 0)</code>或<code>if (str.equals(&quot;&quot;))</code>，声明的String可以是null，所以如果要检查一个字符串即不为空，也不是null，需要使用<code>if (str != null &amp;&amp; str.length() != 0)</code>，直接在null上调用方法会出错<br>17.Java中的字符串是由char序列组成，而char类型是由采用UTF-16编码表示Unicode代码点的代码单元，也就是一个字符是占用2个字节的，而length方法刚好返回的是采用UTF-16编码表示的给定字符串所需要的代码单元的数量。如果想得到字符串的实际长度，也就是字符串所占用的代码点</p>
+<p>10.通过String的+号来连接字符串或单个字符通过+号添加到字符串末尾时效率比较低，可以通过StringBuilder类来构建字符串，效率更高，该类在Java 5.0之后加入，前身是StringBuffer，他们API相同，但StringBuilder支持多线程。用法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">StringBuilder builder = <span class="keyword">new</span> StringBuilder();  <span class="comment">//创建一个字符串构造器</span></span><br><span class="line">builder.append(ch);  <span class="comment">//将字符ch追加到builder</span></span><br><span class="line">builder.append(str);  <span class="comment">//将字符串str追加到builder</span></span><br><span class="line">String newstr = builder.toString();  <span class="comment">//调用toString将字符串构建器中的字符序列转成字符串</span></span><br></pre></td></tr></table></figure>
+<p>StringBuilder相当于支持在原地修改的字符串</p>
+<h2 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h2><h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><p>1.Java中通过将类Scanner对象与标准输入流<code>System.in</code>关联起来来实现输入操作，Scanner类定义在java.util包中，当某个类不是定义在java.lang包中时，必须通过import指令将相应的包加载进来。<br>2.Scanner对象通过方法nextLine方法获取输入流中的一行，通过next读取一个以空白分隔的字符串，通过nextInt方法获取一个整数，nextDouble方法获取一个浮点数；hasNext检测输出中是否还有其他单词，相应的有hasNextInt、hasNextDouble。<br>用法举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Scanner in = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.println(<span class="string">"What's your name:"</span>);</span><br><span class="line">        String name = in.next();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"How old are you:"</span>);</span><br><span class="line">        <span class="keyword">int</span> age = in.nextInt();</span><br><span class="line">        </span><br><span class="line">        System.out.println(<span class="string">"How many dollar you spend:"</span>);</span><br><span class="line">        <span class="keyword">double</span> money = in.nextDouble();</span><br><span class="line">        </span><br><span class="line">        System.out.println(<span class="string">"Hello, "</span> + name + <span class="string">" , your age is "</span> + age + <span class="string">" and have spent "</span> + money + <span class="string">" dollars."</span>);</span><br><span class="line"></span><br><span class="line">        in.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="格式化输出"><a href="#格式化输出" class="headerlink" title="格式化输出"></a>格式化输出</h3><p>1.Java中的System.out.printf()函数可以像C语言中的printf一样进行格式化输出。<br>2.System.out.printf支持分组的分隔符输出，例如System.out.printf(“%,.2f”, 10000.0 / 3.0);的输出结果为3,333.33<br>当然printf还支持其他很多格式化输出标志，可以参见官方API：<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax</a><br>3.printf中可以使用s转换符格式化任意的对象，对于任意实现了Formattable接口的对象都将调用formatTo方法，否则将调用toString方法。<br>4.可以使用静态的String.format方法创建一个格式化的字符串，而不是打印输出，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String message = String.format(<span class="string">"Hello, %s. Next year, you'll be %d"</span>, name, age);</span><br></pre></td></tr></table></figure>
+<p>5.java中有非常多针对时间的格式化输出控制字符，并且可以通过%号后面紧跟参数索引及$来指定复用某个参数。如下面输出当前日期，格式为月 日, 年：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.printf(<span class="string">"%1$s %2$tB %2$te, %2$tY"</span>, <span class="string">"Now date:"</span>, <span class="keyword">new</span> Date());</span><br></pre></td></tr></table></figure>
+<p>注意$前面的序号是指后面的参数序列，从左到右从1开始记，t表示格式化输出时间，t后面跟的B、e、Y分别表示月的完整拼写、两位数字的月、4位数字的年。</p>
+<h3 id="文件输入与输出"><a href="#文件输入与输出" class="headerlink" title="文件输入与输出"></a>文件输入与输出</h3><p>1.读取文件需要用File对象构造一个Scanner对象，由于默认情况下字符串构造的Scanner对象中包含的是字符串本身，所以需要使用File对象来构造，下面的Paths.get方法返回的就是一个File对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Scanner in = <span class="keyword">new</span> Scanner(Paths.get(<span class="string">"myfile.txt"</span>));</span><br></pre></td></tr></table></figure>
+<p>Scanner的用法与读写字符串是一样的。</p>
+<p>2.对于文件的输出使用的是PrintWriter对象，该对象可以直接通过一个表示文件名的字符串来构造：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PrintWriter out = <span class="keyword">new</span> PrintWriter(<span class="string">"myfile.txt"</span>);</span><br></pre></td></tr></table></figure>
+<p>可以像System.out一样来对PrintWriter对象使用print、println等命令<br>3.可以使用System.getProperty方法来获取当前程序的启动路径<br>4.对于打开文件失败时有可能是由于文件不存在引起的异常需要在main方法中用throws子句标记，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> FileNotFoundException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  Scanner in = <span class="keyword">new</span> Scanner(Paths.get(<span class="string">"myfile.txt"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>5.java中可以使用重定向将任意文件绑定到System.in和System.out：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java MyProg &lt; myfile.txt &gt; output.txt</span><br></pre></td></tr></table></figure>
+
+<h2 id="控制流程"><a href="#控制流程" class="headerlink" title="控制流程"></a>控制流程</h2><p>1.Java的控制流程结构与C/C++的控制流程结构一样，只有很少的例外情况，没有goto，但break语句可以带标签，利用它可以实现从内层循环跳出的目的，C语言中可以使用goto实现。<br>注意for循环是在每次迭代之后更新计数器或类似的变量来控制迭代次数<br>2.Java支持类似C++11中的foreach循环来遍历数组或一个实现了Iterable接口的类对象（ArrayList）中的所有元素。语法：<code>for (type variable : collection) statement</code>，与C++11中用法基本完全一样。</p>
+<h2 id="大数值类"><a href="#大数值类" class="headerlink" title="大数值类"></a>大数值类</h2><p>Java的java.math包中有两个可用于计算任意长度和精度的数值类：BigInteger和BigDecimal。普通数值需要使用valueOf方法转换为大数值，由于Java不支持运算符重载，所以常见的四则运算都需要通过调用方法来实现，例如<code>BigInteger d = c.multiply(b.add(BigInteger.valueOf(2))); //d = c * (b + 2)</code></p>
+<h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>1.Java中有2种数组声明方法：<code>int[] a;</code>或者<code>int a[];</code>，这样只是声明数组变量a，并没有将a初始化为一个真正的数组，需要使用new运算符创建数组，或者在声明时直接创建：<code>int[] a = new int[10];</code>，数组a中含有10个元素。Java中数组一旦创建，其大小也无法改变，如果想创建可变大小的数组，需要使用另一种数组结构——数组列表（array list）。通过array.length属性获取数组长度，注意length是属性，后面不加方法调用符（()）。<br>2.使用Arrays.toString(a)方法可以打印出数组a中所有的数值。<br>3.使用new方法创建一个数组时，如果是数字数组，所有元素都会被初始化为0，boolean数组的元素会被初始化为false，对象数组的元素则初始化为一个特殊值null，这表示这些元素还未存放任何对象。如：<code>String[] names = new String[10];</code>，names中的10个元素都是null，要获得空串，必须手动赋值，如：<code>for (int i = 0; i &lt; 10; i++) names[i] = &quot;&quot;;</code><br>4.可以在创建数组时使用花括号元素对数组进行初始化，此时不需要关键字new，也不需要指定数组大小：<code>int[] arr = {1, 2, 3, 4, 5};</code>；还可以创建一个匿名数组：<code>new int[] {21, 33, 44, 215, 36};</code>，使用这种方法可以在不创建新变量的情况下重新初始化一个数组，如：<code>arr = new int[] {11, 12, 13, 14, 15};</code>，其等价于<code>int[] anonymous = {11, 12, 13, 14, 15}; arr = anonymous;</code><br>Java中可以创建长度为0的数组，数组长度为0与null不同。<br>5.Java通过Arrays类的copyTo的方法拷贝数组，而直接通过赋值运算符只相当于C++中的引用，例如<code>int[] luckyNumbers = arr;</code>此时luckyNumbers与arr指向同一个数组，luckyNumbers只相当于arr的别名，而<code>int[] luckyNumbers = Arrays.copyof(arr, arr.length);</code>则将arr中的元素逐一拷贝到luckyNumbers数组中，该方法还可以用来增加数组的大小：<code>luckyNumbers = Arrays.copyof(arr, 2 * arr.length);</code><br>Java中的数组类似于C++中分配在堆上的数组。<br>6.Java的命令行参数存储在args中，与C++不同的是其第一个元素不是程序名，而是确确实实的第一个命令行参数。</p>
+<p>7.java.util.Arrays中包含很多用于数组的实用函数，比如前面的toString（返回括号包含，逗号分隔的数组元素的字符串），copyOf（拷贝字符串），sort（排序），binarySearch（二分查找），fill（快速填充数组元素），equals（比较两个数组元素是否相同）等。<br>下面是一个举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LuckyNumber</span> </span>&#123;</span><br><span class="line">    <span class="comment">//从一个长度为length中序列中随机抽取luckyNumber个不重复的数， 并按升序输出</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Scanner in = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.print(<span class="string">"Your total number:"</span>);</span><br><span class="line">        <span class="keyword">int</span> length = in.nextInt();</span><br><span class="line">        System.out.print(<span class="string">"Your lucky number:"</span>);</span><br><span class="line">        <span class="keyword">int</span> luckyNumber = in.nextInt();</span><br><span class="line">        <span class="keyword">int</span>[] total = <span class="keyword">new</span> <span class="keyword">int</span>[length];</span><br><span class="line">        <span class="comment">//生成一个1~n的序列</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; total.length; ++i)</span><br><span class="line">            total[i] = i + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span>[] lucky = <span class="keyword">new</span> <span class="keyword">int</span>[luckyNumber];</span><br><span class="line">        <span class="comment">//随机选择luckyNumber个数，通过使用Math.random函数来生成一个随机下标，然后从序列中选取该下标对应的数，</span></span><br><span class="line">        <span class="comment">//并将最后一个数移到该位置之后，从剩下的n-1个数中选取下一个数</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; lucky.length; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">int</span> r = (<span class="keyword">int</span>)(Math.random() * length);  <span class="comment">//Math.random产生一个0~1的随机数，含0，不含1</span></span><br><span class="line">            lucky[i] = total[r];  <span class="comment">//将该下标中的数字取出</span></span><br><span class="line">            total[r] = total[length - <span class="number">1</span>];  <span class="comment">//移出被取出的数字，确保不重复</span></span><br><span class="line">            --length;</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(lucky);  <span class="comment">//排序数组</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> l : lucky)</span><br><span class="line">            System.out.printf(<span class="string">"%d "</span>, l);</span><br><span class="line">        System.out.println();</span><br><span class="line">        in.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>8.二维数组声明方式为<code>int[][] arr = new int[n][m]</code>，获取其中一维的长度可用<code>arr[0].length</code>，java中的多维数组也是数组的数组，当然也支持直接在声明时初始化，如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[][] arr = </span><br><span class="line">&#123;</span><br><span class="line">  &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;,</span><br><span class="line">  &#123;<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>二维数组的一个举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[][] arr = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>][<span class="number">10</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr[<span class="number">0</span>].length; i++)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; arr.length; j++)</span><br><span class="line">                arr[i][j] = i + j;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span>[] r : arr) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> a : r)</span><br><span class="line">                System.out.printf(<span class="string">"%d\t"</span>, a);</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>9.由于Java中的多维数组是数组的数组，所以可以创建不规则的二维数组（即第一行的元素个数不同），并且可以直接交换两行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] temp = arr[i];</span><br><span class="line">arr[i] = arr[i + <span class="number">1</span>];</span><br><span class="line">arr[i + <span class="number">1</span>] = temp;</span><br></pre></td></tr></table></figure>
+
+<p>Java中创建一个形如<code>double[][] arr = new double[10][6];</code>与C++中的<code>double arr[10][6];//创建一个10行6列的二维数组</code>不与同，也不同于<code>double (*arr)[6] = new double[10][6];//创建一个指向含有6个元素的数组的指针，该指针指向含有10个元素的数组的首地址</code>。而是等同于分配一个包含10个指针的数组，然后指针数组的每一个元素被填充了一个包含6个数字的数组：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span>** arr = <span class="keyword">new</span> <span class="keyword">double</span>*[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">  arr[i] = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">6</span>];</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/notes/" rel="tag"># notes</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/10/01/java-env-set/" rel="prev" title="ubuntu下2种配置oracle jdk的方法">
+      <i class="fa fa-chevron-left"></i> ubuntu下2种配置oracle jdk的方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/11/03/java-study-notes-oop/" rel="next" title="Java学习笔记之面向对象">
+      Java学习笔记之面向对象 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HelloWorld"><span class="nav-number">1.</span> <span class="nav-text">HelloWorld</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本数据类型"><span class="nav-number">2.</span> <span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">3.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入输出"><span class="nav-number">4.</span> <span class="nav-text">输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#输入"><span class="nav-number">4.1.</span> <span class="nav-text">输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化输出"><span class="nav-number">4.2.</span> <span class="nav-text">格式化输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件输入与输出"><span class="nav-number">4.3.</span> <span class="nav-text">文件输入与输出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制流程"><span class="nav-number">5.</span> <span class="nav-text">控制流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大数值类"><span class="nav-number">6.</span> <span class="nav-text">大数值类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组"><span class="nav-number">7.</span> <span class="nav-text">数组</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">blueyi</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">740k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">11:12</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://blueyi.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://notes.maxwi.com/2016/10/03/java-study-notes-basic/";
+    this.page.identifier = "2016/10/03/java-study-notes-basic/";
+    this.page.title = "Java学习笔记之基础语法";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blueyi.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+    </div>
+</body>
+</html>
