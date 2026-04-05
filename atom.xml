@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>blueyi&#39;s notes</title>
+  <icon>http://notes.maxwi.com/icon.png</icon>
+  <subtitle>Follow Excellence,Success will chase you!</subtitle>
+  <link href="http://notes.maxwi.com/atom.xml" rel="self"/>
+  
+  <link href="http://notes.maxwi.com/"/>
+  <updated>2026-04-04T16:00:00.000Z</updated>
+  <id>http://notes.maxwi.com/</id>
+  
+  <author>
+    <name>blueyi</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LLM 使用能力提升（通用向）：由浅入深与完整 Agent 维度</title>
+    <link href="http://notes.maxwi.com/2026/04/05/ai/llm-agent-capability-playbook/"/>
+    <id>http://notes.maxwi.com/2026/04/05/ai/llm-agent-capability-playbook/</id>
+    <published>2026-04-04T16:00:00.000Z</published>
+    <updated>2026-04-04T16:00:00.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文从&lt;strong&gt;底层约束&lt;/strong&gt;出发，系统整理日常对话中的 Prompt 设计、&lt;strong&gt;完整 Agent 维度模型&lt;/strong&gt;（说明为何仅有 Soul &amp;#x2F; Memory &amp;#x2F; Skill 仍不足）、&lt;strong&gt;多 Agent 编排&lt;/strong&gt;与&lt;strong&gt;编码 Agent&lt;/strong&gt; 的实战技巧，并补充知识库与文档组织的通用原则。适用于产品、研发与个人使用者，不绑定某一款 IDE 或编排框架。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;English abstract:&lt;/strong&gt; A systematic playbook for LLM and agent use: why techniques work under limited context, prompt design by depth, a ten-dimension agent model (beyond persona&amp;#x2F;memory&amp;#x2F;skills), multi-agent orchestration patterns and contracts, coding-agent practices, and documentation layout tradeoffs—framework-agnostic.&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
+    
+    
+    <category term="LLM" scheme="http://notes.maxwi.com/tags/LLM/"/>
+    
+    <category term="Agent" scheme="http://notes.maxwi.com/tags/Agent/"/>
+    
+    <category term="Prompt" scheme="http://notes.maxwi.com/tags/Prompt/"/>
+    
+    <category term="多智能体" scheme="http://notes.maxwi.com/tags/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93/"/>
+    
+    <category term="编码助手" scheme="http://notes.maxwi.com/tags/%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B/"/>
+    
+    <category term="上下文工程" scheme="http://notes.maxwi.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>TLE × FlagTree × AscendNPU-IR 技术协同报告</title>
+    <link href="http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/"/>
+    <id>http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/</id>
+    <published>2026-03-21T16:00:00.000Z</published>
+    <updated>2026-03-21T16:00:00.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Triton Language Extension (TLE)、FlagTree 编译器与 AscendNPU-IR 构建了从&lt;strong&gt;算子编程到硬件执行&lt;/strong&gt;的端到端技术融合体系：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TLE&lt;/strong&gt;：通过编译提示（Hints）机制扩展 Triton 语言，传递硬件优化意图&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;FlagTree&lt;/strong&gt;：统一编译框架，解析 Hints 并驱动 MLIR 优化 Pass，实现 TTIR → Linalg IR 转换&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AscendNPU-IR&lt;/strong&gt;：分层开放中间表示，承接 Linalg IR，在 HFusion&amp;#x2F;HIVM 层完成昇腾硬件深度优化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;核心成果&lt;/strong&gt;：关键算子性能提升 10%~20%，为 AI 开发者提供”编写一次、多端高效运行”的统一编程体验。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
+    
+    <category term="Triton" scheme="http://notes.maxwi.com/tags/Triton/"/>
+    
+    <category term="MLIR" scheme="http://notes.maxwi.com/tags/MLIR/"/>
+    
+    <category term="Ascend" scheme="http://notes.maxwi.com/tags/Ascend/"/>
+    
+    <category term="NPU" scheme="http://notes.maxwi.com/tags/NPU/"/>
+    
+    <category term="编译器" scheme="http://notes.maxwi.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AI Infra 全栈知识体系学习指南</title>
+    <link href="http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/"/>
+    <id>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/</id>
+    <published>2025-02-18T16:00:00.000Z</published>
+    <updated>2025-02-18T16:00:00.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;一份面向AI 基础设施全栈知识体系学习指南，涵盖从算力、数据、训练、推理到 MLOps&amp;#x2F;LLMOps、RAG 与可观测性的完整技术栈，并融入当前主流实践与最新技术趋势。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
+    
+    <category term="MLOps" scheme="http://notes.maxwi.com/tags/MLOps/"/>
+    
+    <category term="LLMOps" scheme="http://notes.maxwi.com/tags/LLMOps/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
+    <link href="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/"/>
+    <id>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</id>
+    <published>2025-02-18T16:00:00.000Z</published>
+    <updated>2025-02-18T16:00:00.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;本文系统梳理：大模型在&lt;strong&gt;日常生活、工作与工程&lt;/strong&gt;中的可应用能力（其中&lt;strong&gt;开发与代码工程&lt;/strong&gt;为最重要的一环）、常用大模型应用平台（含官网&amp;#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
+    
+    
+    <category term="LLM" scheme="http://notes.maxwi.com/tags/LLM/"/>
+    
+    <category term="Prompt" scheme="http://notes.maxwi.com/tags/Prompt/"/>
+    
+    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
+    
+    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
+    
+    <category term="效率" scheme="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/"/>
+    
+    <category term="对话平台" scheme="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker run命令参数</title>
+    <link href="http://notes.maxwi.com/2017/12/21/meta/docker-run/"/>
+    <id>http://notes.maxwi.com/2017/12/21/meta/docker-run/</id>
+    <published>2017-12-21T08:31:54.000Z</published>
+    <updated>2017-12-21T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;&lt;code&gt;docker run&lt;/code&gt;应该是我们日常使用docker中最常用，也最重要的命令。&lt;br&gt;命令格式如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run [OPTIONS] IMAGE [COMMAND] [ARG...]&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/categories/Meta/"/>
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
+    
+    <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>python pip源配置</title>
+    <link href="http://notes.maxwi.com/2017/12/19/dev/python-pip-conf/"/>
+    <id>http://notes.maxwi.com/2017/12/19/dev/python-pip-conf/</id>
+    <published>2017-12-19T08:31:54.000Z</published>
+    <updated>2017-12-19T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;由于种种原因我们可能无法正常连接到python的官方pip源，或者连接速度很慢，或者由于根证书的原因在安装包时会提示连接证书问题，可以通过修改pip的配置来修改为国内其他源，并信任相应的源，避免证书错误，提高包安装速度。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/categories/Dev/"/>
+    
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+    <category term="Python" scheme="http://notes.maxwi.com/tags/Python/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dockerfile的编写</title>
+    <link href="http://notes.maxwi.com/2017/12/14/meta/docker-Dockerfile/"/>
+    <id>http://notes.maxwi.com/2017/12/14/meta/docker-Dockerfile/</id>
+    <published>2017-12-14T08:31:54.000Z</published>
+    <updated>2017-12-14T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;记录Dockerfile的编写规则和用法&lt;/p&gt;
+&lt;p&gt;Dockerfile就是用于构建image的一系列命令和参数构成的脚本，通过&lt;code&gt;docker build -t &amp;lt;image_name:tag&amp;gt; -f &amp;lt;/path/to/Dockerfile&amp;gt; .&lt;/code&gt;来构建。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;docker build&lt;/code&gt;命令从名为&lt;code&gt;Dockerfile&lt;/code&gt;的文件和&lt;code&gt;context&lt;/code&gt;来构建image，context是&lt;code&gt;PATH&lt;/code&gt;（本地目录）或者&lt;code&gt;URL&lt;/code&gt;（Git repository位置）处的文件。context会以递归方式处理，所以PATH的子目录和git的submodules都会处理，同样这里要小心用于作为PATH的目录最好不要有与镜像无关的文件，通常会新建一个空文件夹做为context的PATH。&lt;/p&gt;
+&lt;p&gt;PATH下的&lt;code&gt;.dockerignore&lt;/code&gt;可以用于排除文件和目录。&lt;/p&gt;
+&lt;p&gt;构建工作由Docker守护进程运行，而不是docker的CLI，其中&lt;code&gt;-t&lt;/code&gt;参数用于指定镜像的repository和tag，可以有多个&lt;code&gt;-t&lt;/code&gt;，&lt;code&gt;-f&lt;/code&gt;指定&lt;code&gt;Dockerfile&lt;/code&gt;的路径，最后的&lt;code&gt;.&lt;/code&gt;表示上下文件环境为当前目录。&lt;/p&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker build -t blueyi/python-3.6:dev -f ~/docker/Dockerfile .&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/categories/Meta/"/>
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
+    
+    <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
+    
+    <category term="Dockerfile" scheme="http://notes.maxwi.com/tags/Dockerfile/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>手动下载gcc-4.8.5源码在centos6.9上安装多版本GCC</title>
+    <link href="http://notes.maxwi.com/2017/12/09/infra/gnu-gcc-compile-for-centos6/"/>
+    <id>http://notes.maxwi.com/2017/12/09/infra/gnu-gcc-compile-for-centos6/</id>
+    <published>2017-12-09T08:31:54.000Z</published>
+    <updated>2017-12-09T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;在一个系统较老的centos（6.9）上编译安装gcc4.8.5，系统源里面带的是4.7.2，对C++11中的特性支持不完整，所以需要手动编译一份新版本。&lt;br&gt;以为会很简单，直接下载源码，根据readme配置相关依赖源码，然而最后还是编译的时候报错，所以记录下来。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
+    
+    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GCC在64位系统上编译32位程序遇到的问题</title>
+    <link href="http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/"/>
+    <id>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-06T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;默认的GCC编译选项会编译出与系统一致的输出，例如64位直接使用gcc或g++编译出的为64位程序或库，而32位系统编译的是对应32位的。&lt;br&gt;可以通过在编译时添加选项&lt;code&gt;-m32&lt;/code&gt;或&lt;code&gt;-m64&lt;/code&gt;来指定编译生成的相应版本，如果同时带上这2个选项，只有后一个会生效。&lt;br&gt;问题的关键时多数时候会提示缺少库，这里以64位下编译32位程序为例，给出ubuntu和centos下相关依赖包。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>让普通的VS项目支持编译CUDA代码</title>
+    <link href="http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/"/>
+    <id>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-06T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;当安装了VS之后再安装CUDA套件就可以通过VS创建基于CUDA的项目，但往往我们会需要让之前的老项目支持对CUDA的编译，以便使用CUDA对原有项目中的部分算法加速，网上有各种各样的尝试，搜索SOF之后找到一个超简单的方法，记录之。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+    <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 使用入门</title>
+    <link href="http://notes.maxwi.com/2017/12/06/meta/docker-useful-command/"/>
+    <id>http://notes.maxwi.com/2017/12/06/meta/docker-useful-command/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-06T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;首先 Docker 是由 go 语言编写，基于 Linux 容器技术（LXC）、Namespace、Cgroup 和 UnionFS（联合文件系统）等技术的轻量级操作系统虚拟化解决方案。&lt;/p&gt;
+&lt;p&gt;对于 docker 的概念，可以简单理解如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;镜像（Image）&lt;/strong&gt; 类似于虚拟机的快照，它是只读，可以以镜像为模板创建容器，在容器中的更改不会影响到原镜像。实际镜像是 UnionFS 的层级文件系统。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容器（Container）&lt;/strong&gt; 类似于轻量级的虚拟机，由 docker 镜像实例化而来，docker 推荐一个容器运行一个进程，可见其轻量程度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注册服务器（Registry）&lt;/strong&gt; 提供在线存放 docker 镜像的在线服务，可以理解为 github 所提供的 repository 作用，当我们使用 docker run 运行一个本地不存在的镜像时，默认情况下 docker 会从 docker 官方的 registry 拉取该镜像，然后创建并运行一个容器。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dockerfile&lt;/strong&gt; 可以理解为用于构建镜像的命令和设置组合&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文将从安装开始，记录docker日常使用的一些命令、问题及深一点的理解&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/categories/Meta/"/>
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
+    
+    <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>YUV 数据格式详解</title>
+    <link href="http://notes.maxwi.com/2017/12/05/media/yuv/"/>
+    <id>http://notes.maxwi.com/2017/12/05/media/yuv/</id>
+    <published>2017-12-05T08:31:54.000Z</published>
+    <updated>2017-12-05T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;YUV-数据格式概览&quot;&gt;&lt;a href=&quot;#YUV-数据格式概览&quot; class=&quot;headerlink&quot; title=&quot;YUV 数据格式概览&quot;&gt;&lt;/a&gt;YUV 数据格式概览&lt;/h2&gt;&lt;p&gt;YUV 的原理是把亮度与色度分离，使用 Y、U、V 分别表示亮度，以及蓝色通道与亮度的差值和红色通道与亮度的差值。其中 Y 信号分量除了表示亮度 (luma) 信号外，还含有较多的绿色通道量，单纯的 Y 分量可以显示出完整的黑白图像。U、V 分量分别表示蓝 (blue)、红 (red) 分量信号，它们只含有色彩 (chrominance&amp;#x2F;color) 信息，所以 YUV 也称为 YCbCr，C 意思可以理解为 (component 或者 color)。&lt;/p&gt;
+&lt;p&gt;维基百科上的 RGB 转 YUV 的公式能更好的反应 YUV 与 RGB 的关系，以及为什么称为 YCbCr：&lt;br&gt;&lt;img data-src=&quot;yuv1.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Y 中含有三元色色信息，且有较多的 G，所以他们一起可以显示出全彩的图像。&lt;br&gt;很显然我们可以想到是不是会有 YCgCb、YCgCr 等，针对不同的应用场景，也确实有相关应用研究。&lt;/p&gt;
+&lt;p&gt;如下图，一张从上到下分别为原图、Y、U 和 V：&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&quot;yuv2.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;采用 YUV 而不是使用 RGB，既有历史原因：为了兼容老式黑白电视，因为 YUV 如果只输出 Y 就成了黑白图像了。也有 YUV 自己的其他优点，例如可以根据需要，采用特定的 YUV 存储格式，以降低祼码流的空间占用。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Media" scheme="http://notes.maxwi.com/categories/Media/"/>
+    
+    
+    <category term="Media" scheme="http://notes.maxwi.com/tags/Media/"/>
+    
+    <category term="YUV" scheme="http://notes.maxwi.com/tags/YUV/"/>
+    
+    <category term="Video" scheme="http://notes.maxwi.com/tags/Video/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows 下的多线程应用</title>
+    <link href="http://notes.maxwi.com/2017/12/04/infra/windows-multi-threads/"/>
+    <id>http://notes.maxwi.com/2017/12/04/infra/windows-multi-threads/</id>
+    <published>2017-12-04T08:31:54.000Z</published>
+    <updated>2017-12-04T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Windows 下的多线程中线程锁是通过&lt;code&gt;CRITICAL_SECTION&lt;/code&gt;实现，用以保护用户数据，即当串行代码断执行到该部分时，操作系统将告知下一来执行到此处的线程等待，直到上一个线程离开被保护的代码断，从而通过将需要访问数据的部分放在该代码段来保护数据被多线程访问时的一致性。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>gdb调试coredump文件</title>
+    <link href="http://notes.maxwi.com/2017/12/03/infra/coredump/"/>
+    <id>http://notes.maxwi.com/2017/12/03/infra/coredump/</id>
+    <published>2017-12-03T08:31:54.000Z</published>
+    <updated>2017-12-03T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;生成coredump&quot;&gt;&lt;a href=&quot;#生成coredump&quot; class=&quot;headerlink&quot; title=&quot;生成coredump&quot;&gt;&lt;/a&gt;生成coredump&lt;/h2&gt;&lt;p&gt;当程序运行出现如下错误时：&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;Program terminated with signal 11, Segmentation fault   (core dumped).&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;系统会提示有coredump产生，但通常我们在系统文件夹下并找不到core文件，是因为系统设置产生core文件大小为0，也即不会产生，所以我们这里可以做一些简单的设置：&lt;/p&gt;
+&lt;p&gt;设置core文件产生在当前目录，&lt;code&gt;%e&lt;/code&gt;表示产生core文件的程序名，&lt;code&gt;%p&lt;/code&gt;为pid号：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&amp;quot;core.%e.%p&amp;quot;&lt;/span&gt; &amp;gt; /proc/sys/kernel/core_pattern  &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;查看当前core文件设置的大小：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;ulimit&lt;/span&gt; -c&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;设置core文件大小为无限制：&lt;/p&gt;
+&lt;figure class=&quot;highlight sh&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;ulimit&lt;/span&gt; -c unlimited&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="coredump" scheme="http://notes.maxwi.com/tags/coredump/"/>
+    
+    <category term="gdb" scheme="http://notes.maxwi.com/tags/gdb/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Windows和Linux下的动态链接库的编译、链接和引用相关问题</title>
+    <link href="http://notes.maxwi.com/2017/12/01/infra/dll-lib-export-for-windows/"/>
+    <id>http://notes.maxwi.com/2017/12/01/infra/dll-lib-export-for-windows/</id>
+    <published>2017-12-01T08:31:54.000Z</published>
+    <updated>2017-12-01T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;关于动态链接库和静态链接库的区别可以参考另一篇笔记，其实也就一句话：静态链接库在编译期加载到相应的编译目标中（编译后不再需要），而动态链接库是在运行期由执行目标进行调用（每次运行都需要）。&lt;br&gt;Windows下动态链接库以后缀&lt;code&gt;.dll&lt;/code&gt;标识，Linux下的动态链接库命名为&lt;code&gt;libxxx.so&lt;/code&gt;，其中&lt;code&gt;xxx&lt;/code&gt;为库名称。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Google Test(gtest)使用</title>
+    <link href="http://notes.maxwi.com/2017/11/29/infra/gtest/"/>
+    <id>http://notes.maxwi.com/2017/11/29/infra/gtest/</id>
+    <published>2017-11-29T08:31:54.000Z</published>
+    <updated>2017-11-29T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;GTest简介&quot;&gt;&lt;a href=&quot;#GTest简介&quot; class=&quot;headerlink&quot; title=&quot;GTest简介&quot;&gt;&lt;/a&gt;GTest简介&lt;/h2&gt;&lt;p&gt;GTest是Google官方团队开发的开源的C++单元测试框架，地址为：&lt;a href=&quot;https://github.com/google/googletest&quot;&gt;https://github.com/google/googletest&lt;/a&gt;。该地址下同时有一个名为googlemock的项目，Google Mock可以理解为Google Test的辅助测试框架，Google Mock可以用于实现一个模拟类(mock类)，可以用于完成需要接口交互但相应的类又没有实现的测试。本文不涉及Mock，以后有空了再追加Google Mock的使用。&lt;br&gt;使用Google Test可以实现：&lt;br&gt;1、测试应该是独立并且可以重复的。&lt;br&gt;2、测试应该组织良好，能够清晰的反应出测试代码的结构。&lt;br&gt;3、测试应该是可移植和可利用的。&lt;br&gt;4、当测试失败时，Google Test将会提供尽可能多的测试信息，并继续后面的测试而不是结束测试。&lt;br&gt;5、Google Test会跟踪所有用户定义的新测试，而不需要用户一一再去调用它们。从而将测试人员从繁杂的测试用例调用中解放出来，将更多的精力关注中测试本身上。&lt;br&gt;6、测试实现起来很快，因为Google Test框架能够在测试用例之间共用资源，并且它们之前还不会相互依赖。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="GTest" scheme="http://notes.maxwi.com/tags/GTest/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>tmux简洁教程</title>
+    <link href="http://notes.maxwi.com/2017/11/10/infra/tmux/"/>
+    <id>http://notes.maxwi.com/2017/11/10/infra/tmux/</id>
+    <published>2017-11-10T08:31:54.000Z</published>
+    <updated>2017-11-10T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;tmux主要的功能有两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;终端利用，可以在一个terminal开启多个shell的session，这样就不需要vim一个terminal，命令又要需要一个，其他服务还要再开一个了。&lt;/li&gt;
+&lt;li&gt;断线保证任务在后台继续执行，以及当你上线后保证原来打开的多个窗口与断线之前完全一样。以后就不用再使用screen了&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="tmux" scheme="http://notes.maxwi.com/tags/tmux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Makefile极简教程</title>
+    <link href="http://notes.maxwi.com/2017/11/09/infra/makefile/"/>
+    <id>http://notes.maxwi.com/2017/11/09/infra/makefile/</id>
+    <published>2017-11-09T08:31:54.000Z</published>
+    <updated>2017-11-09T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;关于Makefile的编写和&lt;code&gt;make&lt;/code&gt;命令的简单应用，快速了解Makefile的编写规则，更多功能将在以后的使用中慢慢增加。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Makefile" scheme="http://notes.maxwi.com/tags/Makefile/"/>
+    
+    <category term="make" scheme="http://notes.maxwi.com/tags/make/"/>
+    
+    <category term="cmake" scheme="http://notes.maxwi.com/tags/cmake/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为Linux系统导入根证书</title>
+    <link href="http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/"/>
+    <id>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</id>
+    <published>2017-10-13T23:06:58.000Z</published>
+    <updated>2017-10-13T23:06:58.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;公司里面通常都会为了信息安全而要求个人电脑通过公司的根证书访问SSL加密的链接，如果系统里面没有根证书不管是浏览器还是需要访问SSL加密网络的系统命令都会出现证书相关错误。虽然这些证书错误都可以通过其他一些设置绕过去，但还是直接设置一下系统根证书更方便，一劳永逸（自己公司，忽略安全性）。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker可用的镜像加速器</title>
+    <link href="http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/"/>
+    <id>http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/</id>
+    <published>2017-10-13T23:06:58.000Z</published>
+    <updated>2017-10-13T23:06:58.000Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;普通用户无法运行docker命令&quot;&gt;&lt;a href=&quot;#普通用户无法运行docker命令&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/categories/Meta/"/>
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
+    
+    <category term="docker" scheme="http://notes.maxwi.com/tags/docker/"/>
+    
+  </entry>
+  
+</feed>

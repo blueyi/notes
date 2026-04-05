@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"notes.maxwi.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"solarized dark"},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="条件编译是由一批预处理器指令，通过指定一些限定的条件，有选择性地对源代码进行预处理，从而实现条件编译。后续的编译、链接等过程都是在预处理之后的代码上进行的，所以预处理之后的代码通常要精简很多（这里精简的思想是包含那个引入的头文件的），无意义的编译指令，根据条件编译代码不需要编译的代码，还有注释都会有预处理之后忽略掉。常用的预的处理器指令主要有（方括号中为后面需要跟的内容）：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C&#x2F;C++拾遗之条件编译">
+<meta property="og:url" content="http://notes.maxwi.com/2016/07/27/dev/cpp-gleaning-conditional-compile/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="条件编译是由一批预处理器指令，通过指定一些限定的条件，有选择性地对源代码进行预处理，从而实现条件编译。后续的编译、链接等过程都是在预处理之后的代码上进行的，所以预处理之后的代码通常要精简很多（这里精简的思想是包含那个引入的头文件的），无意义的编译指令，根据条件编译代码不需要编译的代码，还有注释都会有预处理之后忽略掉。常用的预的处理器指令主要有（方括号中为后面需要跟的内容）：">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-07-27T06:29:21.000Z">
+<meta property="article:modified_time" content="2016-07-27T06:29:21.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="C++拾遗">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/07/27/dev/cpp-gleaning-conditional-compile/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://notes.maxwi.com/2016/07/27/dev/cpp-gleaning-conditional-compile/","path":"2016/07/27/dev/cpp-gleaning-conditional-compile/","title":"C/C++拾遗之条件编译"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C/C++拾遗之条件编译 | blueyi's notes</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/bookmark.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blueyi's notes</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/07/27/dev/cpp-gleaning-conditional-compile/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C&#x2F;C++拾遗之条件编译 | blueyi's notes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C/C++拾遗之条件编译
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-07-27 14:29:21" itemprop="dateCreated datePublished" datetime="2016-07-27T14:29:21+08:00">2016-07-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>3 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>条件编译是由一批预处理器指令，通过指定一些限定的条件，有选择性地对源代码进行预处理，从而实现条件编译。后续的编译、链接等过程都是在预处理之后的代码上进行的，所以预处理之后的代码通常要精简很多（这里精简的思想是包含那个引入的头文件的），无意义的编译指令，根据条件编译代码不需要编译的代码，还有注释都会有预处理之后忽略掉。常用的预的处理器指令主要有（方括号中为后面需要跟的内容）：</p>
+<span id="more"></span>
+
+<p><strong>#空指令： 无意义，预处理时会被忽略</strong><br><strong>#include [file_name]： 包含一个源代码文件，通常是头文件</strong><br><strong>#define [args] [可选的常量]： 定义宏</strong><br><strong>#undef [args]：取消已定义的宏</strong><br><strong>#if [args]： 如果给定条件为真，则编译下面代码，args必须是已定义的常量宏，或者未定义</strong><br><strong>#ifdef [args]：如果宏已经定义，则编译下面代码</strong><br><strong>#ifndef [args]：如果宏没有定义，则编译下面代码</strong><br><strong>#elif [args]：如果前面的#if给定条件不为真，当前条件为真，则编译下面代码</strong><br><strong>#endif：结束一个#if……#else条件编译块</strong><br><strong>#error [sentence]：停止编译并显示错误信息</strong><br><strong>#line [number] [file_name]：修改变量__LINE__和__FILE__的值</strong></p>
+<p>注意有两个特殊的运算符：#运算符和##运算符<br>下面以代码举例：<br>头文件：<br>macro.h</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MACRO_H  <span class="comment">//防止头文件被重复包含</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MACRO_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line">#   <span class="comment">//空指令，没有任何意义</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">/* !MACRO_H */</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>源文件：<br>macro.cpp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;macro.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PI 3.1415926   <span class="comment">//#define指令</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CUBE(x) (x)*(x)*(x)  <span class="comment">//带参数的#define指令</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> AGE(x) <span class="string">&quot;My age is &quot;</span> #x   <span class="comment">//#运算符用于将后面的参数转成字符串</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CON(x, y, z) x##y##z  <span class="comment">//##运算符将其两侧的参数合并为一个符号，注意x, y, z必须为数字</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEBUG 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> RUN 1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NODEBUG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IS_COMPILE</span></span><br><span class="line"><span class="meta">#<span class="keyword">undef</span> IS_COMPILE   <span class="comment">//取消宏定义</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::cout &lt;&lt; PI &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">CUBE</span>(PI + PI) &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">AGE</span>(<span class="number">25</span>) &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="built_in">CON</span>(<span class="number">18</span>, <span class="number">19</span>, <span class="number">20</span>) &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> DEBUG  <span class="comment">//#if后面必须是个常量，如果DEBUG为真，则编译其后的代码，直到#elif，或#else，或#endif</span></span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Debug&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> RUN  <span class="comment">//同#if，与控制语句else if作用一样</span></span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Run&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;NONE&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> NODEUBG  <span class="comment">//等价于#if defined NODEUBG</span></span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;NoDebug&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> IS_COMPILE</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;is compile&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> NODEUBG  <span class="comment">//等价于#if !defined NODEUBG</span></span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;no NoDebug&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">line</span> 15 <span class="string">&quot;my_macro.cpp&quot;</span>  <span class="comment">//更改当前行为第15行，文件名为my_macro.cpp，也就是修改__LINE__和__FILE__变量的值</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> !defined(__cplusplus)   <span class="comment">//如果没有定义__cplusplus则报错误#error+其后的字符串内容</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">error</span> C++ compiler required.</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码通过g++ 4.8.4预处理（命令是g++ -E -std&#x3D;c++11 macro.cpp）之后的代码如下（忽略掉包含的头文件iostream部分）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">&quot;macro.cpp&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;/usr/include/stdc-predef.h&quot;</span> <span class="number">1</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;macro.cpp&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;macro.h&quot;</span> <span class="number">1</span></span><br><span class="line"># <span class="number">10</span> <span class="string">&quot;macro.h&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;/usr/include/c++/4.8/iostream&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"># <span class="number">36</span> <span class="string">&quot;/usr/include/c++/4.8/iostream&quot;</span> <span class="number">3</span></span><br><span class="line">       </span><br><span class="line"># <span class="number">37</span> <span class="string">&quot;/usr/include/c++/4.8/iostream&quot;</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;/usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h&quot;</span> <span class="number">1</span> <span class="number">3</span></span><br><span class="line"># <span class="number">184</span> <span class="string">&quot;/usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h&quot;</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># <span class="number">11</span> <span class="string">&quot;macro.h&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">9</span> <span class="string">&quot;macro.cpp&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">18</span> <span class="string">&quot;macro.cpp&quot;</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="number">3.1415926</span> &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; (<span class="number">3.1415926</span> + <span class="number">3.1415926</span>)*(<span class="number">3.1415926</span> + <span class="number">3.1415926</span>)*(<span class="number">3.1415926</span> + <span class="number">3.1415926</span>) &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;My age is &quot;</span> <span class="string">&quot;25&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="number">181920</span> &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Run&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"># <span class="number">38</span> <span class="string">&quot;macro.cpp&quot;</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;no NoDebug&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"># <span class="number">15</span> <span class="string">&quot;my_macro.cpp&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到代码中少了很多预处理器不需要处理的代码，而且里面已经没有任何预处理指令了，所有剩下的代码都是必须编译并执行的代码。而且return 0的前面一句显示出行号和文件名被#line改成了15、my_macro.cpp</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Dev/" rel="tag"># Dev</a>
+              <a href="/tags/C-%E6%8B%BE%E9%81%97/" rel="tag"># C++拾遗</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/07/25/dev/cpp-gleaning-deep-copy-shallow-copy/" rel="prev" title="C&#x2F;C++拾遗之深拷贝和浅拷贝">
+                  <i class="fa fa-angle-left"></i> C/C++拾遗之深拷贝和浅拷贝
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/07/28/dev/cpp-gleaning-extern-c/" rel="next" title="C&#x2F;C++拾遗之extern &quot;C&quot;">
+                  C/C++拾遗之extern "C" <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2014 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">blueyi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">824k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">12:29</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blueyi","repo":"notes","client_id":"0f8243eb2c8b2207980f","client_secret":"d159633a33519d3b7a48b0ca729032f7d1f38a41","admin_user":"blueyi","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"body":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"63df93fdc32eb42565d0472c33878656"}</script>
+<script src="/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>

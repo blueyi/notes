@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"notes.maxwi.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"solarized dark"},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="C&#x2F;C++中一些之前的学习中没有涉及到和容易模糊的知识点。其他专题标签链接：C++拾遗 构造函数中需要初始化列表初始化的成员在构造函数中需要初始化列表初始化的有如下三种情况    带有const修饰的类成员 ，如const int a   引用成员数据，如 int &p; （可以参见这里C&#x2F;C++拾遗之类成员含引用变量） 带有引用的类变量  （例如类A中含有有引用成员，类B中定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C&#x2F;C++基础知识拾遗">
+<meta property="og:url" content="http://notes.maxwi.com/2016/07/30/dev/cpp-gleaning/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="C&#x2F;C++中一些之前的学习中没有涉及到和容易模糊的知识点。其他专题标签链接：C++拾遗 构造函数中需要初始化列表初始化的成员在构造函数中需要初始化列表初始化的有如下三种情况    带有const修饰的类成员 ，如const int a   引用成员数据，如 int &p; （可以参见这里C&#x2F;C++拾遗之类成员含引用变量） 带有引用的类变量  （例如类A中含有有引用成员，类B中定">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-07-30T11:48:58.000Z">
+<meta property="article:modified_time" content="2016-07-30T11:48:58.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="C++拾遗">
+<meta property="article:tag" content="CPP">
+<meta property="article:tag" content="Dev">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://notes.maxwi.com/2016/07/30/dev/cpp-gleaning/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://notes.maxwi.com/2016/07/30/dev/cpp-gleaning/","path":"2016/07/30/dev/cpp-gleaning/","title":"C/C++基础知识拾遗"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C/C++基础知识拾遗 | blueyi's notes</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/bookmark.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blueyi's notes</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E4%B8%AD%E9%9C%80%E8%A6%81%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E6%88%90%E5%91%98"><span class="nav-number">1.</span> <span class="nav-text">构造函数中需要初始化列表初始化的成员</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E7%9A%84SOLID%E5%8E%9F%E5%88%99"><span class="nav-number">2.</span> <span class="nav-text">面向对象程序设计的SOLID原则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-C-%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.</span> <span class="nav-text">C&#x2F;C++位运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E8%83%BD%E5%A3%B0%E6%98%8E%E4%B8%BA%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">不能声明为虚函数的函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">内联函数优缺点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sizeof-%E2%80%98a%E2%80%99-%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="nav-number">6.</span> <span class="nav-text">sizeof(‘a’)的大小</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E5%81%9A%E4%B8%BA%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">7.</span> <span class="nav-text">需要做为成员函数重载的运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E4%B8%AD%E4%B8%8D%E8%83%BD%E8%A2%AB%E9%87%8D%E8%BD%BD%E7%9A%84%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">8.</span> <span class="nav-text">C++中不能被重载的运算符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81"><span class="nav-number">9.</span> <span class="nav-text">补码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C%E8%AF%AD%E8%A8%80math-h%E4%B8%AD%E7%9A%84abs"><span class="nav-number">10.</span> <span class="nav-text">C语言math.h中的abs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C%E8%AF%AD%E8%A8%80%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99"><span class="nav-number">11.</span> <span class="nav-text">C语言文件读写</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA"><span class="nav-number">12.</span> <span class="nav-text">C++格式化输出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E6%97%B6%E9%97%B4%E7%9B%B8%E5%85%B3%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">13.</span> <span class="nav-text">C++时间相关头文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">14.</span> <span class="nav-text">C++内存布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E6%A0%87%E5%87%86%E5%9C%A8%E5%93%AA%E7%9C%8B"><span class="nav-number">15.</span> <span class="nav-text">C++标准在哪看</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-C-GCC%E7%BC%96%E8%AF%91%E5%99%A8%E6%A0%87%E5%87%86%E5%BA%93%E6%BA%90%E7%A0%81"><span class="nav-number">16.</span> <span class="nav-text">C&#x2F;C++ GCC编译器标准库源码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2016/07/30/dev/cpp-gleaning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C&#x2F;C++基础知识拾遗 | blueyi's notes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C/C++基础知识拾遗
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-07-30 19:48:58" itemprop="dateCreated datePublished" datetime="2016-07-30T19:48:58+08:00">2016-07-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>5.9k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>5 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>C&#x2F;C++中一些之前的学习中没有涉及到和容易模糊的知识点。<br>其他专题标签链接：<a href="http://notes.maxwi.com/tags/C-%E6%8B%BE%E9%81%97/">C++拾遗</a></p>
+<h1 id="构造函数中需要初始化列表初始化的成员"><a href="#构造函数中需要初始化列表初始化的成员" class="headerlink" title="构造函数中需要初始化列表初始化的成员"></a>构造函数中需要初始化列表初始化的成员</h1><p>在构造函数中需要初始化列表初始化的有如下三种情况  </p>
+<ol>
+<li>带有const修饰的类成员 ，如const int a  </li>
+<li>引用成员数据，如 int &p; （可以参见这里<a href="http://notes.maxwi.com/2016/07/15/cpp-gleaning-reference-member/">C&#x2F;C++拾遗之类成员含引用变量</a>）</li>
+<li>带有引用的类变量  （例如类A中含有有引用成员，类B中定义的类型为A的变量）</li>
+</ol>
+<p>static 修饰的变量在类外初始化，const修饰的在参数列表初始化 </p>
+<span id="more"></span>
+
+<h1 id="面向对象程序设计的SOLID原则"><a href="#面向对象程序设计的SOLID原则" class="headerlink" title="面向对象程序设计的SOLID原则"></a>面向对象程序设计的SOLID原则</h1><p>S.O.L.I.D是面向对象设计和编程(OOD&amp;OOP)中几个重要编码原则(Programming Priciple)的首字母缩写。</p>
+<table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>全称</th>
+<th>中文</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SRP</td>
+<td>The Single Responsibility Principle</td>
+<td>单一责任原则</td>
+</tr>
+<tr>
+<td>OCP</td>
+<td>The Open Closed Principle</td>
+<td>开放封闭原则</td>
+</tr>
+<tr>
+<td>LSP</td>
+<td>The Liskov Substitution Principle</td>
+<td>里氏替换原则</td>
+</tr>
+<tr>
+<td>DIP</td>
+<td>The Dependency Inversion Principle</td>
+<td>依赖倒置原则</td>
+</tr>
+<tr>
+<td>ISP</td>
+<td>The Interface Segregation Principle</td>
+<td>接口分离原则</td>
+</tr>
+</tbody></table>
+<h1 id="C-C-位运算符"><a href="#C-C-位运算符" class="headerlink" title="C&#x2F;C++位运算符"></a>C&#x2F;C++位运算符</h1><p>运算符优先级为从上到下递减，&lt;&lt;，&gt;&gt;优先级相同。</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>功能</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>~</td>
+<td>位求反</td>
+<td>~expr</td>
+</tr>
+<tr>
+<td>&lt;&lt;</td>
+<td>左移</td>
+<td>expr1 &lt;&lt; expr2</td>
+</tr>
+<tr>
+<td>&gt;&gt;</td>
+<td>右移</td>
+<td>expr1 &gt;&gt; expr2</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>位与</td>
+<td>expr1 &amp; expr2</td>
+</tr>
+<tr>
+<td>^</td>
+<td>位异或</td>
+<td>expr1 ^ expr2</td>
+</tr>
+<tr>
+<td>一个竖杠</td>
+<td>位或</td>
+<td>expr1</td>
+</tr>
+</tbody></table>
+<p>其中左移&#x2F;右移是指expr1中各位向左&#x2F;右移动expr2位<br>位异或：相异为真，或者有一个为真，另一个为假即为真（或是有一个为真，即为真）。<br><strong>关于位运算的几个用法</strong></p>
+<ol>
+<li><code>x = x &amp; (x - 1);</code>会消掉x的二进制中最后一位为1的位，如7&amp;6&#x3D;0111&amp;0110&#x3D;0110，即将7最后一位1变成了0</li>
+<li><code>(!(x &amp; (x-1)) &amp;&amp; x)</code>，返回1则n为2的正整数幂，根据1中的特点以及2的正整数幂的二进制中只有一个1，如1000表示16，&amp;&amp;x是为了排除0</li>
+<li><code>(x &amp; 1)</code>，如果返回值为0，则x为偶数，如果返回值为1，则x为奇数。</li>
+<li><code>x &lt;&lt; 1</code>相当于乘以2，<code>x &gt;&gt; 1</code>相当于除以2。相应的左多k位就是乘以2^k</li>
+<li><code>x &amp; ((1 &lt;&lt; x) - 1)</code> 表示x mod 2^k</li>
+<li><code>x = x | (x + 1);</code>会消掉x的二进制中最后一位为0的位，如10|11&#x3D;1010|1011&#x3D;1011，即将10的二进制的最后一位0变成了1</li>
+</ol>
+<h1 id="不能声明为虚函数的函数"><a href="#不能声明为虚函数的函数" class="headerlink" title="不能声明为虚函数的函数"></a>不能声明为虚函数的函数</h1><p>虚函数是为了实现动态绑定，不能声明为虚函数的有：</p>
+<ol>
+<li>静态成员函数 （静态成员函数不与任何对象绑定，也没有this指针，所有对象及类共用同一份代码，所以不能是虚函数）</li>
+<li>类外的普通函数； （虚函数本身就是为了实现通过父类的指针来动态绑定到子类的虚函数的，没类自然没的说）</li>
+<li>构造函数；（C++语言规定，网上这个讨论很多，也可以理解为构造函数不能被继承）</li>
+<li>友元函数  （友元函数不能被继承）</li>
+</ol>
+<p>而对于内联函数（inline修饰）是可以声明为虚函数的，只是说，由于虚函数需要在运行时动态绑定（即根据动态类型需要进行虚函数调用），导致内联函数会被编译器在编译函数忽略，而当成普通函数来处理。因为内联函数是指在编译阶段，编译器使用函数的定义体来迭代函数调用语句，从而减少函数的调用来降低函数运行时间，如果内联函数在编译阶段被展开，那么运行时实际上是不存在内联函数的，虚函数定义成内联函数的话，编译器为了支持动态绑定，也就只能忽略内联函数了，毕竟inline关键字也只是给编译器建议，编译器是可以根据需要进行忽略的</p>
+<h1 id="内联函数优缺点"><a href="#内联函数优缺点" class="headerlink" title="内联函数优缺点"></a>内联函数优缺点</h1><p>内联函数是指函数在声明时前面加上关键字inline，用来降低程序的运行时间。编译器在编译阶段将使用内联函数的定义体来替代内联函数调用语句，注意这种替代行为发生在编译阶段而非程序运行阶段（所以虚函数声明成的内联会被编译器忽略）。<br>另外内联函数仅仅是对编译器的内联建议，编译器是否采取你的建议取决于函数是否符合内联的有利条件。如果函数体非常大或者虚函数，那么编译器将忽略函数的内联声明，而将内联函数作为普通函数处理。</p>
+<p>优点：</p>
+<ul>
+<li>它通过避免函数调用所带来的开销来提高程序的运行速度。因为 函数调用发生时，它节省了变量弹栈、压栈的开销和函数执行完返回原现场的开销。</li>
+<li>通过将函数声明为内联，你可以把函数定义放在头文件内，而无需担心编译时遇到函数重复定义的错误</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>因为代码的扩展，内联函数增大了可执行程序的体积。</li>
+<li>内联函数中代码过多，会造成很大的内存消耗</li>
+<li>不允许有循环或者开关语句，如果有的话，执行函数代码时间比调用开销大</li>
+</ul>
+<h1 id="sizeof-‘a’-的大小"><a href="#sizeof-‘a’-的大小" class="headerlink" title="sizeof(‘a’)的大小"></a>sizeof(‘a’)的大小</h1><p>直接看下面这段代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">char</span> c=<span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d %d\n&quot;</span>,<span class="built_in">sizeof</span>(c),<span class="built_in">sizeof</span>(<span class="string">&#x27;a&#x27;</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用gcc以C语言源文件编译运行结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 4</span><br></pre></td></tr></table></figure>
+<p>而使用g++以C++语言源文件编译运行结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 1</span><br></pre></td></tr></table></figure>
+<p>因为：<br>C99标准规定，’a’叫做整型字符常量(integer character constant)，被看成是int型，所以在32位机器上占4字节。<br>ISO C++标准规定，’a’叫做字符字面量(character literal)，被看成是char型，占1字节 </p>
+<h1 id="需要做为成员函数重载的运算符"><a href="#需要做为成员函数重载的运算符" class="headerlink" title="需要做为成员函数重载的运算符"></a>需要做为成员函数重载的运算符</h1><ul>
+<li>只能作为成员函数重载的运算符有：&#x3D;、()、[]、-&gt;、new、delete。</li>
+<li>单目运算符最好重载为成员函数。</li>
+<li>对于复合的赋值运算符如+&#x3D;、-&#x3D;、*&#x3D;、&#x2F;&#x3D;、&amp;&#x3D;、!&#x3D;、~&#x3D;、%&#x3D;、&gt;&gt;&#x3D;、<code>&lt;&lt;=</code>建议重载为成员函数。</li>
+<li>对于其它运算符，建议重载为友元函数。</li>
+</ul>
+<h1 id="C-中不能被重载的运算符"><a href="#C-中不能被重载的运算符" class="headerlink" title="C++中不能被重载的运算符"></a>C++中不能被重载的运算符</h1><ul>
+<li>类属关系运算符<code>.</code></li>
+<li>成员指针运算符<code>.*</code></li>
+<li>作用域运算符<code>::</code></li>
+<li>sizeof运算符</li>
+<li>三目运算符<code>?:</code></li>
+<li>tpeid</li>
+<li>const_cast</li>
+<li>dynamstic_cast</li>
+<li>reinterpret_cast</li>
+<li>static_cast</li>
+</ul>
+<h1 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h1><p>下述描述中原数值是指绝对值，如-5的原数值为5<br>首先记住整数二进制的最高位即表示符号位，符号位为0表示正数，符号为1表示负数。<br>计算机中整数的二进制是以补码的形式存储在内存中的。一个正数的补码和它的原码相同，当然对于正数来说从其补码求原数值直接转化二进制即可。而负数的补码是该数的绝对值的二进制形式按位取反再加1（或者说是该数值的除符号位之外的各位按位取反再加1，符号位为1）。对于负数来说，从其补码求原数值也是除符号位之外按位取反再加1。<br>例如10的原码和补码（假定是2个字节）都是（符号位为0）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000001010</span><br></pre></td></tr></table></figure>
+<p>求-10的补码，直接将上述二进制除符号位按位取反再加1（符号位为1）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1111111111110110</span><br></pre></td></tr></table></figure>
+<p>从-10的补码求其原数值10的二进制，还是除符号位，各位按位取反再加1（符号位为0）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000001010</span><br></pre></td></tr></table></figure>
+<p>转成10进制就是10，加符号位成-10<br>例如：求执行<code>int x = 1; int y = ~x;</code>后y的值<br>首先1在内存中的补码是其原码（还假定是2个字节，4字节也一样）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000001</span><br></pre></td></tr></table></figure>
+<p>按位取反后赋给y：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1111111111111110</span><br></pre></td></tr></table></figure>
+<p>由y的二进制求其原码，由于符号位为1，即负数，所以除符号位按位取反再加1即是y的原数值的二进制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000000000000010</span><br></pre></td></tr></table></figure>
+<p>转成10进制即2，加符号位，y为-2</p>
+<h1 id="C语言math-h中的abs"><a href="#C语言math-h中的abs" class="headerlink" title="C语言math.h中的abs"></a>C语言math.h中的abs</h1><p>C中函数abs申明为 int abs(int num);<br>num为0或正数时，函数返回num值；<br>当num为负数且不是最小的负数时，函数返回num的对应绝对值数，即将内存中该二进制位的符号位取反，并把后面数值位取反加一；<br>当num为最小的负数时（即0x80000000），由于正数里int类型32位表示不了这个数的绝对值，所以依然返回该负数。</p>
+<h1 id="C语言文件读写"><a href="#C语言文件读写" class="headerlink" title="C语言文件读写"></a>C语言文件读写</h1><p>C语言中的文件操作函数定义在stdio.h头文件中，主要的文件操作函数有：</p>
+<ul>
+<li>FILE * fopen(const char *filename, const char *mode);以模式mode打开名为filename的文件</li>
+<li>int fclose(FILE *stream);  &#x2F;&#x2F;关闭一个给定的文件流stream</li>
+<li>fread()和fwrite() 实现对文件流中整块数据的读&#x2F;写</li>
+<li>fgetc()和fputc()  对文件流读&#x2F;写一个字符</li>
+<li>fgets()和fputs()  从指定的文件流读&#x2F;写字符串</li>
+<li>fscanf()和fprintf()  对指定的文件流格式化读&#x2F;读</li>
+<li>ftell() 返回文件流的当前读写位置</li>
+<li>fseek() 将文件流指针当前的读写位置移到指定的位置</li>
+<li>rewind() 将文件指针重新指向指定流的开头</li>
+</ul>
+<h1 id="C-格式化输出"><a href="#C-格式化输出" class="headerlink" title="C++格式化输出"></a>C++格式化输出</h1><p>C++的cout，确切来说是ostream都是可以格式化输出的，格式化输入输出（Input&#x2F;output manipulators）所用到的函数主要定义在头文件ios，istream，ostream和iomanip中，参数链接：<br><a target="_blank" rel="noopener" href="http://en.cppreference.com/w/cpp/io/manip">Input&#x2F;output manipulators</a><br>例如：<br>1.按输出4位以下的整数num，并且不足4位的位补0，如12，输出为0012</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; std::<span class="built_in">setw</span>(<span class="number">4</span>) &lt;&lt; std::<span class="built_in">setfill</span>(<span class="string">&#x27;0&#x27;</span>) &lt;&lt; <span class="number">12</span> &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+<p>2.输出double，保留小数位后4位：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::cout &lt;&lt; std::<span class="built_in">setiosflags</span>(std::ios::fixed) &lt;&lt; std::<span class="built_in">setprecision</span>(<span class="number">6</span>) &lt;&lt; pi &lt;&lt; std::endl;</span><br></pre></td></tr></table></figure>
+
+<h1 id="C-时间相关头文件"><a href="#C-时间相关头文件" class="headerlink" title="C++时间相关头文件"></a>C++时间相关头文件</h1><p>C++下面可以统计时间的相关头文件有两个，一个是C风格的ctime，和C++11中新增的chrono，chrono是一个模板类，当然chrono的优点更多，功能也更强大，可以看SOF上的这个比较和解释<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/36095323/what-is-the-difference-between-chrono-and-ctime">what is the difference between chrono and ctime</a><br>需要注意的是chrono下的函数及类型都定义在头文件std::chrono下。下面来自cppreference上的一个例子给出了它们两个很简单的用法<br>下面我会一句句加注释来解释</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  <span class="comment">//标准输出头文件，没什么好说的</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span>   <span class="comment">//用于格式化输入输出的头文件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span>   <span class="comment">//C++11中新增加的时间操作头文件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ctime&gt;</span>    <span class="comment">//C-style的时间操作头文件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span>   <span class="comment">//C++11中用于多线程的头文件</span></span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// the function f() does some time-consuming work</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">f</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">double</span> d = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> n=<span class="number">0</span>; n&lt;<span class="number">10000</span>; ++n)</span><br><span class="line">       <span class="keyword">for</span>(<span class="type">int</span> m=<span class="number">0</span>; m&lt;<span class="number">10000</span>; ++m)</span><br><span class="line">           d += d*n*m;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::<span class="type">clock_t</span> c_start = std::<span class="built_in">clock</span>();   <span class="comment">// C-style时间函数，返回从当前进程开启到调用该函数时CPU时钟记录的近似时间，必须要除以CLOCKS_PER_SEC来获取以秒为单位的时间</span></span><br><span class="line">    <span class="keyword">auto</span> t_start = std::chrono::high_resolution_clock::<span class="built_in">now</span>();  <span class="comment">//返回当前的最高精确时钟时间，返回值类型为std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt;</span></span><br><span class="line">    <span class="function">std::thread <span class="title">t1</span><span class="params">(f)</span></span>;</span><br><span class="line">    <span class="function">std::thread <span class="title">t2</span><span class="params">(f)</span></span>; <span class="comment">// f() is called on two threads</span></span><br><span class="line">    t<span class="number">1.</span><span class="built_in">join</span>();</span><br><span class="line">    t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line">    std::<span class="type">clock_t</span> c_end = std::<span class="built_in">clock</span>();</span><br><span class="line">    <span class="keyword">auto</span> t_end = std::chrono::high_resolution_clock::<span class="built_in">now</span>();</span><br><span class="line"> </span><br><span class="line"> <span class="comment">//通过clock()两次返回值的差获得其两次调用期间所经历的时间</span></span><br><span class="line"> <span class="comment">//通过模板类std::chrono::duration的count函数来获得指定精度的时间时隔</span></span><br><span class="line">    std::cout &lt;&lt; std::fixed &lt;&lt; std::<span class="built_in">setprecision</span>(<span class="number">2</span>) &lt;&lt; <span class="string">&quot;CPU time used: &quot;</span></span><br><span class="line">              &lt;&lt; <span class="number">1000.0</span> * (c_end-c_start) / CLOCKS_PER_SEC &lt;&lt; <span class="string">&quot; ms\n&quot;</span></span><br><span class="line">              &lt;&lt; <span class="string">&quot;Wall clock time passed: &quot;</span></span><br><span class="line">              &lt;&lt; std::chrono::<span class="built_in">duration</span>&lt;<span class="type">double</span>, std::milli&gt;(t_end-t_start).<span class="built_in">count</span>()</span><br><span class="line">              &lt;&lt; <span class="string">&quot; ms\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出是</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CPU time used: <span class="number">1590.00</span> ms</span><br><span class="line">Wall clock time passed: <span class="number">808.23</span> ms</span><br></pre></td></tr></table></figure>
+
+<h1 id="C-内存布局"><a href="#C-内存布局" class="headerlink" title="C++内存布局"></a>C++内存布局</h1><p>参见这里<a href="http://notes.maxwi.com/2016/06/11/cpp-memory-layout/">实例分析C++内存布局</a></p>
+<h1 id="C-标准在哪看"><a href="#C-标准在哪看" class="headerlink" title="C++标准在哪看"></a>C++标准在哪看</h1><p>SOF上的高票回答给出的非常详细<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/81656/where-do-i-find-the-current-c-or-c-standard-documents">Where do I find the current C or C++ standard documents?</a></p>
+<h1 id="C-C-GCC编译器标准库源码"><a href="#C-C-GCC编译器标准库源码" class="headerlink" title="C&#x2F;C++ GCC编译器标准库源码"></a>C&#x2F;C++ GCC编译器标准库源码</h1><p>可以使用locate来定位所需要的头文件，使用locate之前需要先root运行updatedb来更新locate所需要的数据库文件。如查看string的头文件可能的位置<code>locate string</code>，当然头文件通常都在<code>/usr/include/</code>及其子文件夹下，配合grep筛选查找。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/CPP/" rel="tag"># CPP</a>
+              <a href="/tags/Dev/" rel="tag"># Dev</a>
+              <a href="/tags/C-%E6%8B%BE%E9%81%97/" rel="tag"># C++拾遗</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/07/29/dev/cpp-gleaning-function-with-varying-parameters/" rel="prev" title="C&#x2F;C++拾遗之含有可变形参的函数">
+                  <i class="fa fa-angle-left"></i> C/C++拾遗之含有可变形参的函数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/08/03/infra/linux-soft-hard-link/" rel="next" title="Linux下的软链接和硬链接">
+                  Linux下的软链接和硬链接 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2014 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">blueyi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">824k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">12:29</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blueyi","repo":"notes","client_id":"0f8243eb2c8b2207980f","client_secret":"d159633a33519d3b7a48b0ca729032f7d1f38a41","admin_user":"blueyi","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"body":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"fc915d2862faa5b9c819cd1a809837b1"}</script>
+<script src="/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>

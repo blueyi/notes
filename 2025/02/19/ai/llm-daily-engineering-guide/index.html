@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"notes.maxwi.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12,"onmobile":false},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null,"show_result":false},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"solarized dark"},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":true,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.json","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="本文系统梳理：大模型在日常生活、工作与工程中的可应用能力（其中开发与代码工程为最重要的一环）、常用大模型应用平台（含官网&#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划">
+<meta property="og:url" content="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/index.html">
+<meta property="og:site_name" content="blueyi&#39;s notes">
+<meta property="og:description" content="本文系统梳理：大模型在日常生活、工作与工程中的可应用能力（其中开发与代码工程为最重要的一环）、常用大模型应用平台（含官网&#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-18T16:00:00.000Z">
+<meta property="article:author" content="blueyi">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Prompt">
+<meta property="article:tag" content="学习指南">
+<meta property="article:tag" content="对话平台">
+<meta property="article:tag" content="效率">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/","path":"2025/02/19/ai/llm-daily-engineering-guide/","title":"日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划 | blueyi's notes</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.31/fancybox/fancybox.umd.js" integrity="sha256-a+H7FYzJv6oU2hfsfDGM2Ohw/cR9v+hPfxHCLdmCrE8=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/bookmark.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="blueyi's notes" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="blueyi's notes" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blueyi's notes</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Follow Excellence,Success will chase you!</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="Searching..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9C%A8%E6%97%A5%E5%B8%B8%E7%94%9F%E6%B4%BB%E3%80%81%E5%B7%A5%E4%BD%9C%E4%B8%8E%E5%B7%A5%E7%A8%8B%E4%B8%AD%E5%8F%AF%E5%BA%94%E7%94%A8%E7%9A%84%E8%83%BD%E5%8A%9B"><span class="nav-number">1.</span> <span class="nav-text">一、大模型在日常生活、工作与工程中可应用的能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BB%A3%E7%A0%81%E7%9B%B8%E5%85%B3%EF%BC%88%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1. 代码相关（工程核心）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%8D%8F%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">2. 设计与协作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%A3%80%E7%B4%A2"><span class="nav-number">1.3.</span> <span class="nav-text">3. 学习与检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%97%A5%E5%B8%B8%E7%94%9F%E6%B4%BB%E4%B8%8E%E9%80%9A%E7%94%A8%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.4.</span> <span class="nav-text">4. 日常生活与通用工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BD%BF%E7%94%A8%E6%97%B6%E7%9A%84%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">1.5.</span> <span class="nav-text">5. 使用时的注意点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%B8%B8%E7%94%A8%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%B9%B3%E5%8F%B0%E4%B8%80%E8%A7%88"><span class="nav-number">2.</span> <span class="nav-text">二、常用大模型应用平台一览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%AF%B9%E8%AF%9D%E4%B8%8E%E5%A4%9A%E6%A8%A1%E6%80%81%E5%B9%B3%E5%8F%B0%EF%BC%88%E7%BD%91%E9%A1%B5-APP%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 对话与多模态平台（网页 &#x2F; APP）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%8E%A8%E8%8D%90%E7%AD%89%E7%BA%A7%E6%89%93%E5%88%86%E7%BB%B4%E5%BA%A6%E8%AF%B4%E6%98%8E%EF%BC%88%E5%AF%B9%E8%AF%9D%E4%B8%8E%E5%A4%9A%E6%A8%A1%E6%80%81%E7%B1%BB%EF%BC%89"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1 推荐等级打分维度说明（对话与多模态类）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%9B%BE%E5%83%8F-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E4%B8%8E%E5%A4%9A%E6%A8%A1%E6%80%81%EF%BC%88%E7%8B%AC%E7%AB%8B%E4%BA%A7%E5%93%81%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 图像 &#x2F; 视频生成与多模态（独立产品）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%8E%A8%E8%8D%90%E7%AD%89%E7%BA%A7%E6%89%93%E5%88%86%E7%BB%B4%E5%BA%A6%E8%AF%B4%E6%98%8E%EF%BC%88%E5%9B%BE%E5%83%8F-%E8%A7%86%E9%A2%91%E7%B1%BB%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2 推荐等级打分维度说明（图像&#x2F;视频类）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%BC%96%E7%A0%81%E8%BE%85%E5%8A%A9%EF%BC%88IDE-%E6%8F%92%E4%BB%B6-%E6%9C%AC%E5%9C%B0%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 编程与编码辅助（IDE &#x2F; 插件 &#x2F; 本地）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E6%8E%A8%E8%8D%90%E7%AD%89%E7%BA%A7%E6%89%93%E5%88%86%E7%BB%B4%E5%BA%A6%E8%AF%B4%E6%98%8E%EF%BC%88%E7%BC%96%E7%A8%8B%E8%BE%85%E5%8A%A9%E7%B1%BB%EF%BC%89"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3 推荐等级打分维度说明（编程辅助类）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E5%A5%BD%E7%9A%84-Prompt"><span class="nav-number">3.</span> <span class="nav-text">三、如何写出好的 Prompt</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99"><span class="nav-number">3.1.</span> <span class="nav-text">1. 基本原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7"><span class="nav-number">3.2.</span> <span class="nav-text">2. 常用技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%BC%96%E7%A8%8B%E5%9C%BA%E6%99%AF%E7%9A%84-Prompt-%E6%A8%A1%E6%9D%BF%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.3.</span> <span class="nav-text">3. 编程场景的 Prompt 模板示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BF%AD%E4%BB%A3%E4%BC%98%E5%8C%96"><span class="nav-number">3.4.</span> <span class="nav-text">4. 迭代优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%B3%BB%E7%BB%9F%E6%8F%90%E5%8D%87%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E8%83%BD%E5%8A%9B%E7%9A%84%E8%A7%84%E5%88%92"><span class="nav-number">4.</span> <span class="nav-text">四、系统提升大模型应用能力的规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E5%BB%BA%E7%AB%8B%E4%B9%A0%E6%83%AF%EF%BC%88%E7%BA%A6-2%E2%80%934-%E5%91%A8%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">阶段一：建立习惯（约 2–4 周）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%8F%90%E5%8D%87-Prompt-%E8%B4%A8%E9%87%8F%EF%BC%88%E7%BA%A6-4%E2%80%936-%E5%91%A8%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">阶段二：提升 Prompt 质量（约 4–6 周）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9A%E8%9E%8D%E5%85%A5%E5%B7%A5%E4%BD%9C%E6%B5%81%EF%BC%88%E7%BA%A6-2%E2%80%933-%E4%B8%AA%E6%9C%88%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">阶段三：融入工作流（约 2–3 个月）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E5%9B%9B%EF%BC%9A%E8%BF%9B%E9%98%B6%E4%B8%8E%E5%A4%8D%E7%94%A8%EF%BC%88%E6%8C%81%E7%BB%AD%EF%BC%89"><span class="nav-number">4.4.</span> <span class="nav-text">阶段四：进阶与复用（持续）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99%E4%B8%8E%E5%8F%82%E8%80%83%EF%BC%88%E5%AE%98%E6%96%B9%E4%B8%8E%E4%B8%93%E4%B8%9A%E6%9D%A5%E6%BA%90%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">五、学习资料与参考（官方与专业来源）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E4%B8%8E%E6%8C%87%E5%8D%97"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 官方文档与指南</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E8%AF%BE%E7%A8%8B%E4%B8%8E%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%93%E4%B8%9A%E7%AB%99%E7%82%B9%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 课程与系统学习（专业站点）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E5%AD%A6%E6%9C%AF%E4%B8%8E%E7%BB%BC%E8%BF%B0%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 学术与综述（可选）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E8%B7%B5%E5%BB%BA%E8%AE%AE"><span class="nav-number">5.4.</span> <span class="nav-text">实践建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">六、小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="blueyi"
+      src="/images/default_avatar.jpg">
+  <p class="site-author-name" itemprop="name">blueyi</p>
+  <div class="site-description" itemprop="description">心怀善意，虛怀若谷！</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">90</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blueyi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blueyi" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="http://maxwi.com/" title="http:&#x2F;&#x2F;maxwi.com" rel="noopener" target="_blank">Maxwi</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/default_avatar.jpg">
+      <meta itemprop="name" content="blueyi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blueyi's notes">
+      <meta itemprop="description" content="心怀善意，虛怀若谷！">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划 | blueyi's notes">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-02-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-02-19T00:00:00+08:00">2025-02-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Word count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Word count in article: </span>
+      <span>9.1k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>8 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本文系统梳理：大模型在<strong>日常生活、工作与工程</strong>中的可应用能力（其中<strong>开发与代码工程</strong>为最重要的一环）、常用大模型应用平台（含官网&#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、大模型在日常生活、工作与工程中可应用的能力"><a href="#一、大模型在日常生活、工作与工程中可应用的能力" class="headerlink" title="一、大模型在日常生活、工作与工程中可应用的能力"></a>一、大模型在日常生活、工作与工程中可应用的能力</h2><p>开发与代码工程是其中<strong>最重要的一环</strong>，同时大模型也可广泛用于日常沟通、信息获取、写作与办公等场景。下面按场景分类。</p>
+<h3 id="1-代码相关（工程核心）"><a href="#1-代码相关（工程核心）" class="headerlink" title="1. 代码相关（工程核心）"></a>1. 代码相关（工程核心）</h3><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>应用场景</th>
+<th>使用建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>代码生成</strong></td>
+<td>从需求&#x2F;注释生成函数、脚本、测试、脚手架</td>
+<td>给出清晰输入输出与约束，指定语言和框架</td>
+</tr>
+<tr>
+<td><strong>代码补全</strong></td>
+<td>行级&#x2F;块级补全、整段生成</td>
+<td>在 IDE 中配合 Cursor&#x2F;Copilot&#x2F;Continue 等使用</td>
+</tr>
+<tr>
+<td><strong>代码解释</strong></td>
+<td>解释陌生代码、算法、依赖关系</td>
+<td>贴代码+简短上下文，可要求「用中文&#x2F;分步骤」</td>
+</tr>
+<tr>
+<td><strong>代码重构</strong></td>
+<td>重命名、抽取函数、去重复、提升可读性</td>
+<td>明确「保持行为不变」「先给方案再改」</td>
+</tr>
+<tr>
+<td><strong>Bug 定位与修复</strong></td>
+<td>根据报错、日志、复现步骤分析原因并给补丁</td>
+<td>提供完整错误信息、环境、最小复现</td>
+</tr>
+<tr>
+<td><strong>代码审查</strong></td>
+<td>风格、安全、性能、可维护性建议</td>
+<td>提供 PR 片段或文件+业务背景，可要求按 checklist 输出</td>
+</tr>
+<tr>
+<td><strong>单元测试</strong></td>
+<td>根据实现写测试用例、边界情况、Mock</td>
+<td>说明测试框架和覆盖率期望</td>
+</tr>
+<tr>
+<td><strong>文档生成</strong></td>
+<td>函数&#x2F;API 文档、README、变更说明</td>
+<td>指定格式（如 JSDoc、OpenAPI）和受众</td>
+</tr>
+</tbody></table>
+<h3 id="2-设计与协作"><a href="#2-设计与协作" class="headerlink" title="2. 设计与协作"></a>2. 设计与协作</h3><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>应用场景</th>
+<th>使用建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>架构与方案</strong></td>
+<td>技术选型、模块划分、接口设计、演进建议</td>
+<td>写清约束（性能、团队、历史包袱）和决策点</td>
+</tr>
+<tr>
+<td><strong>需求拆解</strong></td>
+<td>用户故事 → 任务列表、验收标准、依赖关系</td>
+<td>分步骤提问，必要时用表格&#x2F;列表约束输出</td>
+</tr>
+<tr>
+<td><strong>文档与沟通</strong></td>
+<td>会议纪要、RFC 摘要、邮件&#x2F;周报草稿</td>
+<td>提供要点列表，要求「简洁&#x2F;正式&#x2F;非技术」等风格</td>
+</tr>
+<tr>
+<td><strong>正则与脚本</strong></td>
+<td>写&#x2F;解释正则、Shell&#x2F;Python 一行脚本、小工具</td>
+<td>给样例输入输出，说明环境（bash&#x2F;zsh、Python 版本）</td>
+</tr>
+</tbody></table>
+<h3 id="3-学习与检索"><a href="#3-学习与检索" class="headerlink" title="3. 学习与检索"></a>3. 学习与检索</h3><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>应用场景</th>
+<th>使用建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>概念解释</strong></td>
+<td>技术概念、协议、最佳实践</td>
+<td>指定「面向初学者」或「面向有 X 经验的人」</td>
+</tr>
+<tr>
+<td><strong>对比与选型</strong></td>
+<td>库&#x2F;框架&#x2F;方案对比、优缺点、适用场景</td>
+<td>限定维度（性能、生态、学习成本等）</td>
+</tr>
+<tr>
+<td><strong>故障排查</strong></td>
+<td>根据报错信息查原因、查官方文档要点</td>
+<td>贴完整报错+环境，要求引用文档或给出链接</td>
+</tr>
+<tr>
+<td><strong>读书&#x2F;文档总结</strong></td>
+<td>长文摘要、章节要点、行动清单</td>
+<td>分段处理长文档，或先给目录再按章节问</td>
+</tr>
+</tbody></table>
+<h3 id="4-日常生活与通用工作"><a href="#4-日常生活与通用工作" class="headerlink" title="4. 日常生活与通用工作"></a>4. 日常生活与通用工作</h3><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>应用场景</th>
+<th>使用建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>写作与润色</strong></td>
+<td>邮件、周报、演讲稿、文案、翻译</td>
+<td>说明语气（正式&#x2F;口语）、受众与长度</td>
+</tr>
+<tr>
+<td><strong>信息检索与总结</strong></td>
+<td>时事、百科、新闻摘要、深度调研</td>
+<td>用带联网的模型（如 Perplexity、Kimi）并要求标注来源</td>
+</tr>
+<tr>
+<td><strong>学习与答疑</strong></td>
+<td>外语、考试、技能入门、读书笔记</td>
+<td>分步提问，要求举例或出题巩固</td>
+</tr>
+<tr>
+<td><strong>日程与待办</strong></td>
+<td>行程整理、会议要点、待办列表</td>
+<td>给原始信息，指定输出格式（列表&#x2F;日历）</td>
+</tr>
+<tr>
+<td><strong>办公辅助</strong></td>
+<td>表格处理、PPT 大纲、文档模板</td>
+<td>说明格式与约束，复杂表格可分段处理</td>
+</tr>
+<tr>
+<td><strong>娱乐与创意</strong></td>
+<td>故事、脑洞、角色设定、简单剧本</td>
+<td>明确风格与禁忌，可多轮迭代</td>
+</tr>
+</tbody></table>
+<h3 id="5-使用时的注意点"><a href="#5-使用时的注意点" class="headerlink" title="5. 使用时的注意点"></a>5. 使用时的注意点</h3><ul>
+<li><strong>幻觉与过时</strong>：模型可能编造 API、版本号或最佳实践，关键处需查官方文档或运行验证。</li>
+<li><strong>安全与隐私</strong>：勿把密钥、内部架构、未脱敏数据贴到公开在线模型；用本地或企业允许的接口时也要遵守合规。</li>
+<li><strong>人做最终决策</strong>：代码审查、架构决策、发布前变更建议由人做最终确认，大模型做辅助。</li>
+</ul>
+<hr>
+<h2 id="二、常用大模型应用平台一览"><a href="#二、常用大模型应用平台一览" class="headerlink" title="二、常用大模型应用平台一览"></a>二、常用大模型应用平台一览</h2><p>以下列出具备<strong>在线对话或可下载 APP</strong> 的常用平台，并标注<strong>序号</strong>（便于索引）、<strong>能力</strong>（文本&#x2F;图像&#x2F;视频&#x2F;代码&#x2F;语音等）、<strong>免费或收费</strong>、以及<strong>按能力与性价比的推荐等级</strong>（★ 为最低，★★★★★ 为最高）。具体额度与价格以各站最新说明为准。</p>
+<h3 id="2-1-对话与多模态平台（网页-APP）"><a href="#2-1-对话与多模态平台（网页-APP）" class="headerlink" title="2.1 对话与多模态平台（网页 &#x2F; APP）"></a>2.1 对话与多模态平台（网页 &#x2F; APP）</h3><table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th>平台名称</th>
+<th>官网或入口</th>
+<th>能力</th>
+<th>免费&#x2F;收费</th>
+<th>推荐等级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td><strong>ChatGPT</strong> (OpenAI)</td>
+<td><a target="_blank" rel="noopener" href="https://chatgpt.com/">chatgpt.com</a>（网页）、ChatGPT App（iOS&#x2F;Android）</td>
+<td>文本、代码、图像生成(DALL·E)、语音输入&#x2F;朗读</td>
+<td>免费版有额度；Plus&#x2F;Pro&#x2F;Team 等付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td><strong>Claude</strong> (Anthropic)</td>
+<td><a target="_blank" rel="noopener" href="https://claude.ai/">claude.ai</a>（网页）、Claude App</td>
+<td>文本、代码、图像理解（多模态）、长文档</td>
+<td>免费有额度；Pro 等付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><strong>Gemini</strong> (Google)</td>
+<td><a target="_blank" rel="noopener" href="https://gemini.google.com/">gemini.google.com</a>（网页）、Google App 内 Gemini</td>
+<td>文本、代码、图像理解与生成、视频理解、音频</td>
+<td>免费有额度；Advanced 等付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td><strong>Microsoft Copilot</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.bing.com/">bing.com</a>（Bing 内）、<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/microsoft-365/copilot">Copilot</a>（网页&#x2F;Edge&#x2F;App）</td>
+<td>文本、代码、联网搜索、多模态，与 Office&#x2F;Windows 集成</td>
+<td>免费有额度；Pro&#x2F;企业版付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td><strong>Perplexity</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.perplexity.ai/">perplexity.ai</a>（网页）、Perplexity App</td>
+<td>对话式搜索、引用来源、学术&#x2F;深度调研、多模态</td>
+<td>免费有额度；Pro 付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td><strong>DeepSeek</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.deepseek.com/">deepseek.com</a>（网页）、DeepSeek App、API</td>
+<td>文本、代码、图像理解与生成</td>
+<td>网页&#x2F;APP 免费；API 低价付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td><strong>Poe</strong> (Quora)</td>
+<td><a target="_blank" rel="noopener" href="https://poe.com/">poe.com</a>（网页）、Poe App</td>
+<td>多模型聚合（GPT&#x2F;Claude&#x2F;Gemini 等），以文本&#x2F;代码为主</td>
+<td>免费有额度；订阅解锁更多</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td><strong>文心一言</strong> (百度)</td>
+<td><a target="_blank" rel="noopener" href="https://yiyan.baidu.com/">yiyan.baidu.com</a>（网页）、文心一言 App</td>
+<td>文本、代码、图像(文心一格)、语音</td>
+<td>免费有额度；会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td><strong>通义千问</strong> (阿里)</td>
+<td><a target="_blank" rel="noopener" href="https://tongyi.aliyun.com/">tongyi.aliyun.com</a> &#x2F; <a target="_blank" rel="noopener" href="https://qianwen.aliyun.com/">qianwen.aliyun.com</a>（网页）、通义 App</td>
+<td>文本、代码、多模态（通义万相为图像&#x2F;视频）</td>
+<td>免费有额度；按量&#x2F;会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td><strong>豆包</strong> (字节)</td>
+<td><a target="_blank" rel="noopener" href="https://www.doubao.com/">doubao.com</a>（网页）、豆包 App</td>
+<td>文本、代码、图像、语音、视频相关能力</td>
+<td>免费有额度；会员&#x2F;API 付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td><strong>元宝</strong> (腾讯)</td>
+<td><a target="_blank" rel="noopener" href="https://yuanbao.tencent.com/">yuanbao.tencent.com</a>（网页）、元宝 App</td>
+<td>文本、代码、图像、语音、文档精读、腾讯生态（公众号&#x2F;视频号）联网</td>
+<td>免费有额度；会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">12</td>
+<td><strong>Kimi</strong> (月之暗面)</td>
+<td><a target="_blank" rel="noopener" href="https://kimi.moonshots.cn/">kimi.moonshots.cn</a>（网页）、Kimi App</td>
+<td>文本、长文档、代码、联网搜索</td>
+<td>免费有额度；会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">13</td>
+<td><strong>扣子 Coze</strong> (字节)</td>
+<td><a target="_blank" rel="noopener" href="https://www.coze.cn/">coze.cn</a>（网页）、Coze App</td>
+<td>多模型聚合、创建&#x2F;使用 Bot、知识库、工作流，可部署到飞书&#x2F;微信等</td>
+<td>免费有额度；按量&#x2F;团队付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">14</td>
+<td><strong>智谱清言</strong> (智谱)</td>
+<td><a target="_blank" rel="noopener" href="https://chatglm.cn/">chatglm.cn</a>（网页）、智谱清言 App</td>
+<td>文本、代码、图像、视频(清影)</td>
+<td>免费有额度；会员&#x2F;API 付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">15</td>
+<td><strong>天工</strong> (昆仑万维)</td>
+<td><a target="_blank" rel="noopener" href="https://skywork.ai/">skywork.ai</a> &#x2F; 天工官网（网页）、天工 App</td>
+<td>文本、深度研究、文档&#x2F;PPT&#x2F;表格&#x2F;网页&#x2F;播客等智能体，信源可追溯</td>
+<td>免费有额度；会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">16</td>
+<td><strong>零一万物 Yi</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.lingyiwanwu.com/">lingyiwanwu.com</a>（网页）、API</td>
+<td>文本、代码、长上下文(200K)、多模态(Yi-VL)</td>
+<td>免费有额度；API 付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">17</td>
+<td><strong>Grok</strong> (xAI)</td>
+<td><a target="_blank" rel="noopener" href="https://x.ai/">x.ai</a>、<a target="_blank" rel="noopener" href="https://grok.x.com/">grok.x.com</a>（X 内）</td>
+<td>文本、实时信息、对话，偏科技&#x2F;时事</td>
+<td>需 X Premium 订阅；API 另计</td>
+<td>★★★☆</td>
+</tr>
+<tr>
+<td align="center">18</td>
+<td><strong>Mistral</strong> (Mistral AI)</td>
+<td><a target="_blank" rel="noopener" href="https://mistral.ai/">mistral.ai</a>（网页）、API</td>
+<td>文本、代码、多语言，欧洲主流模型</td>
+<td>免费有额度；API 付费</td>
+<td>★★★☆</td>
+</tr>
+</tbody></table>
+<p><strong>说明</strong>：  </p>
+<ul>
+<li>「文本」含问答、写作、翻译、总结等；「代码」含生成、解释、补全、排错。  </li>
+<li>图像&#x2F;视频：<strong>图像生成</strong>为文生图或图生图；<strong>图像理解</strong>为识图、OCR、图表分析；<strong>视频</strong>为理解或生成，以各产品实际能力为准。  </li>
+<li>推荐等级依据下方「2.1 推荐等级打分维度」综合得出；国内产品在<strong>中文表现、访问便利、免费额度</strong>等维度上普遍占优。</li>
+</ul>
+<h4 id="2-1-推荐等级打分维度说明（对话与多模态类）"><a href="#2-1-推荐等级打分维度说明（对话与多模态类）" class="headerlink" title="2.1 推荐等级打分维度说明（对话与多模态类）"></a>2.1 推荐等级打分维度说明（对话与多模态类）</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+<th>权重参考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>通用对话质量</strong></td>
+<td>理解准确、回答连贯、安全与合规</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>代码能力</strong></td>
+<td>生成&#x2F;解释&#x2F;排错&#x2F;重构的可用率</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>多模态</strong></td>
+<td>图像理解或生成、语音、视频等</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>中文表现</strong></td>
+<td>中文理解与生成、本土场景适配</td>
+<td>高（国内用户）</td>
+</tr>
+<tr>
+<td><strong>联网与时效</strong></td>
+<td>联网搜索、引用来源、知识截止</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>免费额度与性价比</strong></td>
+<td>免费可用次数、订阅价格与权益</td>
+<td>中</td>
+</tr>
+</tbody></table>
+<p><strong>综合说明</strong>：国际第一梯队（ChatGPT、Claude、Gemini、Copilot、Perplexity）在<strong>通用对话与代码</strong>上整体领先；<strong>国内平台</strong>（文心、通义、豆包、元宝、Kimi、智谱、天工、DeepSeek、扣子等）在<strong>中文表现、国内访问、免费额度</strong>上优势明显，部分在长文档、联网、多模态上各有侧重，故推荐等级与国际产品同档或仅略低半档。上表星级已按上述维度综合给出。</p>
+<hr>
+<h3 id="2-2-图像-视频生成与多模态（独立产品）"><a href="#2-2-图像-视频生成与多模态（独立产品）" class="headerlink" title="2.2 图像 &#x2F; 视频生成与多模态（独立产品）"></a>2.2 图像 &#x2F; 视频生成与多模态（独立产品）</h3><table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th>平台名称</th>
+<th>官网或入口</th>
+<th>能力</th>
+<th>免费&#x2F;收费</th>
+<th>推荐等级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td><strong>DALL·E</strong></td>
+<td>通过 <a target="_blank" rel="noopener" href="https://chatgpt.com/">chatgpt.com</a>（ChatGPT 内）</td>
+<td>文生图、图编辑</td>
+<td>随 ChatGPT 套餐</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td><strong>通义万相</strong> (阿里)</td>
+<td><a target="_blank" rel="noopener" href="https://tongyi.aliyun.com/wanxiang">tongyi.aliyun.com&#x2F;wanxiang</a></td>
+<td>文生图、图生视频、数字人</td>
+<td>免费额度 + 付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><strong>即梦</strong> (字节&#x2F;剪映)</td>
+<td><a target="_blank" rel="noopener" href="https://jimeng.jianying.com/">jimeng.jianying.com</a>（网页）、剪映内</td>
+<td>文生图&#x2F;图生图、文生视频&#x2F;图生视频(3–10s)、智能画布、故事创作、动作模仿</td>
+<td>免费每日额度；会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td><strong>可灵</strong> (快手)</td>
+<td><a target="_blank" rel="noopener" href="https://klingai.kuaishou.com/">klingai.kuaishou.com</a>（网页）、快影 App</td>
+<td>文生视频、图生视频、视频续写(最长约 2 分钟&#x2F;1080p)、数字人、创意特效</td>
+<td>会员订阅制</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td><strong>智谱清影</strong> (智谱)</td>
+<td><a target="_blank" rel="noopener" href="https://chatglm.cn/">chatglm.cn</a> 内或清影入口</td>
+<td>文生视频、图生视频、4K、多风格(卡通3D&#x2F;油画等)、音效配音</td>
+<td>基础免费；会员付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td><strong>文心一格</strong> (百度)</td>
+<td><a target="_blank" rel="noopener" href="https://yige.baidu.com/">yige.baidu.com</a></td>
+<td>文生图、图像编辑</td>
+<td>免费额度 + 付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td><strong>Gemini 图像生成</strong></td>
+<td><a target="_blank" rel="noopener" href="https://gemini.google.com/">gemini.google.com</a> 或 Vertex AI</td>
+<td>文生图、多模态</td>
+<td>随 Gemini 套餐或云计费</td>
+<td>★★★★☆</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-推荐等级打分维度说明（图像-视频类）"><a href="#2-2-推荐等级打分维度说明（图像-视频类）" class="headerlink" title="2.2 推荐等级打分维度说明（图像&#x2F;视频类）"></a>2.2 推荐等级打分维度说明（图像&#x2F;视频类）</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+<th>权重参考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>图像质量与风格</strong></td>
+<td>出图清晰度、构图、风格丰富度、中文提示词理解</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>视频质量与时长</strong></td>
+<td>分辨率、时长、动作自然度、运镜与可控性</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>易用性与速度</strong></td>
+<td>界面、生成速度、模板&#x2F;预设</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>免费额度与性价比</strong></td>
+<td>免费可用次数、会员价格与权益</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>中文与本地化</strong></td>
+<td>中文提示词效果、国内访问与支付</td>
+<td>中</td>
+</tr>
+</tbody></table>
+<p><strong>综合说明</strong>：国内平台（通义万相、即梦、可灵、智谱清影、文心一格）在<strong>中文提示词</strong>、<strong>国内访问</strong>、<strong>免费或低价额度</strong>上表现突出；即梦、可灵、清影在<strong>视频生成</strong>能力与时长上各具优势；DALL·E、Gemini 在<strong>国际生态与多模态联动</strong>上占优。上表推荐等级已按上述维度综合给出。</p>
+<hr>
+<h3 id="2-3-编程与编码辅助（IDE-插件-本地）"><a href="#2-3-编程与编码辅助（IDE-插件-本地）" class="headerlink" title="2.3 编程与编码辅助（IDE &#x2F; 插件 &#x2F; 本地）"></a>2.3 编程与编码辅助（IDE &#x2F; 插件 &#x2F; 本地）</h3><table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th>平台名称</th>
+<th>官网或入口</th>
+<th>能力</th>
+<th>免费&#x2F;收费</th>
+<th>推荐等级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td><strong>Cursor</strong></td>
+<td><a target="_blank" rel="noopener" href="https://cursor.sh/">cursor.sh</a>（下载 IDE）</td>
+<td>代码补全、生成、重构、对话、项目级理解</td>
+<td>免费额度有限；Pro&#x2F;Business 付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td><strong>GitHub Copilot</strong></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/features/copilot">github.com&#x2F;features&#x2F;copilot</a>（需 GitHub 账号）</td>
+<td>代码补全、注释生成、Chat、CLI</td>
+<td>免费层基础补全；个人&#x2F;企业付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><strong>通义灵码</strong> (阿里)</td>
+<td><a target="_blank" rel="noopener" href="https://lingma.aliyun.com/">lingma.aliyun.com</a>（插件）</td>
+<td>行级&#x2F;函数级补全、自然语言生成、单元测试、解释、200+ 语言、多 IDE</td>
+<td>免费有额度；企业&#x2F;私有化付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td><strong>文心快码 Comate</strong> (百度)</td>
+<td><a target="_blank" rel="noopener" href="https://comate.baidu.com/">comate.baidu.com</a>（插件）</td>
+<td>代码补全、生成、解释、测试、100+ 语言、10+ IDE，中文理解强</td>
+<td>免费有额度；会员付费</td>
+<td>★★★★★</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td><strong>腾讯云 CodeBuddy</strong></td>
+<td><a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/acc">cloud.tencent.com&#x2F;product&#x2F;acc</a>（插件）</td>
+<td>混元+DeepSeek 双模型、多文件协同、Craft 智能体、等保三级、私有化</td>
+<td>个人版免费；企业付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td><strong>豆包 MarsCode</strong> (字节)</td>
+<td><a target="_blank" rel="noopener" href="https://www.doubao.com/">doubao.com</a>（插件 &#x2F; Cloud IDE）</td>
+<td>豆包大模型、100+ 语言、编程助手 + 云端 IDE 形态</td>
+<td>免费有额度；付费</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td><strong>Windsurf</strong> (Codeium)</td>
+<td><a target="_blank" rel="noopener" href="https://codeium.com/">codeium.com</a> &#x2F; <a target="_blank" rel="noopener" href="https://windsurf.com/">windsurf.com</a>（IDE + 插件）</td>
+<td>代码补全、多语言、Cascade 代理</td>
+<td>免费有月次数；付费更多</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td><strong>Continue</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.continue.dev/">continue.dev</a>（开源 IDE 插件 + 云端 Agent）</td>
+<td>代码补全、多模型、PR 审查 Agent</td>
+<td>开源免费；云端按需</td>
+<td>★★★★☆</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td><strong>Ollama</strong></td>
+<td><a target="_blank" rel="noopener" href="https://ollama.com/">ollama.com</a>（本地运行）</td>
+<td>本地文本&#x2F;代码模型（Llama、Qwen、DeepSeek 等）</td>
+<td>完全免费（本地）</td>
+<td>★★★★☆</td>
+</tr>
+</tbody></table>
+<h4 id="2-3-推荐等级打分维度说明（编程辅助类）"><a href="#2-3-推荐等级打分维度说明（编程辅助类）" class="headerlink" title="2.3 推荐等级打分维度说明（编程辅助类）"></a>2.3 推荐等级打分维度说明（编程辅助类）</h4><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+<th>权重参考</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>补全&#x2F;生成准确率</strong></td>
+<td>行级&#x2F;块级补全可用率、自然语言生成代码正确率</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>多语言与框架</strong></td>
+<td>支持语言数量、主流框架与库的识别与生成</td>
+<td>高</td>
+</tr>
+<tr>
+<td><strong>IDE 集成与体验</strong></td>
+<td>响应延迟、多文件&#x2F;项目理解、Chat 与解释</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>中文与本地化</strong></td>
+<td>中文注释与需求理解、国内访问、合规(等保等)</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>免费与性价比</strong></td>
+<td>免费额度、个人&#x2F;企业定价、私有化支持</td>
+<td>中</td>
+</tr>
+</tbody></table>
+<p><strong>综合说明</strong>：Cursor、Copilot 在<strong>生态与模型能力</strong>上领先；<strong>通义灵码、文心快码(Comate)</strong> 在<strong>中文理解、语言&#x2F;IDE 覆盖、国内可用性</strong>上表现突出，适合国内开发者首选；<strong>CodeBuddy</strong> 在<strong>响应速度、等保与私有化</strong>上有优势；<strong>MarsCode</strong> 提供<strong>云端 IDE</strong> 形态；<strong>Ollama</strong> 适合<strong>离线与隐私</strong>场景。上表推荐等级已按上述维度综合给出。</p>
+<hr>
+<p><strong>使用建议</strong>：日常问答、写作与信息检索用 1～2 个免费网页或 APP（如 ChatGPT、Claude、Gemini、Copilot、Perplexity、DeepSeek、通义、豆包、元宝、Kimi 等，见 2.1 表序号）；图像&#x2F;视频创作可选用即梦、可灵、智谱清影、通义万相、文心一格等（见 2.2 表）；重度编码用 IDE 集成（Cursor、Copilot、通义灵码、文心快码 Comate、CodeBuddy、MarsCode、Windsurf、Continue，见 2.3 表）+ 本地 Ollama 作补充；敏感内容仅用本地或企业允许的接口。</p>
+<hr>
+<h2 id="三、如何写出好的-Prompt"><a href="#三、如何写出好的-Prompt" class="headerlink" title="三、如何写出好的 Prompt"></a>三、如何写出好的 Prompt</h2><h3 id="1-基本原则"><a href="#1-基本原则" class="headerlink" title="1. 基本原则"></a>1. 基本原则</h3><ul>
+<li><strong>具体、可执行</strong>：避免「帮我优化一下」，改为「用 TypeScript 重写下面函数，保持相同入参和返回值，并加上 JSDoc」。</li>
+<li><strong>给足上下文</strong>：说明角色（你是什么身份）、任务（要干什么）、约束（不能做什么、必须用什么）。</li>
+<li><strong>结构化</strong>：用标题、列表、分隔符（如 <code>---</code>、<code>&quot;&quot;&quot;</code>）区分：角色、背景、输入、输出格式、示例、注意事项。</li>
+<li><strong>分步拆解</strong>：复杂任务拆成多轮小问题，或在一个 Prompt 里写清「第一步…第二步…」。</li>
+<li><strong>指定输出形式</strong>：要 JSON、表格、列表、代码块、中英文等，直接写明。</li>
+</ul>
+<h3 id="2-常用技巧"><a href="#2-常用技巧" class="headerlink" title="2. 常用技巧"></a>2. 常用技巧</h3><table>
+<thead>
+<tr>
+<th>技巧</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>角色设定</strong></td>
+<td>让模型扮演某类专家</td>
+<td>「你是一位有 10 年经验的 React 性能优化专家。」</td>
+</tr>
+<tr>
+<td><strong>Few-shot</strong></td>
+<td>给 1–3 个输入输出示例</td>
+<td>「输入：… 输出：… 请按同样风格处理下面内容。」</td>
+</tr>
+<tr>
+<td><strong>Chain-of-Thought</strong></td>
+<td>要求先推理再给结论</td>
+<td>「请先分析可能原因，再给出修改建议和示例代码。」</td>
+</tr>
+<tr>
+<td><strong>约束与禁止</strong></td>
+<td>明确不要做的事</td>
+<td>「不要使用已废弃的 API」「不要解释，只给代码。」</td>
+</tr>
+<tr>
+<td><strong>输出格式</strong></td>
+<td>用 Markdown&#x2F;JSON&#x2F;列表 约束</td>
+<td>「用表格列出优缺点」「返回 JSON：{ “steps”: [] }」</td>
+</tr>
+<tr>
+<td><strong>分步执行</strong></td>
+<td>把大任务写成步骤</td>
+<td>「第一步列出所有接口；第二步为每个接口写一个测试用例。」</td>
+</tr>
+</tbody></table>
+<h3 id="3-编程场景的-Prompt-模板示例"><a href="#3-编程场景的-Prompt-模板示例" class="headerlink" title="3. 编程场景的 Prompt 模板示例"></a>3. 编程场景的 Prompt 模板示例</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">【角色】</span><br><span class="line">你是一个 [语言/框架] 后端开发专家，熟悉 [具体技术栈]。</span><br><span class="line"></span><br><span class="line">【任务】</span><br><span class="line">根据下面的 [需求/错误信息/代码]，[生成/重构/解释/审查] 代码。</span><br><span class="line"></span><br><span class="line">【输入】</span><br><span class="line">[粘贴需求、报错、或代码]</span><br><span class="line"></span><br><span class="line">【约束】</span><br><span class="line">- 语言与版本：[如 Python 3.10]</span><br><span class="line">- 必须/禁止：[如必须类型注解、不使用全局变量]</span><br><span class="line">- 输出要求：[如只返回代码、或代码+简短说明]</span><br><span class="line"></span><br><span class="line">【输出格式】</span><br><span class="line">[如：先给修改后的完整代码，再在代码后附 3 条以内的审查要点]</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-迭代优化"><a href="#4-迭代优化" class="headerlink" title="4. 迭代优化"></a>4. 迭代优化</h3><ul>
+<li>若回答太泛：加「只回答…」「不要…」「最多 N 条」。</li>
+<li>若漏了关键点：在 Prompt 里显式列出「必须包含：1…2…3…」。</li>
+<li>若格式不对：给一个期望输出的样例（few-shot）。</li>
+<li>若模型「跑偏」：新开对话，把上一轮里好的表述固化进新 Prompt 的开头。</li>
+</ul>
+<hr>
+<h2 id="四、系统提升大模型应用能力的规划"><a href="#四、系统提升大模型应用能力的规划" class="headerlink" title="四、系统提升大模型应用能力的规划"></a>四、系统提升大模型应用能力的规划</h2><h3 id="阶段一：建立习惯（约-2–4-周）"><a href="#阶段一：建立习惯（约-2–4-周）" class="headerlink" title="阶段一：建立习惯（约 2–4 周）"></a>阶段一：建立习惯（约 2–4 周）</h3><ul>
+<li><strong>目标</strong>：每天至少 1 次用大模型完成真实工作项（查错、写小函数、写注释、写邮件）。</li>
+<li><strong>行动</strong>：<ul>
+<li>选 1 个固定入口（如一个常用网页端或 Cursor），统一从「小任务」开始。</li>
+<li>记录 3–5 个「用了就有效」的场景（如：解释报错、写单元测试、生成正则）。</li>
+</ul>
+</li>
+<li><strong>检验</strong>：能不看教程，独立完成「贴代码 → 得到可用的修改&#x2F;解释」。</li>
+</ul>
+<h3 id="阶段二：提升-Prompt-质量（约-4–6-周）"><a href="#阶段二：提升-Prompt-质量（约-4–6-周）" class="headerlink" title="阶段二：提升 Prompt 质量（约 4–6 周）"></a>阶段二：提升 Prompt 质量（约 4–6 周）</h3><ul>
+<li><strong>目标</strong>：同样任务，用更少的轮次、更稳定的格式得到可用结果。</li>
+<li><strong>行动</strong>：<ul>
+<li>为高频场景写 3–5 个「个人模板」（如：代码审查、写测试、写 README）。</li>
+<li>练习：角色 + 任务 + 约束 + 输出格式，四要素都写全。</li>
+<li>尝试：Few-shot、分步执行、Chain-of-Thought 各至少用几次。</li>
+</ul>
+</li>
+<li><strong>检验</strong>：一个新任务，第一次发的 Prompt 就能拿到 80% 可用的结果。</li>
+</ul>
+<h3 id="阶段三：融入工作流（约-2–3-个月）"><a href="#阶段三：融入工作流（约-2–3-个月）" class="headerlink" title="阶段三：融入工作流（约 2–3 个月）"></a>阶段三：融入工作流（约 2–3 个月）</h3><ul>
+<li><strong>目标</strong>：把大模型嵌进需求分析、开发、审查、文档、排错全流程。</li>
+<li><strong>行动</strong>：<ul>
+<li>需求&#x2F;设计：用模型做「用户故事拆解」「接口清单」「方案对比」。</li>
+<li>开发：用 IDE 集成做补全、生成测试、小重构。</li>
+<li>审查：用固定 Prompt 对 PR 做风格&#x2F;安全&#x2F;复杂度检查（人做最终决定）。</li>
+<li>文档：用模型写&#x2F;补全 API 说明、README、发布说明。</li>
+</ul>
+</li>
+<li><strong>检验</strong>：能在 1–2 个真实项目里，从需求到发布都有一环用到模型辅助。</li>
+</ul>
+<h3 id="阶段四：进阶与复用（持续）"><a href="#阶段四：进阶与复用（持续）" class="headerlink" title="阶段四：进阶与复用（持续）"></a>阶段四：进阶与复用（持续）</h3><ul>
+<li><strong>目标</strong>：能设计可复用的提示、简单自动化（如脚本调用 API）、并判断何时不用模型。</li>
+<li><strong>行动</strong>：<ul>
+<li>把常用 Prompt 整理成团队文档或 Cursor Rules。</li>
+<li>了解 RAG、Agent、Function Calling 等概念（用于「查知识库」「调工具」）。</li>
+<li>定期回顾：哪些场景用模型反而更慢或质量更差，明确「不用」的边界。</li>
+</ul>
+</li>
+<li><strong>检验</strong>：能向同事说明「这类问题适合用模型，这类不适合」。</li>
+</ul>
+<hr>
+<h2 id="五、学习资料与参考（官方与专业来源）"><a href="#五、学习资料与参考（官方与专业来源）" class="headerlink" title="五、学习资料与参考（官方与专业来源）"></a>五、学习资料与参考（官方与专业来源）</h2><p>以下链接均来自<strong>官方网站或专业机构</strong>，便于系统学习与查阅最新文档。</p>
+<h3 id="5-1-官方文档与指南"><a href="#5-1-官方文档与指南" class="headerlink" title="5.1 官方文档与指南"></a>5.1 官方文档与指南</h3><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>链接</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>OpenAI</strong></td>
+<td><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/prompt-engineering">Prompt engineering | OpenAI API</a></td>
+<td>提示工程原则与 API 使用</td>
+</tr>
+<tr>
+<td><strong>OpenAI</strong></td>
+<td><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/prompting">Prompting | OpenAI API</a></td>
+<td>提示设计与最佳实践</td>
+</tr>
+<tr>
+<td><strong>Anthropic</strong></td>
+<td><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/prompt-engineering">Prompt engineering - Claude API Docs</a></td>
+<td>Claude 提示工程与长上下文</td>
+</tr>
+<tr>
+<td><strong>Google AI</strong></td>
+<td><a target="_blank" rel="noopener" href="https://ai.google.dev/gemini-api/docs/prompting-strategies">Prompt design strategies | Gemini API</a></td>
+<td>Gemini 提示策略与多模态</td>
+</tr>
+<tr>
+<td><strong>Google Cloud</strong></td>
+<td><a target="_blank" rel="noopener" href="https://docs.cloud.google.com/gemini/docs/discover/write-prompts">Write better prompts - Gemini | Google Cloud</a></td>
+<td>云上 Gemini 提示实践</td>
+</tr>
+<tr>
+<td><strong>IBM</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.ibm.com/think/topics/prompt-engineering-guide">The 2026 Guide to Prompt Engineering | IBM</a></td>
+<td>提示工程指南（含 RAG、智能体等）</td>
+</tr>
+<tr>
+<td><strong>GitHub</strong></td>
+<td><a target="_blank" rel="noopener" href="https://docs.github.com/en/copilot">GitHub Copilot documentation</a></td>
+<td>Copilot 使用与策略</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-课程与系统学习（专业站点）"><a href="#5-2-课程与系统学习（专业站点）" class="headerlink" title="5.2 课程与系统学习（专业站点）"></a>5.2 课程与系统学习（专业站点）</h3><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>链接</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DAIR.AI</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh">Prompt Engineering Guide（中文）</a></td>
+<td>从基础到 CoT、Few-shot 等，多语言、高星开源</td>
+</tr>
+<tr>
+<td><strong>DAIR.AI</strong></td>
+<td><a target="_blank" rel="noopener" href="https://www.promptingguide.ai/zh/course">Prompt Engineering 课程</a></td>
+<td>与上述指南配套的系统课程</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-学术与综述（可选）"><a href="#5-3-学术与综述（可选）" class="headerlink" title="5.3 学术与综述（可选）"></a>5.3 学术与综述（可选）</h3><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>链接</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>arXiv</strong></td>
+<td><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.03533">Large Language Models for Software Engineering: Survey</a></td>
+<td>LLM 在软件工程中的应用与开放问题</td>
+</tr>
+<tr>
+<td><strong>arXiv</strong></td>
+<td><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.06608">The Prompt Report: Survey of Prompt Engineering</a></td>
+<td>提示工程技术综述</td>
+</tr>
+</tbody></table>
+<h3 id="实践建议"><a href="#实践建议" class="headerlink" title="实践建议"></a>实践建议</h3><ul>
+<li>以「用」为主：先选 1 份官方指南或 DAIR.AI 指南通读，再以「每周用模型解决 3 个真实问题」为主。</li>
+<li>建个人笔记：把好用 Prompt、易错点、各平台差异记下来，便于复用与迭代。</li>
+<li>关注时效：免费额度、API 价格、模型能力会变，重要决策前以官网为准。</li>
+</ul>
+<hr>
+<h2 id="六、小结"><a href="#六、小结" class="headerlink" title="六、小结"></a>六、小结</h2><ul>
+<li><strong>能力</strong>：除开发与代码工程（最重要一环）外，还覆盖日常生活与通用工作（写作、信息检索、学习、日程、办公等）；架构与需求拆解、学习与排错同样可应用；注意幻觉与安全，人做最终决策。</li>
+<li><strong>平台</strong>：对话与多模态见 <strong>2.1 表（序号 1～18）</strong>，含 ChatGPT、Claude、Gemini、Copilot、Perplexity、DeepSeek、Poe、文心&#x2F;通义&#x2F;豆包&#x2F;元宝&#x2F;Kimi&#x2F;扣子 Coze&#x2F;智谱&#x2F;天工&#x2F;零一万物 Yi&#x2F;Grok、Mistral 等；图像&#x2F;视频见 <strong>2.2 表（序号 1～7）</strong>，含 DALL·E、通义万相、<strong>即梦</strong>、<strong>可灵</strong>、<strong>智谱清影</strong>、文心一格、Gemini；编程见 <strong>2.3 表（序号 1～9）</strong>，含 Cursor、Copilot、<strong>通义灵码</strong>、<strong>文心快码 Comate</strong>、<strong>CodeBuddy</strong>、<strong>MarsCode</strong>、Windsurf、Continue、Ollama。每类平台均附有<strong>推荐等级打分维度分析表</strong>，便于按维度理解最终星级。</li>
+<li><strong>Prompt</strong>：具体、给足上下文、结构化、指定输出；善用角色、Few-shot、分步、Chain-of-Thought；编程场景用「角色+任务+输入+约束+输出格式」模板。</li>
+<li><strong>提升路径</strong>：建立每日使用习惯 → 优化 Prompt 与模板 → 融入需求&#x2F;开发&#x2F;审查&#x2F;文档全流程 → 复用与边界判断；学习以官方网站与专业资料为主，并定期更新平台列表与个人模板。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>Welcome to my other publishing channels</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+              <a href="/tags/Prompt/" rel="tag"># Prompt</a>
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/" rel="tag"># 学习指南</a>
+              <a href="/tags/%E6%95%88%E7%8E%87/" rel="tag"># 效率</a>
+              <a href="/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/" rel="tag"># 对话平台</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/21/meta/docker-run/" rel="prev" title="Docker run命令参数">
+                  <i class="fa fa-angle-left"></i> Docker run命令参数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/02/19/ai/ai-infra-fullstack-learning-guide/" rel="next" title="AI Infra 全栈知识体系学习指南">
+                  AI Infra 全栈知识体系学习指南 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2014 – 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">blueyi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Word count total">824k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">12:29</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blueyi","repo":"notes","client_id":"0f8243eb2c8b2207980f","client_secret":"d159633a33519d3b7a48b0ca729032f7d1f38a41","admin_user":"blueyi","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":null,"body":null,"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"557ffe585dc417ac1b3070659608c490"}</script>
+<script src="/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,1704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://notes.maxwi.com/2026/04/05/ai/llm-agent-capability-playbook/</loc>
+    
+    <lastmod>2026-04-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/</loc>
+    
+    <lastmod>2026-03-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/search/index.html</loc>
+    
+    <lastmod>2026-03-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/about/index.html</loc>
+    
+    <lastmod>2026-03-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/404.html</loc>
+    
+    <lastmod>2026-03-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/</loc>
+    
+    <lastmod>2025-02-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</loc>
+    
+    <lastmod>2025-02-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/21/meta/docker-run/</loc>
+    
+    <lastmod>2017-12-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/19/dev/python-pip-conf/</loc>
+    
+    <lastmod>2017-12-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/14/meta/docker-Dockerfile/</loc>
+    
+    <lastmod>2017-12-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/09/infra/gnu-gcc-compile-for-centos6/</loc>
+    
+    <lastmod>2017-12-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</loc>
+    
+    <lastmod>2017-12-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</loc>
+    
+    <lastmod>2017-12-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/06/meta/docker-useful-command/</loc>
+    
+    <lastmod>2017-12-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/05/media/yuv/</loc>
+    
+    <lastmod>2017-12-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/04/infra/windows-multi-threads/</loc>
+    
+    <lastmod>2017-12-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/03/infra/coredump/</loc>
+    
+    <lastmod>2017-12-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/12/01/infra/dll-lib-export-for-windows/</loc>
+    
+    <lastmod>2017-12-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/11/29/infra/gtest/</loc>
+    
+    <lastmod>2017-11-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/11/10/infra/tmux/</loc>
+    
+    <lastmod>2017-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/11/09/infra/makefile/</loc>
+    
+    <lastmod>2017-11-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</loc>
+    
+    <lastmod>2017-10-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/</loc>
+    
+    <lastmod>2017-10-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</loc>
+    
+    <lastmod>2017-08-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/23/infra/shell-script/</loc>
+    
+    <lastmod>2017-04-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/20/dev/java-jni-cpp-passing-arguments/</loc>
+    
+    <lastmod>2017-04-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/19/dev/java-jni-cpp-hello/</loc>
+    
+    <lastmod>2017-04-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/13/infra/linux-dynamic-lib-ldconfig/</loc>
+    
+    <lastmod>2017-04-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/05/media/ffmpeg-codecs-formats/</loc>
+    
+    <lastmod>2017-04-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/05/media/ffmpeg-streaming/</loc>
+    
+    <lastmod>2017-04-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/04/media/ffmpeg-hdfs/</loc>
+    
+    <lastmod>2017-04-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/01/infra/linux-proxy-ss/</loc>
+    
+    <lastmod>2017-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/04/01/media/ubuntu-compile-opencv3-with-cuda-and-ffmpeg/</loc>
+    
+    <lastmod>2017-04-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/29/media/cuda-error-handle/</loc>
+    
+    <lastmod>2017-03-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/20/dev/python-UnicodeEncodError/</loc>
+    
+    <lastmod>2017-03-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/index.html</loc>
+    
+    <lastmod>2017-03-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/10/data/spark-on-yarn-configure/</loc>
+    
+    <lastmod>2017-03-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/09/data/hadoop-configure-ubuntu/</loc>
+    
+    <lastmod>2017-03-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/09/infra/linux-ssh-nopasswd/</loc>
+    
+    <lastmod>2017-03-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/06/dev/python-pyenv-virtualenv/</loc>
+    
+    <lastmod>2017-03-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/02/infra/vmware-shared-folder/</loc>
+    
+    <lastmod>2017-03-02</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/01/media/ubuntu-compile-opencv2-with-cuda-and-ffmpeg/</loc>
+    
+    <lastmod>2017-03-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/03/01/media/ubuntu-compile-ffmpeg-with-cuvid-nvenc-npp/</loc>
+    
+    <lastmod>2017-03-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/02/26/media/ubuntu-cuda8-env-set/</loc>
+    
+    <lastmod>2017-02-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2017/01/19/infra/linux-command-tools-ufw/</loc>
+    
+    <lastmod>2017-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/12/23/meta/cmake-tutorial/</loc>
+    
+    <lastmod>2016-12-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/12/06/media/opencv-study-notes/</loc>
+    
+    <lastmod>2016-12-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/12/05/media/opencv-windows-env/</loc>
+    
+    <lastmod>2016-12-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/11/29/infra/kvm-create-and-manage/</loc>
+    
+    <lastmod>2016-11-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/11/03/dev/java-study-notes-oop/</loc>
+    
+    <lastmod>2016-11-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/10/03/dev/java-study-notes-basic/</loc>
+    
+    <lastmod>2016-10-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/10/01/dev/java-env-set/</loc>
+    
+    <lastmod>2016-10-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/09/22/data/big-number/</loc>
+    
+    <lastmod>2016-09-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/08/19/dev/static-dynamic-binding/</loc>
+    
+    <lastmod>2016-08-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/08/17/infra/linux-fork/</loc>
+    
+    <lastmod>2016-08-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/08/03/infra/linux-soft-hard-link/</loc>
+    
+    <lastmod>2016-08-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/30/dev/cpp-gleaning/</loc>
+    
+    <lastmod>2016-07-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/29/dev/cpp-gleaning-function-with-varying-parameters/</loc>
+    
+    <lastmod>2016-07-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/28/dev/cpp-gleaning-extern-c/</loc>
+    
+    <lastmod>2016-07-28</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/27/dev/cpp-gleaning-conditional-compile/</loc>
+    
+    <lastmod>2016-07-27</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/25/dev/cpp-gleaning-deep-copy-shallow-copy/</loc>
+    
+    <lastmod>2016-07-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/24/dev/cpp-gleaning-static/</loc>
+    
+    <lastmod>2016-07-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/23/dev/cpp-gleaning-bit-field/</loc>
+    
+    <lastmod>2016-07-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/21/dev/cpp-gleaning-memory-allignment/</loc>
+    
+    <lastmod>2016-07-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/19/dev/cpp-gleaning-fixed-width-integer/</loc>
+    
+    <lastmod>2016-07-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/18/dev/cpp-gleaning-new-malloc/</loc>
+    
+    <lastmod>2016-07-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/17/dev/cpp-gleaning-function-object/</loc>
+    
+    <lastmod>2016-07-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/15/dev/cpp-gleaning-reference-member/</loc>
+    
+    <lastmod>2016-07-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/07/14/dev/cpp-gleaning-tuple/</loc>
+    
+    <lastmod>2016-07-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/06/21/data/sql-introduce/</loc>
+    
+    <lastmod>2016-06-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/06/11/dev/cpp-memory-layout/</loc>
+    
+    <lastmod>2016-06-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/06/05/dev/source-to-program/</loc>
+    
+    <lastmod>2016-06-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/05/05/data/unique-sorted-array/</loc>
+    
+    <lastmod>2016-05-05</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/04/10/dev/cpp-random/</loc>
+    
+    <lastmod>2016-04-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/04/03/dev/cpp-problem/</loc>
+    
+    <lastmod>2016-04-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/25/dev/cpp-dynamic-memory/</loc>
+    
+    <lastmod>2016-03-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/19/infra/gdb/</loc>
+    
+    <lastmod>2016-03-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/15/dev/array-pointer-function/</loc>
+    
+    <lastmod>2016-03-15</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/14/dev/dynamic-two-dimension-arr/</loc>
+    
+    <lastmod>2016-03-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/14/infra/linux-terminal-commands-and-shortcuts/</loc>
+    
+    <lastmod>2016-03-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/03/10/dev/cpp-reference-pointer/</loc>
+    
+    <lastmod>2016-03-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/index.html</loc>
+    
+    <lastmod>2016-03-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/02/26/infra/linux-command-tools-cron/</loc>
+    
+    <lastmod>2016-02-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/02/24/infra/linux-command-tools-awk/</loc>
+    
+    <lastmod>2016-02-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/02/22/infra/linux-command-tools-grep/</loc>
+    
+    <lastmod>2016-02-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/02/19/infra/linux-command-tools-sed/</loc>
+    
+    <lastmod>2016-02-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/01/23/dev/cpp-oop-template/</loc>
+    
+    <lastmod>2016-01-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2016/01/13/dev/cpp-oop-object-oriented/</loc>
+    
+    <lastmod>2016-01-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/12/23/dev/cpp-oop-overloaded-operator/</loc>
+    
+    <lastmod>2015-12-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/12/13/dev/cpp-oop-copy-control/</loc>
+    
+    <lastmod>2015-12-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/12/13/infra/vim-tips/</loc>
+    
+    <lastmod>2015-12-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/12/13/infra/vim-regexp/</loc>
+    
+    <lastmod>2015-12-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/12/02/dev/Fortran-study-notes/</loc>
+    
+    <lastmod>2015-12-02</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/11/21/infra/winsock/</loc>
+    
+    <lastmod>2015-11-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/11/10/media/image-BitmapData/</loc>
+    
+    <lastmod>2015-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/10/10/meta/Awesome/</loc>
+    
+    <lastmod>2015-10-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/10/10/dev/Regex-in-cpp/</loc>
+    
+    <lastmod>2015-10-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/10/06/dev/Regex-practice/</loc>
+    
+    <lastmod>2015-10-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/10/04/dev/Regular-Expression-Study-Note/</loc>
+    
+    <lastmod>2015-10-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/09/11/dev/C-sharp-study-notes/</loc>
+    
+    <lastmod>2015-09-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/08/12/media/CUDA-Determine-block-size/</loc>
+    
+    <lastmod>2015-08-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/08/12/media/Determine-block-size/</loc>
+    
+    <lastmod>2015-08-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/06/22/dev/cpp-study-notes/</loc>
+    
+    <lastmod>2015-06-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/06/11/media/CUDA-study-notes/</loc>
+    
+    <lastmod>2015-06-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/05/03/dev/Python-study-notes/</loc>
+    
+    <lastmod>2015-05-03</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2015/04/09/meta/git-study-notes/</loc>
+    
+    <lastmod>2015-04-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/20/meta/learn-mardown-in-5-minutes/</loc>
+    
+    <lastmod>2014-03-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/20/meta/hexo-trap/</loc>
+    
+    <lastmod>2014-03-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/20/meta/introduction-markdown/</loc>
+    
+    <lastmod>2014-03-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/19/meta/hexo-github-to-gitcafe/</loc>
+    
+    <lastmod>2014-03-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/18/data/bin-search/</loc>
+    
+    <lastmod>2014-03-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/03/18/data/Replace-two-character-with-one/</loc>
+    
+    <lastmod>2014-03-18</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/2014/02/22/meta/first-post/</loc>
+    
+    <lastmod>2014-02-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+
+  <url>
+    <loc>http://notes.maxwi.com/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/LLM/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Agent/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Prompt/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E7%BC%96%E7%A0%81%E5%8A%A9%E6%89%8B/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/AI/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Triton/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/MLIR/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Ascend/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/NPU/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Data/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Algorithms/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/C/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/CPP/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%B3%95/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Hadoop/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Linux/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Spark/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/MLOps/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/LLMOps/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Infra/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Dev/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Csharp/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Fortran/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Notes/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Python/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Regex/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Regular-Expressions/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/C-%E6%8B%BE%E9%81%97/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/SQL/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/CPP-OOP/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Top/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E6%8C%87%E9%92%88/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/java/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/notes/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/python/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Media/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/CUDA/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/ffmpeg/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/HDFS/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/image/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Bitmap/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/OpenCV/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Ubuntu/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/YUV/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Video/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/coredump/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/gdb/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/GDB/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/GTest/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/awk/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/cron/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/grep/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/UFW/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/iptables/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/fork/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/KVM/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/OpenStack/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/sed/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/ssh/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Makefile/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/make/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/cmake/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/shell/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/tmux/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/vim/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Meta/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/CMake/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Awesome/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/winsock2/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Docker/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Dockerfile/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/docker/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Hexo/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/ubuntu/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Git/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/git/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/github/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/gitcafe/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/hexo/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/markdown/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/markdown%E6%95%99%E7%A8%8B/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Markdown/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/5%E5%88%86%E9%92%9F%E6%8E%8C%E6%8F%A1Markdown/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/AI/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/Data/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/Dev/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/Media/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/Infra/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/Meta/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+</urlset>
