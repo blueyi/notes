@@ -47,15 +47,6 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/</loc>
-    
-    <lastmod>2025-02-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</loc>
     
     <lastmod>2025-02-18</lastmod>
@@ -101,6 +92,15 @@
   </url>
   
   <url>
+    <loc>http://notes.maxwi.com/2017/12/06/meta/docker-useful-command/</loc>
+    
+    <lastmod>2017-12-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</loc>
     
     <lastmod>2017-12-06</lastmod>
@@ -111,15 +111,6 @@
   
   <url>
     <loc>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</loc>
-    
-    <lastmod>2017-12-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/2017/12/06/meta/docker-useful-command/</loc>
     
     <lastmod>2017-12-06</lastmod>
     
@@ -191,7 +182,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</loc>
+    <loc>http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/</loc>
     
     <lastmod>2017-10-13</lastmod>
     
@@ -200,7 +191,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/</loc>
+    <loc>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</loc>
     
     <lastmod>2017-10-13</lastmod>
     
@@ -812,7 +803,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2015/12/13/infra/vim-regexp/</loc>
+    <loc>http://notes.maxwi.com/2015/12/13/infra/vim-tips/</loc>
     
     <lastmod>2015-12-13</lastmod>
     
@@ -821,7 +812,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/2015/12/13/infra/vim-tips/</loc>
+    <loc>http://notes.maxwi.com/2015/12/13/infra/vim-regexp/</loc>
     
     <lastmod>2015-12-13</lastmod>
     
@@ -1077,21 +1068,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/MLOps/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/LLMOps/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/Infra/</loc>
+    <loc>http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1105,14 +1082,28 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/</loc>
+    <loc>http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/</loc>
+    <loc>http://notes.maxwi.com/tags/Data/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Algorithms/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/C/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1154,27 +1145,6 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/Data/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/Algorithms/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/C/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/tags/CPP/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -1204,13 +1174,6 @@
   
   <url>
     <loc>http://notes.maxwi.com/tags/Spark/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/SQL/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1259,6 +1222,13 @@
   </url>
   
   <url>
+    <loc>http://notes.maxwi.com/tags/SQL/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://notes.maxwi.com/tags/Regex/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -1280,14 +1250,14 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/Top/</loc>
+    <loc>http://notes.maxwi.com/tags/CPP-OOP/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/CPP-OOP/</loc>
+    <loc>http://notes.maxwi.com/tags/Top/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1322,14 +1292,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/coredump/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/gdb/</loc>
+    <loc>http://notes.maxwi.com/tags/Media/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1337,146 +1300,6 @@
   
   <url>
     <loc>http://notes.maxwi.com/tags/CUDA/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/GDB/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/GTest/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/KVM/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/OpenStack/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/awk/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/grep/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/cron/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/sed/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/UFW/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/iptables/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/fork/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/ssh/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/shell/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/Makefile/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/make/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/cmake/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/tmux/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/vim/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/winsock2/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/Media/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1560,6 +1383,13 @@
   </url>
   
   <url>
+    <loc>http://notes.maxwi.com/tags/make/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://notes.maxwi.com/tags/docker/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -1568,6 +1398,13 @@
   
   <url>
     <loc>http://notes.maxwi.com/tags/Docker/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Dockerfile/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1588,7 +1425,7 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/Dockerfile/</loc>
+    <loc>http://notes.maxwi.com/tags/Git/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1596,6 +1433,20 @@
   
   <url>
     <loc>http://notes.maxwi.com/tags/git/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/hexo/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/markdown/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1616,28 +1467,14 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/tags/hexo/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/Git/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://notes.maxwi.com/tags/markdown/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/tags/markdown%E6%95%99%E7%A8%8B/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Infra/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1652,6 +1489,146 @@
   
   <url>
     <loc>http://notes.maxwi.com/tags/5%E5%88%86%E9%92%9F%E6%8E%8C%E6%8F%A1Markdown/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/coredump/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/gdb/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/GDB/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/GTest/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/cron/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/grep/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/awk/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/KVM/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/OpenStack/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/sed/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/UFW/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/iptables/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/fork/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/ssh/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/Makefile/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/cmake/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/shell/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/tmux/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/vim/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/tags/winsock2/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1681,13 +1658,6 @@
   </url>
   
   <url>
-    <loc>http://notes.maxwi.com/categories/Infra/</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://notes.maxwi.com/categories/Media/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -1696,6 +1666,13 @@
   
   <url>
     <loc>http://notes.maxwi.com/categories/Meta/</loc>
+    <lastmod>2026-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://notes.maxwi.com/categories/Infra/</loc>
     <lastmod>2026-04-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

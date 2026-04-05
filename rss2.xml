@@ -88,35 +88,6 @@
     </item>
     
     <item>
-      <title>AI Infra 全栈知识体系学习指南</title>
-      <link>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/</link>
-      <guid>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/</guid>
-      <pubDate>Tue, 18 Feb 2025 16:00:00 GMT</pubDate>
-      
-      <description>&lt;p&gt;一份面向AI 基础设施全栈知识体系学习指南，涵盖从算力、数据、训练、推理到 MLOps&amp;#x2F;LLMOps、RAG 与可观测性的完整技术栈，并融入当前主流实践与最新技术趋势。&lt;/p&gt;</description>
-      
-      
-      
-      
-      <category domain="http://notes.maxwi.com/categories/AI/">AI</category>
-      
-      
-      <category domain="http://notes.maxwi.com/tags/AI/">AI</category>
-      
-      <category domain="http://notes.maxwi.com/tags/MLOps/">MLOps</category>
-      
-      <category domain="http://notes.maxwi.com/tags/LLMOps/">LLMOps</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
-      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
-      
-      
-      <comments>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
       <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
       <link>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</link>
       <guid>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</guid>
@@ -136,9 +107,9 @@
       
       <category domain="http://notes.maxwi.com/tags/AI/">AI</category>
       
-      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
-      
       <category domain="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/">效率</category>
+      
+      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
       
       <category domain="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/">对话平台</category>
       
@@ -239,66 +210,16 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/C/">C</category>
       
       <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
       
       <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
       
       <comments>http://notes.maxwi.com/2017/12/09/infra/gnu-gcc-compile-for-centos6/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>GCC在64位系统上编译32位程序遇到的问题</title>
-      <link>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</link>
-      <guid>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</guid>
-      <pubDate>Wed, 06 Dec 2017 08:31:54 GMT</pubDate>
-      
-      <description>&lt;p&gt;默认的GCC编译选项会编译出与系统一致的输出，例如64位直接使用gcc或g++编译出的为64位程序或库，而32位系统编译的是对应32位的。&lt;br&gt;可以通过在编译时添加选项&lt;code&gt;-m32&lt;/code&gt;或&lt;code&gt;-m64&lt;/code&gt;来指定编译生成的相应版本，如果同时带上这2个选项，只有后一个会生效。&lt;br&gt;问题的关键时多数时候会提示缺少库，这里以64位下编译32位程序为例，给出ubuntu和centos下相关依赖包。&lt;/p&gt;</description>
-      
-      
-      
-      
-      <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
-      
-      
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
-      
-      
-      <comments>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>让普通的VS项目支持编译CUDA代码</title>
-      <link>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</link>
-      <guid>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</guid>
-      <pubDate>Wed, 06 Dec 2017 08:31:54 GMT</pubDate>
-      
-      <description>&lt;p&gt;当安装了VS之后再安装CUDA套件就可以通过VS创建基于CUDA的项目，但往往我们会需要让之前的老项目支持对CUDA的编译，以便使用CUDA对原有项目中的部分算法加速，网上有各种各样的尝试，搜索SOF之后找到一个超简单的方法，记录之。&lt;/p&gt;</description>
-      
-      
-      
-      
-      <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
-      
-      
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
-      
-      <category domain="http://notes.maxwi.com/tags/CUDA/">CUDA</category>
-      
-      
-      <comments>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/#disqus_thread</comments>
       
     </item>
     
@@ -330,6 +251,56 @@
       
       
       <comments>http://notes.maxwi.com/2017/12/06/meta/docker-useful-command/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>GCC在64位系统上编译32位程序遇到的问题</title>
+      <link>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</link>
+      <guid>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</guid>
+      <pubDate>Wed, 06 Dec 2017 08:31:54 GMT</pubDate>
+      
+      <description>&lt;p&gt;默认的GCC编译选项会编译出与系统一致的输出，例如64位直接使用gcc或g++编译出的为64位程序或库，而32位系统编译的是对应32位的。&lt;br&gt;可以通过在编译时添加选项&lt;code&gt;-m32&lt;/code&gt;或&lt;code&gt;-m64&lt;/code&gt;来指定编译生成的相应版本，如果同时带上这2个选项，只有后一个会生效。&lt;br&gt;问题的关键时多数时候会提示缺少库，这里以64位下编译32位程序为例，给出ubuntu和centos下相关依赖包。&lt;/p&gt;</description>
+      
+      
+      
+      
+      <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
+      
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      
+      <comments>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>让普通的VS项目支持编译CUDA代码</title>
+      <link>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</link>
+      <guid>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</guid>
+      <pubDate>Wed, 06 Dec 2017 08:31:54 GMT</pubDate>
+      
+      <description>&lt;p&gt;当安装了VS之后再安装CUDA套件就可以通过VS创建基于CUDA的项目，但往往我们会需要让之前的老项目支持对CUDA的编译，以便使用CUDA对原有项目中的部分算法加速，网上有各种各样的尝试，搜索SOF之后找到一个超简单的方法，记录之。&lt;/p&gt;</description>
+      
+      
+      
+      
+      <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
+      
+      
+      <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
+      
+      <category domain="http://notes.maxwi.com/tags/CUDA/">CUDA</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      
+      <comments>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/#disqus_thread</comments>
       
     </item>
     
@@ -377,9 +348,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
       
       <comments>http://notes.maxwi.com/2017/12/04/infra/windows-multi-threads/#disqus_thread</comments>
@@ -435,9 +406,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
       
       <comments>http://notes.maxwi.com/2017/12/01/infra/dll-lib-export-for-windows/#disqus_thread</comments>
@@ -458,9 +429,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
       <category domain="http://notes.maxwi.com/tags/GTest/">GTest</category>
       
@@ -487,9 +458,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
       <category domain="http://notes.maxwi.com/tags/tmux/">tmux</category>
       
@@ -512,41 +483,18 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
-      <category domain="http://notes.maxwi.com/tags/Makefile/">Makefile</category>
-      
       <category domain="http://notes.maxwi.com/tags/make/">make</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Makefile/">Makefile</category>
       
       <category domain="http://notes.maxwi.com/tags/cmake/">cmake</category>
       
       
       <comments>http://notes.maxwi.com/2017/11/09/infra/makefile/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>为Linux系统导入根证书</title>
-      <link>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</link>
-      <guid>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</guid>
-      <pubDate>Fri, 13 Oct 2017 23:06:58 GMT</pubDate>
-      
-      <description>&lt;p&gt;公司里面通常都会为了信息安全而要求个人电脑通过公司的根证书访问SSL加密的链接，如果系统里面没有根证书不管是浏览器还是需要访问SSL加密网络的系统命令都会出现证书相关错误。虽然这些证书错误都可以通过其他一些设置绕过去，但还是直接设置一下系统根证书更方便，一劳永逸（自己公司，忽略安全性）。&lt;/p&gt;</description>
-      
-      
-      
-      
-      <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
-      
-      
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
-      
-      <comments>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/#disqus_thread</comments>
       
     </item>
     
@@ -576,6 +524,52 @@
       
       
       <comments>http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>为Linux系统导入根证书</title>
+      <link>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</link>
+      <guid>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</guid>
+      <pubDate>Fri, 13 Oct 2017 23:06:58 GMT</pubDate>
+      
+      <description>&lt;p&gt;公司里面通常都会为了信息安全而要求个人电脑通过公司的根证书访问SSL加密的链接，如果系统里面没有根证书不管是浏览器还是需要访问SSL加密网络的系统命令都会出现证书相关错误。虽然这些证书错误都可以通过其他一些设置绕过去，但还是直接设置一下系统根证书更方便，一劳永逸（自己公司，忽略安全性）。&lt;/p&gt;</description>
+      
+      
+      
+      
+      <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
+      
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      
+      <comments>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>Git submodule使用方法</title>
+      <link>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</link>
+      <guid>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</guid>
+      <pubDate>Fri, 18 Aug 2017 09:06:58 GMT</pubDate>
+      
+      <description>&lt;p&gt;git的submodule可以用于在项目中添加子项目，这样就可以让主项目可以引用子项目的同时，子项目又可以进行独立的版本控制管理。当子项目有了更新之后，可以便捷的在主项目中对相应子项目进行更新。&lt;/p&gt;</description>
+      
+      
+      
+      
+      <category domain="http://notes.maxwi.com/categories/Meta/">Meta</category>
+      
+      
+      <category domain="http://notes.maxwi.com/tags/Meta/">Meta</category>
+      
+      <category domain="http://notes.maxwi.com/tags/git/">git</category>
+      
+      
+      <comments>http://notes.maxwi.com/2017/08/18/meta/git-submodule/#disqus_thread</comments>
       
     </item>
     
