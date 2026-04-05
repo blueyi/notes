@@ -224,13 +224,13 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
     <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
     
     <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
     
     <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
     
   </entry>
   
@@ -249,9 +249,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
     <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
     
@@ -427,9 +427,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
     
     <category term="GTest" scheme="http://notes.maxwi.com/tags/GTest/"/>
     
@@ -454,9 +454,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
     <category term="tmux" scheme="http://notes.maxwi.com/tags/tmux/"/>
     
@@ -477,9 +477,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
     <category term="Makefile" scheme="http://notes.maxwi.com/tags/Makefile/"/>
     
@@ -504,9 +504,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
   </entry>
   

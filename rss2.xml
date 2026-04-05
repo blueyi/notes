@@ -239,13 +239,13 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
       <category domain="http://notes.maxwi.com/tags/C/">C</category>
       
       <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
       
       <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
       
       <comments>http://notes.maxwi.com/2017/12/09/infra/gnu-gcc-compile-for-centos6/#disqus_thread</comments>
@@ -266,9 +266,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
       <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
       <category domain="http://notes.maxwi.com/tags/Dev/">Dev</category>
       
@@ -458,9 +458,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
-      
       <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
       
       <category domain="http://notes.maxwi.com/tags/GTest/">GTest</category>
       
@@ -487,9 +487,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
       <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
       <category domain="http://notes.maxwi.com/tags/tmux/">tmux</category>
       
@@ -512,9 +512,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
       <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
       <category domain="http://notes.maxwi.com/tags/Makefile/">Makefile</category>
       
@@ -541,9 +541,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
-      
       <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
       
       <comments>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/#disqus_thread</comments>
