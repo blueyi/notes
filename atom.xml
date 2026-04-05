@@ -82,6 +82,33 @@
   </entry>
   
   <entry>
+    <title>AI Infra 全栈知识体系学习指南</title>
+    <link href="http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/"/>
+    <id>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/</id>
+    <published>2025-02-18T16:00:00.000Z</published>
+    <updated>2025-02-18T16:00:00.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;一份面向AI 基础设施全栈知识体系学习指南，涵盖从算力、数据、训练、推理到 MLOps&amp;#x2F;LLMOps、RAG 与可观测性的完整技术栈，并融入当前主流实践与最新技术趋势。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
+    
+    
+    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
+    
+    <category term="MLOps" scheme="http://notes.maxwi.com/tags/MLOps/"/>
+    
+    <category term="LLMOps" scheme="http://notes.maxwi.com/tags/LLMOps/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
+    
+  </entry>
+  
+  <entry>
     <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
     <link href="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/"/>
     <id>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</id>
@@ -96,15 +123,15 @@
     <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
     
     
+    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
+    
+    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
+    
     <category term="LLM" scheme="http://notes.maxwi.com/tags/LLM/"/>
     
     <category term="Prompt" scheme="http://notes.maxwi.com/tags/Prompt/"/>
     
-    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
-    
     <category term="效率" scheme="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/"/>
-    
-    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
     
     <category term="对话平台" scheme="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/"/>
     
@@ -197,13 +224,59 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
-    
-    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
     
     <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
+    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+    <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GCC在64位系统上编译32位程序遇到的问题</title>
+    <link href="http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/"/>
+    <id>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-06T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;默认的GCC编译选项会编译出与系统一致的输出，例如64位直接使用gcc或g++编译出的为64位程序或库，而32位系统编译的是对应32位的。&lt;br&gt;可以通过在编译时添加选项&lt;code&gt;-m32&lt;/code&gt;或&lt;code&gt;-m64&lt;/code&gt;来指定编译生成的相应版本，如果同时带上这2个选项，只有后一个会生效。&lt;br&gt;问题的关键时多数时候会提示缺少库，这里以64位下编译32位程序为例，给出ubuntu和centos下相关依赖包。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>让普通的VS项目支持编译CUDA代码</title>
+    <link href="http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/"/>
+    <id>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</id>
+    <published>2017-12-06T08:31:54.000Z</published>
+    <updated>2017-12-06T08:31:54.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;当安装了VS之后再安装CUDA套件就可以通过VS创建基于CUDA的项目，但往往我们会需要让之前的老项目支持对CUDA的编译，以便使用CUDA对原有项目中的部分算法加速，网上有各种各样的尝试，搜索SOF之后找到一个超简单的方法，记录之。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
+    
+    <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
     
   </entry>
   
@@ -233,52 +306,6 @@
     <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
     
     <category term="Docker" scheme="http://notes.maxwi.com/tags/Docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GCC在64位系统上编译32位程序遇到的问题</title>
-    <link href="http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/"/>
-    <id>http://notes.maxwi.com/2017/12/06/infra/compile-x32-executable-at-x64-linux-system/</id>
-    <published>2017-12-06T08:31:54.000Z</published>
-    <updated>2017-12-06T08:31:54.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;默认的GCC编译选项会编译出与系统一致的输出，例如64位直接使用gcc或g++编译出的为64位程序或库，而32位系统编译的是对应32位的。&lt;br&gt;可以通过在编译时添加选项&lt;code&gt;-m32&lt;/code&gt;或&lt;code&gt;-m64&lt;/code&gt;来指定编译生成的相应版本，如果同时带上这2个选项，只有后一个会生效。&lt;br&gt;问题的关键时多数时候会提示缺少库，这里以64位下编译32位程序为例，给出ubuntu和centos下相关依赖包。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
-    
-    
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
-    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>让普通的VS项目支持编译CUDA代码</title>
-    <link href="http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/"/>
-    <id>http://notes.maxwi.com/2017/12/06/infra/cuda-compiled-for-normal-project-in-vs/</id>
-    <published>2017-12-06T08:31:54.000Z</published>
-    <updated>2017-12-06T08:31:54.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;当安装了VS之后再安装CUDA套件就可以通过VS创建基于CUDA的项目，但往往我们会需要让之前的老项目支持对CUDA的编译，以便使用CUDA对原有项目中的部分算法加速，网上有各种各样的尝试，搜索SOF之后找到一个超简单的方法，记录之。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
-    
-    
-    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
-    
-    <category term="CUDA" scheme="http://notes.maxwi.com/tags/CUDA/"/>
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
     
   </entry>
   
@@ -325,9 +352,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
     
   </entry>
   
@@ -379,9 +406,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Dev" scheme="http://notes.maxwi.com/tags/Dev/"/>
     
   </entry>
   
@@ -400,9 +427,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
     
     <category term="GTest" scheme="http://notes.maxwi.com/tags/GTest/"/>
     
@@ -427,9 +454,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
     <category term="tmux" scheme="http://notes.maxwi.com/tags/tmux/"/>
     
@@ -450,15 +477,36 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
-    <category term="make" scheme="http://notes.maxwi.com/tags/make/"/>
-    
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
     <category term="Makefile" scheme="http://notes.maxwi.com/tags/Makefile/"/>
     
+    <category term="make" scheme="http://notes.maxwi.com/tags/make/"/>
+    
     <category term="cmake" scheme="http://notes.maxwi.com/tags/cmake/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为Linux系统导入根证书</title>
+    <link href="http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/"/>
+    <id>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</id>
+    <published>2017-10-13T23:06:58.000Z</published>
+    <updated>2017-10-13T23:06:58.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;公司里面通常都会为了信息安全而要求个人电脑通过公司的根证书访问SSL加密的链接，如果系统里面没有根证书不管是浏览器还是需要访问SSL加密网络的系统命令都会出现证书相关错误。虽然这些证书错误都可以通过其他一些设置绕过去，但还是直接设置一下系统根证书更方便，一劳永逸（自己公司，忽略安全性）。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
+    
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
   </entry>
   
@@ -486,48 +534,6 @@
     <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
     
     <category term="docker" scheme="http://notes.maxwi.com/tags/docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为Linux系统导入根证书</title>
-    <link href="http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/"/>
-    <id>http://notes.maxwi.com/2017/10/14/infra/certificates-import-linux/</id>
-    <published>2017-10-13T23:06:58.000Z</published>
-    <updated>2017-10-13T23:06:58.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;公司里面通常都会为了信息安全而要求个人电脑通过公司的根证书访问SSL加密的链接，如果系统里面没有根证书不管是浏览器还是需要访问SSL加密网络的系统命令都会出现证书相关错误。虽然这些证书错误都可以通过其他一些设置绕过去，但还是直接设置一下系统根证书更方便，一劳永逸（自己公司，忽略安全性）。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
-    
-    
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
-    
-    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git submodule使用方法</title>
-    <link href="http://notes.maxwi.com/2017/08/18/meta/git-submodule/"/>
-    <id>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</id>
-    <published>2017-08-18T09:06:58.000Z</published>
-    <updated>2017-08-18T09:06:58.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;git的submodule可以用于在项目中添加子项目，这样就可以让主项目可以引用子项目的同时，子项目又可以进行独立的版本控制管理。当子项目有了更新之后，可以便捷的在主项目中对相应子项目进行更新。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Meta" scheme="http://notes.maxwi.com/categories/Meta/"/>
-    
-    
-    <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
-    
-    <category term="git" scheme="http://notes.maxwi.com/tags/git/"/>
     
   </entry>
   
