@@ -51,18 +51,12 @@
     </item>
     
     <item>
-      <title>TLE × FlagTree × AscendNPU-IR 技术协同报告</title>
-      <link>http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/</link>
-      <guid>http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/</guid>
-      <pubDate>Sat, 21 Mar 2026 16:00:00 GMT</pubDate>
+      <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
+      <link>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</link>
+      <guid>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</guid>
+      <pubDate>Tue, 18 Feb 2025 16:00:00 GMT</pubDate>
       
-      <description>&lt;p&gt;Triton Language Extension (TLE)、FlagTree 编译器与 AscendNPU-IR 构建了从&lt;strong&gt;算子编程到硬件执行&lt;/strong&gt;的端到端技术融合体系：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;TLE&lt;/strong&gt;：通过编译提示（Hints）机制扩展 Triton 语言，传递硬件优化意图&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;FlagTree&lt;/strong&gt;：统一编译框架，解析 Hints 并驱动 MLIR 优化 Pass，实现 TTIR → Linalg IR 转换&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;AscendNPU-IR&lt;/strong&gt;：分层开放中间表示，承接 Linalg IR，在 HFusion&amp;#x2F;HIVM 层完成昇腾硬件深度优化&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;核心成果&lt;/strong&gt;：关键算子性能提升 10%~20%，为 AI 开发者提供”编写一次、多端高效运行”的统一编程体验。&lt;/p&gt;</description>
+      <description>&lt;p&gt;本文系统梳理：大模型在&lt;strong&gt;日常生活、工作与工程&lt;/strong&gt;中的可应用能力（其中&lt;strong&gt;开发与代码工程&lt;/strong&gt;为最重要的一环）、常用大模型应用平台（含官网&amp;#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。&lt;/p&gt;</description>
       
       
       
@@ -70,20 +64,20 @@
       <category domain="http://notes.maxwi.com/categories/AI/">AI</category>
       
       
+      <category domain="http://notes.maxwi.com/tags/LLM/">LLM</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Prompt/">Prompt</category>
+      
       <category domain="http://notes.maxwi.com/tags/AI/">AI</category>
       
-      <category domain="http://notes.maxwi.com/tags/Triton/">Triton</category>
+      <category domain="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/">效率</category>
       
-      <category domain="http://notes.maxwi.com/tags/MLIR/">MLIR</category>
+      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
       
-      <category domain="http://notes.maxwi.com/tags/Ascend/">Ascend</category>
-      
-      <category domain="http://notes.maxwi.com/tags/NPU/">NPU</category>
-      
-      <category domain="http://notes.maxwi.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/">编译器</category>
+      <category domain="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/">对话平台</category>
       
       
-      <comments>http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/#disqus_thread</comments>
+      <comments>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/#disqus_thread</comments>
       
     </item>
     
@@ -103,47 +97,16 @@
       
       <category domain="http://notes.maxwi.com/tags/AI/">AI</category>
       
+      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
+      
       <category domain="http://notes.maxwi.com/tags/MLOps/">MLOps</category>
       
       <category domain="http://notes.maxwi.com/tags/LLMOps/">LLMOps</category>
       
       <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
-      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
-      
       
       <comments>http://notes.maxwi.com/2025/02/19/ai/ai-infra-fullstack-learning-guide/#disqus_thread</comments>
-      
-    </item>
-    
-    <item>
-      <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
-      <link>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</link>
-      <guid>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</guid>
-      <pubDate>Tue, 18 Feb 2025 16:00:00 GMT</pubDate>
-      
-      <description>&lt;p&gt;本文系统梳理：大模型在&lt;strong&gt;日常生活、工作与工程&lt;/strong&gt;中的可应用能力（其中&lt;strong&gt;开发与代码工程&lt;/strong&gt;为最重要的一环）、常用大模型应用平台（含官网&amp;#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。&lt;/p&gt;</description>
-      
-      
-      
-      
-      <category domain="http://notes.maxwi.com/categories/AI/">AI</category>
-      
-      
-      <category domain="http://notes.maxwi.com/tags/AI/">AI</category>
-      
-      <category domain="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/">学习指南</category>
-      
-      <category domain="http://notes.maxwi.com/tags/LLM/">LLM</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Prompt/">Prompt</category>
-      
-      <category domain="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/">效率</category>
-      
-      <category domain="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/">对话平台</category>
-      
-      
-      <comments>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/#disqus_thread</comments>
       
     </item>
     
@@ -239,13 +202,13 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
-      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
+      <category domain="http://notes.maxwi.com/tags/C/">C</category>
       
       <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
       
-      <category domain="http://notes.maxwi.com/tags/C/">C</category>
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Linux/">Linux</category>
       
       
       <comments>http://notes.maxwi.com/2017/12/09/infra/gnu-gcc-compile-for-centos6/#disqus_thread</comments>
@@ -458,9 +421,9 @@
       <category domain="http://notes.maxwi.com/categories/Infra/">Infra</category>
       
       
-      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
-      
       <category domain="http://notes.maxwi.com/tags/CPP/">CPP</category>
+      
+      <category domain="http://notes.maxwi.com/tags/Infra/">Infra</category>
       
       <category domain="http://notes.maxwi.com/tags/GTest/">GTest</category>
       
@@ -576,6 +539,29 @@
       
       
       <comments>http://notes.maxwi.com/2017/10/14/meta/docker-install-registry-mirrors/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>Git submodule使用方法</title>
+      <link>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</link>
+      <guid>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</guid>
+      <pubDate>Fri, 18 Aug 2017 09:06:58 GMT</pubDate>
+      
+      <description>&lt;p&gt;git的submodule可以用于在项目中添加子项目，这样就可以让主项目可以引用子项目的同时，子项目又可以进行独立的版本控制管理。当子项目有了更新之后，可以便捷的在主项目中对相应子项目进行更新。&lt;/p&gt;</description>
+      
+      
+      
+      
+      <category domain="http://notes.maxwi.com/categories/Meta/">Meta</category>
+      
+      
+      <category domain="http://notes.maxwi.com/tags/Meta/">Meta</category>
+      
+      <category domain="http://notes.maxwi.com/tags/git/">git</category>
+      
+      
+      <comments>http://notes.maxwi.com/2017/08/18/meta/git-submodule/#disqus_thread</comments>
       
     </item>
     

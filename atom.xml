@@ -47,37 +47,31 @@
   </entry>
   
   <entry>
-    <title>TLE × FlagTree × AscendNPU-IR 技术协同报告</title>
-    <link href="http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/"/>
-    <id>http://notes.maxwi.com/2026/03/22/ai/triton-ascend-collaboration/</id>
-    <published>2026-03-21T16:00:00.000Z</published>
-    <updated>2026-03-21T16:00:00.000Z</updated>
+    <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
+    <link href="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/"/>
+    <id>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</id>
+    <published>2025-02-18T16:00:00.000Z</published>
+    <updated>2025-02-18T16:00:00.000Z</updated>
     
     
-    <summary type="html">&lt;p&gt;Triton Language Extension (TLE)、FlagTree 编译器与 AscendNPU-IR 构建了从&lt;strong&gt;算子编程到硬件执行&lt;/strong&gt;的端到端技术融合体系：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;TLE&lt;/strong&gt;：通过编译提示（Hints）机制扩展 Triton 语言，传递硬件优化意图&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;FlagTree&lt;/strong&gt;：统一编译框架，解析 Hints 并驱动 MLIR 优化 Pass，实现 TTIR → Linalg IR 转换&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;AscendNPU-IR&lt;/strong&gt;：分层开放中间表示，承接 Linalg IR，在 HFusion&amp;#x2F;HIVM 层完成昇腾硬件深度优化&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;核心成果&lt;/strong&gt;：关键算子性能提升 10%~20%，为 AI 开发者提供”编写一次、多端高效运行”的统一编程体验。&lt;/p&gt;</summary>
+    <summary type="html">&lt;p&gt;本文系统梳理：大模型在&lt;strong&gt;日常生活、工作与工程&lt;/strong&gt;中的可应用能力（其中&lt;strong&gt;开发与代码工程&lt;/strong&gt;为最重要的一环）、常用大模型应用平台（含官网&amp;#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。&lt;/p&gt;</summary>
     
     
     
     <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
     
     
+    <category term="LLM" scheme="http://notes.maxwi.com/tags/LLM/"/>
+    
+    <category term="Prompt" scheme="http://notes.maxwi.com/tags/Prompt/"/>
+    
     <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
     
-    <category term="Triton" scheme="http://notes.maxwi.com/tags/Triton/"/>
+    <category term="效率" scheme="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/"/>
     
-    <category term="MLIR" scheme="http://notes.maxwi.com/tags/MLIR/"/>
+    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
     
-    <category term="Ascend" scheme="http://notes.maxwi.com/tags/Ascend/"/>
-    
-    <category term="NPU" scheme="http://notes.maxwi.com/tags/NPU/"/>
-    
-    <category term="编译器" scheme="http://notes.maxwi.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    <category term="对话平台" scheme="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/"/>
     
   </entry>
   
@@ -98,42 +92,13 @@
     
     <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
     
+    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
+    
     <category term="MLOps" scheme="http://notes.maxwi.com/tags/MLOps/"/>
     
     <category term="LLMOps" scheme="http://notes.maxwi.com/tags/LLMOps/"/>
     
     <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
-    
-    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>日常生活、工作与工程中用好大模型：能力、平台、Prompt 与学习规划</title>
-    <link href="http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/"/>
-    <id>http://notes.maxwi.com/2025/02/19/ai/llm-daily-engineering-guide/</id>
-    <published>2025-02-18T16:00:00.000Z</published>
-    <updated>2025-02-18T16:00:00.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;本文系统梳理：大模型在&lt;strong&gt;日常生活、工作与工程&lt;/strong&gt;中的可应用能力（其中&lt;strong&gt;开发与代码工程&lt;/strong&gt;为最重要的一环）、常用大模型应用平台（含官网&amp;#x2F;APP、能力、免费与收费、推荐等级）、高质量 Prompt 写法，以及提升大模型应用能力的规划与学习资料。参考资料均来自官方网站或专业机构。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="AI" scheme="http://notes.maxwi.com/categories/AI/"/>
-    
-    
-    <category term="AI" scheme="http://notes.maxwi.com/tags/AI/"/>
-    
-    <category term="学习指南" scheme="http://notes.maxwi.com/tags/%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/"/>
-    
-    <category term="LLM" scheme="http://notes.maxwi.com/tags/LLM/"/>
-    
-    <category term="Prompt" scheme="http://notes.maxwi.com/tags/Prompt/"/>
-    
-    <category term="效率" scheme="http://notes.maxwi.com/tags/%E6%95%88%E7%8E%87/"/>
-    
-    <category term="对话平台" scheme="http://notes.maxwi.com/tags/%E5%AF%B9%E8%AF%9D%E5%B9%B3%E5%8F%B0/"/>
     
   </entry>
   
@@ -224,13 +189,13 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
-    
-    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
+    <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
     
     <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
     
-    <category term="C" scheme="http://notes.maxwi.com/tags/C/"/>
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
+    
+    <category term="Linux" scheme="http://notes.maxwi.com/tags/Linux/"/>
     
   </entry>
   
@@ -427,9 +392,9 @@
     <category term="Infra" scheme="http://notes.maxwi.com/categories/Infra/"/>
     
     
-    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
-    
     <category term="CPP" scheme="http://notes.maxwi.com/tags/CPP/"/>
+    
+    <category term="Infra" scheme="http://notes.maxwi.com/tags/Infra/"/>
     
     <category term="GTest" scheme="http://notes.maxwi.com/tags/GTest/"/>
     
@@ -534,6 +499,27 @@
     <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
     
     <category term="docker" scheme="http://notes.maxwi.com/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Git submodule使用方法</title>
+    <link href="http://notes.maxwi.com/2017/08/18/meta/git-submodule/"/>
+    <id>http://notes.maxwi.com/2017/08/18/meta/git-submodule/</id>
+    <published>2017-08-18T09:06:58.000Z</published>
+    <updated>2017-08-18T09:06:58.000Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;git的submodule可以用于在项目中添加子项目，这样就可以让主项目可以引用子项目的同时，子项目又可以进行独立的版本控制管理。当子项目有了更新之后，可以便捷的在主项目中对相应子项目进行更新。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/categories/Meta/"/>
+    
+    
+    <category term="Meta" scheme="http://notes.maxwi.com/tags/Meta/"/>
+    
+    <category term="git" scheme="http://notes.maxwi.com/tags/git/"/>
     
   </entry>
   
